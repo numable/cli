@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "取数流(.df)只做取数与加工,不做 UI。真要打网络时加一个 request 节点,并把 host 写进 manifest.network(白名单闭合,多一个少一个都过不了闸)。"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "day",
+        "value": "$[formatDate::(${@time.nowMs},MM-dd)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "hasAt",
+        "value": "$[if::(gt::(length::(${at}),0),1,0)]"
+      },
+      "_note": "存在性判据一律立显式数值旗标,渲染层只看旗标(判空别用 eq::(x,) 或 length:: 派生量)。"
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "at",
+          "day",
+          "hasAt"
+        ]
+      },
+      "_note": "只有列在 keys 里的键会交给渲染层;少列一个,组件上那格就是空的且不报错。"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>我的信息源</title>
+<style>
+  :root { --xb-content-top: 0px; --xb-content-bottom: 0px; }
+  body { margin: 0; font: 15px/1.5 -apple-system, system-ui, sans-serif; color: #1c1c1e; background: #f5f6f8;
+         padding: calc(var(--xb-content-top) + 16px) 16px calc(var(--xb-content-bottom) + 16px); }
+  /* 明暗由容器写在 <html data-theme="light|dark"> 上并派发 themechange;别用 prefers-color-scheme(容器里那个媒体查询跟的是宿主,拨不动)。 */
+  [data-theme="dark"] body { color: #f3f4f6; background: #0b0c0e; }
+  [data-theme="dark"] p { color: #9aa0a6; }
+  h1 { font-size: 22px; margin: 0 0 8px; }
+  p { color: #6b7280; margin: 0 0 12px; }
+</style>
+</head>
+<body>
+  <h1>我的信息源</h1>
+  <p>这是包的首页(page/html/home/index.html)。组件在 xWidget/ 下;把组件加到仪表盘就能看到,也可以再添加到系统桌面。</p>
+  <p>顶部 padding 引用了 <code>--xb-content-top</code>:容器的浮动胶囊恒浮在内容之上,页面要自己让位。</p>
+</body>
+</html>

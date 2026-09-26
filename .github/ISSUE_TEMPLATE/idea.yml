@@ -1,0 +1,11 @@
+name: Question or idea / 提问或建议
+description: Ask how to build something, or suggest a feature · 问怎么做,或提一个想法
+labels: [question]
+body:
+  - type: textarea
+    id: body
+    attributes:
+      label: Describe it / 描述一下
+      description: What are you trying to build, and where did you get stuck? · 你想做什么、卡在哪里?
+    validations:
+      required: true

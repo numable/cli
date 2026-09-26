@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "id": "__ID__",
+  "title": "变化提醒",
+  "sub": "值和上次不一样就提醒",
+  "_note": "动态提醒的另一种常见形状:不比阈值,只比「和上次一不一样」。判定段记住上次的值,这一次取回的值和它不同才算命中。",
+  "_note_minEngine": "发布前把 manifest.minEngine 抬到当前引擎版本 —— numable check 的 G45 会直接告诉你现在是几。写低了的话,装在旧版应用上这条提醒只是不响,不报错。",
+  "i18n": {
+    "en-US": {
+      "title": "Change alert",
+      "sub": "Tells you when the value is no longer what it was",
+      "message": { "title": "Now: ${cur}", "body": "It changed since last time" }
+    }
+  },
+  "task": {
+    "_note_depends": "把下面的 flow 换成本包已有的取数流(路径从包根算起),并确认它的 resultFilter.keys 里有 cur 这个键。",
+    "depends": [{ "flow": "@[file://xWidget/flow/CHANGE-ME.df]", "params": {} }],
+    "then": {
+      "flow": "@[file://xJob/flow/__ID__.df]",
+      "params": { "cur": "${cur}" }
+    },
+    "refresh": { "interval": ["1800"] }
+  },
+  "alert": {
+    "message": { "title": "已更新 ${cur}", "body": "和上次不一样了" }
+  }
+}

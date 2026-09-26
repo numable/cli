@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "title": "此刻",
+  "sub": "时间组件 · 示例",
+  "i18n": {
+    "en-US": {
+      "title": "Right now",
+      "sub": "Clock widget · starter"
+    }
+  },
+  "layout": 22,
+  "params": {},
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/clock.rcn]",
+    "depends": [
+      {
+        "_note": "绑定写成 {flow, params} 对象;裸串 `@[file://…]` 不会带上组件参数(入参为空)。",
+        "flow": "@[file://flow/clock.df]",
+        "params": {}
+      }
+    ],
+    "_note_refresh": "时间组件每 60 秒重取一次(它显示到分钟)。做数据组件时按上游节奏设:榜单、天气常用 300,行情盘中可到 10;见 numable docs xwidget",
+    "refresh": {
+      "interval": [
+        "60"
+      ]
+    }
+  }
+}

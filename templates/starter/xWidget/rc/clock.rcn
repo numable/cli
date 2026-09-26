@@ -1,0 +1,78 @@
+{
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "id": "brand",
+        "type": "txt",
+        "x": "12pt",
+        "y": "12pt",
+        "w": "{parent.w}-24pt",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "${@i18n.brand}",
+        "fontSize": "9pt",
+        "typeface": "System-Bold",
+        "textColor": "#6B7280|#8E939B"
+      },
+      {
+        "id": "time",
+        "type": "txt",
+        "x": "12pt",
+        "y": "{brand.b}+14pt",
+        "w": "{parent.w}-24pt",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "$[findNotEmpty::(${at},--:--)]",
+        "fontSize": "40pt",
+        "typeface": "System-Bold",
+        "textColor": "#0E1116|#F3F4F6"
+      },
+      {
+        "id": "day",
+        "type": "txt",
+        "x": "12pt",
+        "y": "{time.b}+6pt",
+        "w": "{parent.w}-24pt",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "$[findNotEmpty::(${day},${@i18n.empty})]",
+        "fontSize": "12pt",
+        "textColor": "#6B7280|#8E939B"
+      },
+      {
+        "id": "foot",
+        "type": "txt",
+        "x": "12pt",
+        "y": "{parent.h}-24pt",
+        "w": "{parent.w}-24pt",
+        "h": "-1",
+        "maxLines": "1",
+        "alignmentH": "2",
+        "text": "${@i18n.foot}",
+        "fontSize": "9pt",
+        "textColor": "#99A0AA|#80FFFFFF"
+      }
+    ],
+    "i18n": {
+      "zh-CN": {
+        "brand": "此刻",
+        "empty": "暂无数据",
+        "foot": "每分钟更新"
+      },
+      "en-US": {
+        "brand": "RIGHT NOW",
+        "empty": "No data",
+        "foot": "Updates every minute"
+      }
+    }
+  }
+}

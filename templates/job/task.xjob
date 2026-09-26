@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "id": "__ID__",
+  "title": "记录每日数值",
+  "sub": "每天记一次,不发提醒",
+  "_note": "后台任务 = 没有 alert 块。它不发任何通知,产出写进本包的 data.*,由本包的组件或页面下次渲染时读。也没有 params / form / events —— 一个包里它只有一份,没有用户输入、没有点击。",
+  "_note_minEngine": "发布前把 manifest.minEngine 抬到当前引擎版本 —— numable check 的 G45 会直接告诉你现在是几。写低了的话,装在旧版应用上这个任务只是不跑,不报错。",
+  "_note_disclose": "安装面板会把它列出来(「会在后台定期取数:记录每日数值(每天一次)」),所以 title 要写成用户看得懂的一句话。",
+  "i18n": {
+    "en-US": {
+      "title": "Log today's value",
+      "sub": "Once a day, no notification"
+    }
+  },
+  "task": {
+    "_note_depends": "把下面的 flow 换成本包已有的取数流(路径从包根算起),并确认它的 resultFilter.keys 里有 cur 这个键。",
+    "depends": [{ "flow": "@[file://xWidget/flow/CHANGE-ME.df]", "params": {} }],
+    "then": {
+      "flow": "@[file://xJob/flow/__ID__.df]",
+      "params": { "cur": "${cur}" }
+    },
+    "_note_refresh": "「每天一次」的真实含义是「每天至多一次,有机会就补」:错过的那天会在下一个机会补跑一次,不会补三次。别在文案里承诺准时。",
+    "refresh": { "at": ["23:55"] }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "_note": "写入段:后台任务的产出全在这里。入参 cur 由 .xjob 的 then.params 显式传进来;它不发通知,写完就结束。",
+  "actions": [
+    { "op": "set", "props": { "key": "today", "value": "$[formatDate::(${@time.nowMs},yyyy-MM-dd)]" } },
+    {
+      "op": "set",
+      "props": { "key": "hasCur", "value": "$[if::(eq::(findNotEmpty::(${cur},__none__),__none__),0,1)]" },
+      "_note": "⚠️ 取数失败的那一次 cur 是空的。\n⚠️ 判空**别用** `length::`:`$[if::(gt::(length::(${cur}),0),1,0)]` 是手最顺的写法,但 `length::` 只对字符串、数组、对象有意义,喂给**数字**一律返回 0 —— 值是数字的那一档旗标恒为 0,下面的守卫恒不通过,`data.merge` 一次都不执行,而流照样报成功、日志干净、界面上什么也看不出来。上面这个哨兵写法对字符串、数字、空串、缺键四种都成立;数字 `0` 判成「有值」,这是对的。"
+    },
+    {
+      "op": "if",
+      "props": { "val": "$[eq::(${hasCur},1)]" },
+      "items": [{ "action": "data.merge", "params": { "key": "__ID__.history", "value": { "${today}": "${cur}" } } }],
+      "_note": "⚠️ 只在这一次真取到值时才写:取数失败那次写进去,这一天就留下一个空字符串,而读它的组件会把空串渲成 0 或者一片 --。data.merge 是浅合并,已经记下的日期原样保留;键是日期,所以补跑同一天只会覆盖当天那一格。"
+    },
+    {
+      "action": "resultFilter",
+      "params": { "keys": ["today", "hasCur"] },
+      "_note": "任务没有 alert,输出没有消费者;留一个最小的 resultFilter 是为了让 numable run 的回显里能看出这一趟到底写没写。"
+    }
+  ]
+}

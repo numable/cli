@@ -1,0 +1,17 @@
+{
+  "id": "00000000000000000000000000",
+  "version": 1,
+  "title": "我的信息源",
+  "lang": "zh-CN",
+  "category": "dashboard",
+  "subtitle": "从一个时间组件开始",
+  "domain": "00000000000000000000000000",
+  "minEngine": "1.0.0",
+  "network": [],
+  "i18n": {
+    "en-US": {
+      "title": "My Source",
+      "subtitle": "Start from a clock widget"
+    }
+  }
+}

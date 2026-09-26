@@ -1,0 +1,32 @@
+name: Bug / 问题
+description: Something in the CLI or the docs is wrong · 命令行或文档有错
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: numable version / 版本
+      description: "Output of `npx numable --version` · 运行 `npx numable --version` 的输出"
+      placeholder: numable 0.1.8
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened / 发生了什么
+      description: The command you ran and its full output · 你运行的命令和完整输出
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected / 你期望的结果
+  - type: input
+    id: env
+    attributes:
+      label: OS and Node version / 系统与 Node 版本
+      placeholder: macOS 15 · Node 20
+  - type: markdown
+    attributes:
+      value: "Please do not paste tokens or API keys · 请不要贴出令牌或 API 密钥"

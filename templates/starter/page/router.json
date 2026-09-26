@@ -1,0 +1,14 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "entry": "html/home/index.html",
+      "title": "我的信息源",
+      "i18n": {
+        "en-US": {
+          "title": "My Source"
+        }
+      }
+    }
+  ]
+}
