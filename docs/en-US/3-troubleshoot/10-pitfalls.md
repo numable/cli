@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/3-troubleshoot/10-pitfalls.md sha256:808836c08bde -->
+<!-- translated-from: zh-CN/3-troubleshoot/10-pitfalls.md sha256:b88e9bddabf6 -->
 
 # pitfalls — find it by symptom: how to diagnose a broken widget
 
-> Audience: people building sources, and the AI working on their behalf. Both read this same page.
+> Audience: people building tools, and the AI working on their behalf. Both read this same page.
 
 This chapter is indexed by **what you see on screen**, not by technical category. A widget is a bitmap, and when it breaks it almost never raises an error: the flow reports success, the log is clean, `check` is all green, and the only evidence is a screen full of `--` or a solid white block. So run the three layers below in order first, then match your symptom against the tables.
 
@@ -89,7 +89,7 @@ What this group has in common: **if RCN source parsing fails, the whole widget d
 | Whole widget white, only with certain data | `path.d` is assembled from data and picked up a comma (commas are argument separators) | Re-run `render` with a different data set | Separate everything in `d` with spaces | `numable docs rcn` |
 | Whole widget white, only on days the fetch fails | `line.points` has an empty slot, or a size string where `calc` produced null and `pt` was appended to it | `numable render --states empty` | Wrap every value in `$[findNotEmpty::(…, 0)]`; fall back to `-99` for endpoints and `999` for y | `numable docs rcn` |
 | Whole widget white, package won't open at all | JSON syntax error (trailing comma, missing quote) | `check` catches it (reports "JSON syntax error") | Fix the JSON. In the App this shows as the widget not rendering with a clean log | `numable docs layout` |
-| The banner at the top of a source page is one blank block, everything else is fine | `banner.xbanner` has no `scene` (it has no size class to inherit, so it must declare its own dimensions) | Open the source page in the App | Add `"scene": {"width": 338, "height": 190, "corner": 18}` | `numable docs layout` |
+| The banner at the top of the Tools page is one blank block, everything else is fine | `banner.xbanner` has no `scene` (it has no size class to inherit, so it must declare its own dimensions) | Open the Tools page in the App | Add `"scene": {"width": 338, "height": 190, "corner": 18}` | `numable docs layout` |
 | Whole widget white on the day a value goes to 0 | A division by zero makes a width NaN; or a progress bar built from a `layer` width, where the corner radius exceeds a width of 0 | `--states empty` | Wrap the denominator in `max::(x,1)`; build progress bars and markers from `line` + `lineCap:"round"` | `numable docs rcn` |
 
 ### 2.2 A field shows `--`, or a whole area is empty
@@ -98,6 +98,7 @@ What this group has in common: **if RCN source parsing fails, the whole widget d
 |---|---|---|---|---|
 | `run` reports success but every field is empty | The value path `${resp.a.b}` is off by one level | `numable run --full` against the real response shape | Fix the path | `numable docs df` |
 | The widget is all `--` while `run` is all green | `depends` uses the bare-string form → the input parameters get swallowed | `check` catches it (reports "depends uses a bare-string binding") | Write `{"flow":"@[file://flow/x.df]","params":{"secid":"${secid}"}}`; write `params:{}` even when the flow takes nothing | `numable docs xwidget` |
+| `run` and `render` are all green, but on iOS / HarmonyOS the widget always fails or is all `--` | `timeout` on a `request`, a value in `queryParams` / `header`, or `timestamp` on a `sleep` is written as a number: on HarmonyOS parameter parsing fails and the step never runs, and for `queryParams` / `header` the same happens on iOS; the web engine and the CLI run it fine | `check` catches it (G52) | Always write a string, `"8000"`; wrap a computed number in `parseNumber::(…,0)` | `numable docs df` |
 | One spot on the widget is always empty / always falls back | A `${x}` in `.rcn` isn't in the `resultFilter` output of that widget's `.df` (shell params aren't in the render scope) | `check` catches it (G28) | Pass the parameter into the `.df` via `depends.params`, then expose it through `resultFilter` | `numable docs xwidget` |
 | The fetch never happens at all | The `@[file://…]` path is relative to the wrong base | No network record for that widget in `run` | The widget host's base is `xWidget/` (`@[file://flow/x.df]`); the page host's base is the package root (`@[file://page/flow/x.df]`) | `numable docs xwidget` |
 | A field right after `concurrent` is null | Concurrent results only become visible one beat later | `check` catches it | Insert a barrier in between: `{"op":"set","props":{"key":"_barrier","value":"1"}}` | `numable docs af` |
@@ -176,7 +177,7 @@ What this group has in common: **if RCN source parsing fails, the whole widget d
 |---|---|---|---|---|
 | Taps do nothing at all | The event string starts with `${` (so it's read as an expression, not a navigation) | In the App; `check` can't catch this form | Write `"https://${tail}"` / `"numable://self/page/detail?id=${id}"` | `numable docs af` |
 | Taps do nothing | The target route isn't in `router.json`, or the id in `numable://self/widget/<id>` doesn't exist | `check` catches it (G12) | Add the route; to open your own home page write `numable://self` | `numable docs page` |
-| Tapping pops "source 'self' is not installed" | You used `numable://self` inside `nav.open` (it is only valid for in-package routes) | In the App | Across packages, write the target package's ULID literally | `numable docs af` |
+| Tapping pops "tool 'self' is not installed" | You used `numable://self` inside `nav.open` (it is only valid for in-package routes) | In the App | Across packages, write the target package's ULID literally | `numable docs af` |
 | Tapping the text does nothing, only blank space works | The tappable region is only on the background cell | In the App | Make the button a single `txt` cell and bind the event to it | `numable docs rcn` |
 | `${id}` is a literal on the page that opens | Query interpolation only fills top-level scalars, not nested paths | `run --full` | Lift it to a top-level key in the `.df` | `numable docs af` |
 | Long-pressing a widget has no "Edit parameters" item | `onEdit` was written inside `canvas` — `canvas` only understands `source` / `depends` / `refresh`, and events always hang off the shell's `events` | Open the `.xwidget` and see which level `onEdit` sits at | Move it to the top level: `"events": {"onEdit": "/edit"}` | `numable docs xwidget` |
@@ -230,6 +231,7 @@ What this group has in common: **if RCN source parsing fails, the whole widget d
 | The images from `numable render` are still the old ones | You're looking at the previous run's PNGs in `.numable/render/` | Check the file timestamps | Re-run `numable render`; the `index.html` contact sheet is rewritten with them | `numable docs workflow` |
 | The update doesn't take effect once installed on a phone | `manifest.version` wasn't incremented | Compare it against the published version number | Every release must bump `version` by 1 | `numable docs publish` |
 | The data changed but the widget is stuck on the old value | That widget's `refresh` interval hasn't elapsed | Pull to refresh once by hand | For write operations, refresh actively with `widget.refresh` | `numable docs xwidget` |
+| After a new release, a widget on the user's dashboard shows "Widget removed" | The new version deleted or renamed that `.xwidget`: the file name is the widget's identity | Compare `xWidget/` between the two versions | Never rename a widget file; to replace a widget, add a new file | `numable docs publish` |
 
 ### 2.11 Languages
 
@@ -247,7 +249,8 @@ What this group has in common: **if RCN source parsing fails, the whole widget d
 | Symptom | Most likely cause | How to confirm | Fix | Chapter |
 |---|---|---|---|---|
 | Refreshing too often, quota burned through | `interval` is tighter than the upstream rate limit allows | Look at `canvas.refresh` in the `.xwidget` and how many requests its `.df` makes | Keep "requests per refresh × refreshes per hour ≤ upstream quota"; use the window form for time-of-day, `"09:30-15:00@10"` | `numable docs xwidget` |
-| A home-screen widget's data is frozen at "the last time the App was opened" (HarmonyOS) | The HarmonyOS service widget process only reads the cover image — it doesn't render and doesn't go online | In the App | This is a platform capability difference, not a package problem; don't bet critical freshness on HarmonyOS home-screen widgets | `numable docs capabilities` |
+| You wrote `"60"` and it refreshes only every 5 minutes | For free users, periodic refresh is slowed to every 5 minutes; Pro users get what you wrote | Check whether the account is Pro | That is the membership tier, not a problem in the package; do not promise updates faster than every 5 minutes in your copy | `numable docs xwidget` |
+| A home-screen widget's data is frozen at "the last time the App was opened" (HarmonyOS) | The HarmonyOS service card process only reads the cover image — it doesn't render and doesn't go online | In the App | This is a platform capability difference, not a package problem; don't bet critical freshness on HarmonyOS home-screen widgets | `numable docs capabilities` |
 | Pull to refresh does nothing (on a cached page) | The root `depends` has a first-paint cache but no `events.onRefresh` | `check --profile publish` catches it (G23) | In `onRefresh`, `data.remove` the cache key first, then `xpage.reloadPage` | `numable docs page` |
 | The whole refresh path for a widget spins with no effect | The `.df` the widget consumes writes back to the cache with no switch | `check --profile publish` catches it (G23) | Gate the cache write-back on an input parameter `${_cache}`, off by default (the page passes `"_cache":1`, the `.xwidget` doesn't) | `numable docs df` |
 | Good data gets overwritten by empty data after a failed fetch | The widget's `.df` has no `action:"error"` exit, so failures are reported as success | `check` catches it (G26, both profiles) | Test the main fields for emptiness → `error`; "the collection is empty" counts as success | `numable docs df` |

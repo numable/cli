@@ -1,6 +1,6 @@
 # xpage —— 声明式页面(.xpage)
 
-> 读者:做信息源的用户,和替他干活的 AI。两者读同一份。
+> 读者:做工具的用户,和替他干活的 AI。两者读同一份。
 
 ## 它是什么
 
@@ -74,7 +74,9 @@
 | `root` | ✓ | 内容根,必须是一个 `container` |
 | `i18n` | | 页级词表 `{语言: {key: 文案}}`,给节点层的 `${@i18n.key}` 用 |
 
-外壳上**没有** `depends` / `events` / `layout` / `state` / `width`。页面级取数 = `root` 的 `depends`,页面级生命周期 = `root` 的 `events`,宽度恒由容器给,标题与呈现形态归 `router.json`。
+外壳上**没有** `depends` / `events` / `layout` / `state` / `width`。页面级取数 = `root` 的 `depends`,页面级生命周期 = `root` 的 `events`,宽度恒由容器给,呈现形态归 `router.json`。
+
+**页面标题**写在 `root` 上(可选):`"title": "${detail.name}"`。页面滚过头部之后,容器在胶囊那一行显示一个小标题,它就取这个值。按根节点能读到的一切求值(路由参数、`state`、`data`、根 `depends` 的输出),首屏、每次重渲、根取数回来时都会重算,所以数据一变标题就跟着变;求出来为空就回落路由 query 里的 `name` / `title`,再回落 `router.json` 的标题与包名(见 `numable docs page`)。不写也行,只是用户滚下去之后看到的是路由标题。
 
 节点只有两类:
 
@@ -93,7 +95,7 @@ Canvas 叶子除了 `canvas.source`,还可以自带 `canvas.depends`(只重取�
   "canvas": {
     "source": "@[file://page/rc/quote.rcn]",
     "depends": { "flow": "@[file://page/flow/quote.df]", "params": { "code": "${code}" } },
-    "refresh": { "interval": 300 }
+    "refresh": { "interval": ["300"] }
   }
 }
 ```

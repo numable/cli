@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/0-start/20-capabilities.md sha256:b7e4801e9e09 -->
+<!-- translated-from: zh-CN/0-start/20-capabilities.md sha256:b333474b2545 -->
 
 # capabilities — what you can build, what you cannot, and where the platforms differ
 
-> Audience: the person building a source, and the AI working on their behalf. Both read this same page.
+> Audience: the person building a tool, and the AI working on their behalf. Both read this same page.
 > Scan this chapter before you start. Anything marked "not supported" below is not a bug — that platform has no such path, so do not design around it. The platforms below are iPhone / iPad / Mac · Android · HarmonyOS · the Windows desktop app.
 > For how to build, see `numable docs workflow`.
 
@@ -22,6 +22,9 @@ The widget is the body of a package: one `.rcn` drawing plus one `.df` data flow
 | Animation | **not supported** | a widget is one static frame. There is roughly 250ms of no feedback between the tap and the page opening, so the first step of a click flow should be `ui.haptic` (`check` G22) |
 | A changed package refreshes the widget automatically | same everywhere | the App caches per package version: the moment `manifest.version` goes up by one, both the old rendered image and the old stored data expire. **So bump the version after every change** — skipping it means "I changed it and nothing happened", with no error |
 | A brief blank before the new content appears | same everywhere | that is the version-keyed cache working, not a bug: the new version has no cached image to paint, so it shows the skeleton and fetches for real. Do not reuse the old image to hide it |
+| What the App draws when there is no data | same everywhere | the fetch failed but there is data from last time: the App renders that data as is, with no marker (saying it is stale is your time anchor's job). The fetch failed and there is no data at all: the App renders your `.rcn` with **empty data** and lays a pill over the bottom — "Couldn't load · Retry", or "No connection" when offline. So the `.rcn` must render with empty data (the `numable render --states empty` image); do not draw your own error message on top of the empty state |
+| Missing credential, over the free allowance | same everywhere | a `required: true` credential the user has not bound: no fetch, and a "Credential needed" pill. When a free user has more than 6 widgets on their dashboards, the 7th onwards stops updating and shows a "Paused" pill. The App draws both; the package does not handle them |
+| A new version deletes or renames a `.xwidget` | same everywhere | a widget's file name is its identity. A widget on the user's dashboard that points at the old file name shows "Widget removed" and is cleared when the package updates. To replace a widget, add a new file; do not rename |
 
 ## Home-screen widgets
 
@@ -56,13 +59,13 @@ What this means for you:
 | Capability | Status | What it means for you |
 |---|---|---|
 | Declarative cadence `refresh` | same everywhere | `interval` accepts a time window `"09:30-16:10@60"` (no spinning after the close) and bare seconds `"3600"`; `at` pins specific times; `tz` sets the time zone |
-| Refresh floor | same everywhere | the lowest `interval` is 10 seconds (the dashboard checks every 10 seconds, so anything smaller still runs at 10). This is the cadence on the in-app dashboard; home-screen widgets have their own per-platform floor (iOS 15 minutes, Android 1 minute, HarmonyOS only shows the image the App last drew). How fast to go depends on what the upstream API's rate limit can take |
+| Refresh floor | same everywhere | the dashboard wakes when its earliest widget falls due, and two real fetches are at least 3 seconds apart — anything smaller still runs at 3. **For free users, periodic refresh is slowed to every 5 minutes**; Pro users get the cadence you wrote. Manual updates, the first load, a language switch, and `widget.refresh` are not affected. This is the cadence on the in-app dashboard; home-screen widgets have their own per-platform floor (iOS 15 minutes, Android 1 minute, HarmonyOS only shows the image the App last drew). How fast to go depends on what the upstream API's rate limit can take |
 | Pull to refresh | on iPhone / iPad · Android · HarmonyOS; **not on Mac** | Mac users update manually with a long-press, so do not write "pull to refresh" instructions into a page |
 | Long-press a widget → "update now", with success/failure feedback | same everywhere | the user has a reliable manual escape hatch; you do not need to draw your own refresh button on the widget |
 | "Last updated / last failure / how long it has been stalled" | same everywhere | the App already keeps this ledger; your job is to give **the widget its own time anchor** so the user can see at a glance how old the data is |
 | The `widget.refresh` primitive | same everywhere | refresh a widget from an action flow: `self` / `widget` / `bundle`, defaulting to `bundle`; it can only refresh widgets from its own package, and a repeat call within 5 seconds returns success without doing anything |
 | Reminders whose time and wording are fixed when they are set | on iPhone / iPad · Mac · Android they are handed to the system clock and fire even with the App closed; **HarmonyOS first needs the agent-reminder entitlement** and degrades to "replayed when the App is opened" until it is granted; the Windows build needs its process resident and stays silent after a quit | whenever a reminder can be phrased as "say this sentence at this time", write it this way — it is the most reliable of the four platforms |
-| Reminders that fetch and test a condition first, and background jobs | both are **best effort**: the chances to run are opening the App, a home-screen widget refresh, and whatever background slices the system grants; on Android, once the user turns on Live monitoring (a notification that stays in the status bar) it checks right on time; HarmonyOS leans on the home-screen widget tick and the Windows build on a resident timer | write the cadence as `interval`, **floor 30 minutes** (anything smaller is raised to 30); never promise "on time every day" or "real time" in your copy — say "at most once a day, caught up when there is a chance". See `numable docs alerts` |
+| Reminders that fetch and test a condition first, and background jobs | both are **best effort**: the chances to run are opening the App, a home-screen widget refresh, and whatever background slices the system grants; on Android, once the user turns on Live monitoring (a notification that stays in the status bar) it checks right on time; HarmonyOS leans on the home-screen widget tick and the Windows build on a resident timer | write the cadence as `interval`, **floor 30 minutes for free users** (anything smaller is raised to 30), Pro users get the cadence you wrote; never promise "on time every day" or "real time" in your copy — say "at most once a day, caught up when there is a chance". See `numable docs alerts` |
 
 ## Pages
 
@@ -72,7 +75,7 @@ A page is what opens when the widget is tapped. Pages live under `page/` and are
 |---|---|---|
 | `html` (a web page shipped in the package) | same everywhere | HTML/CSS/JS gives you the most freedom, but **`fetch` / `XHR` inside the page are sealed off** by the container (`connect-src 'none'` is injected); all fetching goes through the bridge into a `.df`, see `numable docs bridge` |
 | `xpage` (page-level RCN, no web page) | same everywhere | fastest to render and the same DSL as the widget; the only leaves are `Canvas` and `input`, and containers support `list` / `grid` / `flex` / `waterfall` and other layouts |
-| `form` (a `.xform` form page) | same everywhere | the standard way to collect user input, with 14 field components; stop looking for `inputForm`, it has been removed |
+| `form` (a `.xform` form page) | same everywhere | the standard way to collect user input, with 14 field components |
 | External links (http(s) pages outside the package) | **differs**: iPhone / iPad · Android · HarmonyOS open a single-page shell inside the container with the domain and a lock icon; **Mac and the Windows app hand it to the system browser** | do not design navigation as if a third-party site were part of your package — the user may be looking at it in another browser |
 
 Constraints shared by all pages:
@@ -149,10 +152,11 @@ Common primitives:
 | `request` (HTTP + parsing) | same everywhere | supports `queryParams` / `header` / `body` / `formData` / `timeout`; `formatType` defaults to `string`, so write `"json"` explicitly when you want JSON |
 | The domain allowlist `manifest.network` | same everywhere, and `run` applies the same test | the set must be **exactly equal** to the hosts the `.df` actually requests (`check` G3). This list is shown to the user at install time |
 | Per-hop redirect guard | same everywhere | a request that leaves the allowlist mid-flight is refused. When you use a short link or an endpoint that 302s to a CDN, declare the host it lands on too |
-| A server-side proxy | **not supported** | data goes straight from the user's device to the source. A source that is blocked in a region cannot be reached there, and sites that need a logged-in cookie cannot be used |
+| A server-side proxy | **not supported** | data goes straight from the user's device to the source. A source that is blocked in mainland China cannot be reached there, and sites that need a logged-in cookie cannot be used |
+| Picking a source by region `${@app.region}` | same everywhere (`.df` / `.af`) | the value is `cn` (mainland China) / `overseas` / an empty string (unknown). If you have a fallback source that is blocked in mainland China, skip it under `cn` rather than making the user wait out a timeout first |
 | `htmlParse` / `xmlParse` | the parser differs per platform | do not rely on `xmlParse`; for XML use `formatType:"string"` to get the raw text and cut it with `split::` |
 | `data.get / set / remove / has / merge / keys / getAll / clear` | same everywhere | package-local persistence across launches; the namespace is always your own package. **There is no `scope` parameter** — writing one is silently ignored |
-| First-paint cache (render from cache, then check for new data in the background) | same everywhere | a `.df` consumed by a page should be cached, or every entry into the page burns a network round trip first (the publish profile's `check` G23 reminds you). **A widget's `.df` is not cached by default** — a cached widget means refreshing does nothing |
+| First-paint cache (render from cache, then check for new data in the background) | same everywhere | a `.df` consumed by a page should be cached, or every entry into the page burns a network round trip first (the publish profile's `check` G23 reminds you). **A widget's `.df` is not cached by default** — a cached widget means refreshing does nothing. For a source that needs a credential, fold the `fp` returned by `credential.state` into the cache key, so the old cache lapses on its own when the user rebinds |
 | An exit for a failed fetch | `check` G26 | any widget `.df` with a request must have an `action:"error"` exit, or a failure reports success and empty data overwrites good data |
 | The expression method set | same everywhere, but smaller than you expect | there is no `abs` / `avg` / `filter` / `groupBy` / `push`, and **an unknown method silently evaluates to empty** without an error. Full table in `numable docs methods` |
 
@@ -219,14 +223,13 @@ Details in `numable docs i18n`.
 | What is backed up: locally authored packages, downloaded packages, everything in `data.*`, the dashboard layout and instance parameters, App settings | user data you stored with `data.*` (check-in history, a watchlist) travels with it |
 | What is not: login tokens, credentials, remembered external-App permissions, caches, home-screen widget system bindings | after a restore the user has to place widgets on the home screen again; never design as if "granted once" were permanent |
 | When the same package already exists, the default is not to overwrite | a restore will not roll back a newer version the user already has |
+| With multi-device sync on, `data.*` merges between devices **by top-level key**; when both sides changed the same key, the later write wins | Records the user enters by hand and cannot recreate (check-ins, doses, weight): one record per key (`log.2026-09-23`, `dose.<timestamp>`), so when two devices each log an entry both survive; put them all under one key and one of the two entries is lost. Values a background task logs by date can share one key (`data.merge`, one slot per day): both devices write the same data for the same day, and at worst a device that rarely syncs leaves a one-day gap |
 
 ## Planned, not available today
 
-The following are being designed and **writing them into a package today has no effect**. Do not promise them to users and do not design a workflow around them.
+The following are being designed and **writing them into a package has no effect yet**. Do not promise them to users and do not design a workflow around them.
 
 | Capability | What you can do instead today |
 |---|---|
-| A credential vault, letting users enter their own secret in the App and bind it to a package | personal use only: keep the secret in the local fixture `.numable/params/_credentials.json` and ship only the `manifest.credentials` declaration. See `numable docs credentials` |
 | Genuine background refresh for HarmonyOS home-screen widgets | write your copy around "it updates when the main App is opened" |
-| A first-paint cache for private data (with an identity fingerprint) | do not use a package-level cache for sources that need a login |
 | `.xmenu` as a writable menu file inside the package | write the menu as an inline `menu` array on the node |

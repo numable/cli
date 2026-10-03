@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/2-reference/65-bridge.md sha256:dad5d7e853d8 -->
+<!-- translated-from: zh-CN/2-reference/65-bridge.md sha256:272cfb0d924c -->
 
 # bridge — the JS bridge contract for H5 pages
 
-> Audience: people building a source (an XBundle package), and the AI working on their behalf. Both read the same document.
+> Audience: people building a tool (an XBundle package), and the AI working on their behalf. Both read the same document.
 
 ## What it is
 
@@ -180,6 +180,7 @@ body { padding: calc(var(--xb-content-top) + 16px) 16px calc(var(--xb-content-bo
 | `--xb-content-bottom` | The height to leave free at the bottom |
 | `--xb-safe-bottom` | The bare system safe area at the bottom |
 | `--xb-safe-top` | The bare system safe area at the top. **Only present on phones, not on desktop** — never make it your only source of inset |
+| `--xb-bar-bottom` | The bottom edge of the small title bar that appears after scrolling (safe area + 44). Write sticky toolbars as `position: sticky; top: var(--xb-bar-bottom)` so they sit under the bar; `top: 0` slides them underneath it |
 
 **Theme and language**: the container sets `data-theme` (`light` / `dark`) and `data-lang` (a language code) on `documentElement`, and on a switch it **changes the attribute and dispatches an event without reloading the page**:
 

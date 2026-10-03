@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/1-guides/60-alerts.md sha256:66376831196b -->
+<!-- translated-from: zh-CN/1-guides/60-alerts.md sha256:9387c57a4d33 -->
 
 # alerts — reminders and background jobs
 
-> Audience: the person building a source, and the AI working on their behalf. Both read this same page.
+> Audience: the person building a tool, and the AI working on their behalf. Both read this same page.
 
 ## Goal
 
@@ -81,14 +81,16 @@ numable init --job price --kind cross
 |---|---|---|
 | `static` | `xJob/<id>.xjob` | Fires at a time, fetches nothing |
 | `once` | `xJob/<id>.xjob` | Fires once at a date and time the user picks (see "Reminders that fire once" below) |
-| `cross` | `.xjob` + `xJob/flow/<id>.df` | Fires once when the value crosses the line you set |
+| `cross` | `xJob/<id>.xjob` | Fires once when the value crosses the line you set (decided by a built-in recipe, see Step 4) |
 | `level` | `xJob/<id>.xjob` | Fires every so often while the condition holds |
-| `changed` | `.xjob` + `xJob/flow/<id>.df` | Fires when the value is no longer what it was |
+| `changed` | `xJob/<id>.xjob` | Fires when the value is no longer what it was (decided by a built-in recipe, see Step 4) |
 | `task` | `.xjob` + `xJob/flow/<id>.df` | No notification; the result goes into `data.*` |
 
 **What success looks like**: it lists the files it wrote plus three follow-ups. If a target file already exists it writes nothing and stops — it will never overwrite your edits. The plain fields use the package's `lang`; `--lang` overrides it on the spot.
 
-One thing to do right after generating: point `task.depends` at a data flow this package really has. `init --job` raises `manifest.minEngine` to the engine version this kind of reminder needs by itself (3 for a one-time reminder, 2 for the rest; left alone if already high enough) and prints what it changed. If you later lower it by hand, `check` reports G45 — too low and the symptom is: on an older app the reminder simply never fires, and nothing is reported.
+One thing to do right after generating: point `task.depends` at a data flow this package really has. `init --job` raises `manifest.minEngine` to the engine version this kind of reminder needs by itself (4 for threshold-cross and value-change, 3 for a one-time reminder, 2 for the rest; left alone if already high enough) and prints what it changed. If you later lower it by hand, `check` reports G45 — too low and the symptom is: on an older app the reminder simply never fires, and nothing is reported.
+
+**You can also do this in the desktop App's Workbench** (Mac / Windows): open the package, and the "Alerts & jobs" group in the tree on the left holds the files under `xJob/`; "New reminder / task…" creates the same skeleton as `init --job` from the same templates and raises `minEngine` too. The editor splits the `.xjob` into a form you fill in section by section (the decision can be one of the Threshold cross / Above threshold / Value change recipes), and next to it previews, live, the **consent panel**, the **notification** and the **upcoming** fire times the user will see; **Test run** really fetches and decides once and feeds the result into the previews. It edits the same `.xjob` file, so you can switch between the CLI and the editor freely.
 
 ---
 
@@ -116,7 +118,7 @@ For threshold parameters **default to empty, never to a "sensible number"**: the
 | Field | Static | Dynamic | Job | One caution |
 |---|---|---|---|---|
 | `depends` | **banned** | **yes** | **yes** | An array of fetch slots, word for word the same contract as a widget's `canvas.depends`, and it only takes `.df`. Writing it makes the reminder no longer static |
-| `then` | **banned** | no | **yes** | One `{flow, params}` binding that runs after `depends` has merged. State may only be written in this step |
+| `then` | **banned** | no | **yes** | Either a built-in decision recipe `{recipe, …}` (reminders only, see Step 4) or one `{flow, params}` binding (runs after `depends` has merged; state may only be written in this step) |
 | `refresh` | **yes** | **yes** | **yes** | See below. Without it the rule is never evaluated (G45) |
 
 ### `alert`: what to send afterwards
@@ -179,6 +181,35 @@ If the thing gets done early (the to-do is ticked off, or its time changes), wit
 
 ## Step 4 · The `then` step: state and edges
 
+### Start with a built-in decision recipe
+
+The two most common decisions — "fire on the way through the line" and "fire when it's no longer what it was" — **need no decision flow**. Write a built-in recipe in `then` and the app evaluates it:
+
+```json
+"then": { "recipe": "cross", "value": "${px}", "line": "${price}", "dir": "${dir}" }
+```
+
+```json
+"then": { "recipe": "changed", "keys": ["${ver}", "${state}"] }
+```
+
+| Recipe | Fields | Fires when |
+|---|---|---|
+| `cross` threshold cross | `value` the number · `line` the line · `dir` direction (`below` by default / `above`) | Last time it was on one side of the line and this time it is on the other (below: last ≥ line and now < line) |
+| `changed` value change | `keys`: 1–4 values | Any value differs from last time |
+
+- Each field is either a whole-string `${key}` (that key from the instance parameters and the fetched output) or a literal. **Expressions are not supported.**
+- **The previous value is kept by the app separately for each reminder** — the copy watching 5000 and the one watching 4500 each keep their own, so there is no state key to build.
+- The first run only records a baseline and does not fire; a run with no value (offline, empty field) neither compares nor records, so the baseline is never lost.
+- Two options: `"oncePerDay": true` fires at most once a day (in `refresh.tz`, the device time zone by default); `"fireOnFirst": true` fires on the first run if the condition already holds.
+- A recipe puts `hit` (0 / 1) and `prev` (the previous value) into scope, so a notification can say `changed from ${prev} to ${px}`. If you also write `activeCondition`, both the recipe and the condition must hold.
+- It needs `manifest.minEngine ≥ 4` (`init --job` and the editor raise it for you; older apps don't know recipes — the package installs but never fires). Recipes are for reminders only — a background task writes its results to `data.*`, so it still uses the decision flow below.
+- "Remind me while a condition holds, again after a while" needs no recipe: write `alert.activeCondition` (e.g. `$[ge::(${chg},${pct})]`) plus `refresh.cooldown`.
+
+Only when the decision is more involved (a combination of several fields, counting how many new items arrived, reporting again on recovery) do you write your own decision flow, below.
+
+### Writing your own decision flow
+
 A rule like "fire on the way through the line" has to remember the previous value. Where you remember it is the easiest thing in this chapter to get wrong:
 
 **Not in the fetch step.** `depends` points at a flow the widgets are using too, and every widget render overwrites the previous value, so the reminder never sees the crossing. Hence the two steps: `depends` only fetches (whatever `data.*` caching it already does is fine and unrestricted), and `then` is where state is written.
@@ -191,15 +222,15 @@ A rule like "fire on the way through the line" has to remember the previous valu
 }
 ```
 
-### The state key must carry the parameters
+#### The state key must carry the parameters
 
 The `${dir}.${price}` in that key is not a naming habit, it is correctness:
 
 One rule can have several copies (watching 5000 and watching 4500 are two of them; different instruments are several more), and they run their `then` **one after another** in the same pass. Share one key and the first copy writes, the second reads a "previous value" that already equals this value, and nobody ever sees a crossing; copies for different objects would read another object's price as their baseline. **Put every one of the rule's `params` into the key**, in both `data.get` and `data.set`.
 
-The `--kind cross` template already builds the key that way. There is no lint for this — a static check cannot tell, so it is on you.
+Built-in recipes don't need this (the app keeps a separate value per reminder). When you write your own decision flow there is no lint for this — a static check cannot tell, so it is on you.
 
-### Guard against empty values
+#### Guard against empty values
 
 On a failed fetch the value is empty. Start with a flag for "did this pass actually get a value":
 
@@ -337,7 +368,7 @@ Write this honestly into your own copy, and never promise "on time":
 - **Static reminders** go to the system scheduler and fire with the app closed; on HarmonyOS the platform has to allow it first, and without that they fall back to the path below; on Windows the app has to be running.
 - **Dynamic reminders and background jobs** have to fetch before they know whether to fire, so they ride whatever opportunities the system grants: opening the app always triggers one check; keeping a home-screen widget noticeably raises the rate; on Android they check at the interval you set, delayed by battery saver, and only once the user turns on Live monitoring under Device status (which keeps a notification in the status bar) do they check right on time; on Mac / Windows they check at your interval while the app is open.
 - The one thing you can honestly promise is "**it checks when you open the app, or while a home-screen widget is on your home screen**". Not a word about "every 5 minutes, guaranteed" or "every day on the dot".
-- On the free tier the minimum interval is clamped to half an hour; that is a tier, not a capability, and your wording should say so.
+- For free users the minimum interval is clamped to half an hour, while Pro users are checked at the cadence you wrote; that is a membership tier, not a capability, so do not promise checks more often than every half hour in your wording.
 - The limits are enforced by the platform and a package cannot change them: at most 20 reminder copies per package, at most 30 notifications a day, of which at most 5 may be `urgent`. Anything beyond that is dropped and shown on the management page.
 
 A widget can declare `jobs`, which lets the user long-press it to add one of this package's reminders (parameters are pre-filled from the widget's own, and stay editable) — what it references is the `xJob/<id>` here, and a wrong id is an error (G46).
@@ -347,7 +378,7 @@ A widget can declare `jobs`, which lets the user long-press it to add one of thi
 The install / update sheet states plainly what the package brings. Users read this, so write your `title` in words they understand:
 
 - The package has reminders → one line, "Can send reminders", noting that each one only takes effect once the user adds it. Rule names are not listed (installing does not make anything fire).
-- The package has background jobs → one line, "This source updates in the background", followed by each job's `title` and rhythm, e.g. "Log daily gold price (Every day 23:55)". **Background jobs have no consent sheet — installing is consent**, which is why users can switch them off per package under Me › Background tasks.
+- The package has background jobs → one line, "This tool updates in the background", followed by each job's `title` and rhythm, e.g. "Log daily gold price (Every day 23:55)". **Background jobs have no consent sheet — installing is consent**, which is why users can switch them off per package under Me › Background tasks.
 
 Once switched off, the job stops running and whatever its `then` wrote to `data.*` stays frozen at that moment. Widgets and pages that read it must cope with "never updated again": show when the value was recorded, and don't present old data as today's.
 
@@ -359,6 +390,7 @@ Once switched off, the job stops running and whatever its `then` wrote to `data.
 |---|---|---|
 | `check` says the package uses `xJob/` but `minEngine` is below the engine major these features require | Reminders and background jobs need an app on engine major 2 or later (G45) | Raise `manifest.minEngine` to the version it names (2) |
 | `check` says the package uses task.refresh.at="YYYY-MM-DD HH:MM" / alert.remove … below engine major 3 | One-time reminders and withdrawing reminders need an app on engine major 3 or later (G45) | Raise `manifest.minEngine` to 3 |
+| `check` says the package uses … (a runtime decision recipe) but manifest.minEngine=… is below engine major 4 | A decision recipe `task.then.recipe` needs an app on engine major 4 or later (G45); set too low, older apps install it and it never fires | Raise `manifest.minEngine` to 4 |
 | A fire-once reminder never fires | The date is invalid (not zero-padded, February 30) or `date` was left empty, so the entry is void | Look for G45 in `numable check`; make the date required on the sheet |
 | The to-do was done long ago, yet the reminder still fires | The alert carries no business key, so removal cannot match it; or the "done" path never calls `alert.remove` | Put a hidden business id in `params` when creating it, and call `alert.remove` on every path that closes the item |
 | The reminder has never fired | The decision gets no value: the `depends` flow's `resultFilter.keys` does not expose the key you judge | Run `numable run <bundle>` to see which keys that flow really exposes, and add the missing one to `keys` |

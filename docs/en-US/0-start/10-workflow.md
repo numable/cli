@@ -1,13 +1,13 @@
-<!-- translated-from: zh-CN/0-start/10-workflow.md sha256:83d1f637859a -->
+<!-- translated-from: zh-CN/0-start/10-workflow.md sha256:feea75ddc2d9 -->
 
 # workflow — the authoring sequence and the rules you cannot break
 
-> Audience: the person building a source, and the AI working on their behalf. Both read this same page.
-> Read this chapter first — it defines the order in which a source gets built and the lines you must not cross. For what is possible at all, see `numable docs capabilities`; for individual file formats, see the layout / xwidget / df / rcn chapters.
+> Audience: the person building a tool, and the AI working on their behalf. Both read this same page.
+> Read this chapter first — it defines the order in which a tool gets built and the lines you must not cross. For what is possible at all, see `numable docs capabilities`; for individual file formats, see the layout / xwidget / df / rcn chapters.
 
-## What a source is
+## What a tool is
 
-A source (an XBundle package) is **a folder**. Everything in it is plain JSON / HTML — no build output, no compile step. The App treats the workspace folder as its root: write the files and the package shows up in the App; change one character and a re-render picks it up.
+A tool (an XBundle package) is **a folder**. Everything in it is plain JSON / HTML — no build output, no compile step. The App treats the workspace folder as its root: write the files and the package shows up in the App; change one character and a re-render picks it up.
 
 The smallest package looks like this (the starter produced by `numable init`):
 
@@ -30,7 +30,7 @@ Four kinds of files, one job each, and **they do not overlap**:
 |---|---|---|
 | `manifest.json` | package identity, store front, network allowlist, credential declarations, base language | no business data at all |
 | `.xwidget` | ties drawing + data + size + refresh + click together, and gives the default instance parameters | no drawing, no data logic |
-| `.df` | fetching and processing: request, parse, derive, then emit a set of keys through `resultFilter` | never touches UI, never reads language or theme |
+| `.df` | fetching and processing: request, parse, derive, then emit a set of keys through `resultFilter` | never touches UI, never reads the theme (it may read `${@app.language}` and carry its own `i18n` table, see `numable docs i18n`) |
 | `.rcn` | drawing: renders one widget from the keys the `.df` emitted | never makes requests, never does heavy computation |
 
 Two more kinds are optional: detail pages under `page/` (html / xpage / form page types, see `numable docs page`), and `.af` action flows (clicks, parameter write back, refresh, see `numable docs af`).
@@ -46,7 +46,7 @@ numable init my-source
 numable init my-source --from ../an-existing-package
 ```
 
-Clone from the template or from a package you already have; never hand-build a folder. The tool generates the identity `id` (a 26-character ULID) and writes it into `manifest.id` / `manifest.domain`, and the folder layout and file extensions come out correct. `✓ 新包 …  id=…` means it worked.
+Clone from the template or from a package you already have; never hand-build a folder. The CLI generates the identity `id` (a 26-character ULID) and writes it into `manifest.id` / `manifest.domain`, and the folder layout and file extensions come out correct. `✓ 新包 …  id=…` means it worked.
 
 ### 2. Data first, widget second
 
@@ -108,12 +108,13 @@ These are the commands the seven steps use, plus a few switches you will not rea
 | Command | What it does |
 |---|---|
 | `numable workspace init [dir]` | turns a folder into an authoring workspace: writes a guide for the AI to read, after which you can simply state what you want to the AI from inside that folder |
-| `numable init <dir> [--from <package>]` | creates a new package (regenerating the identity ULID) |
+| `numable init <dir> [--from <package dir>\|installed:<id>]` | creates a new package (regenerating the identity ULID). `--from` takes any local package folder, or a package installed in the desktop App (`installed:<id>`, Mac / Windows) |
+| `numable init --job <id> --kind static\|once\|cross\|level\|changed\|task` | adds an alert / background job to the package in the current folder and raises `manifest.minEngine` if needed, see `numable docs alerts` |
 | `numable check [package…] [--profile personal\|publish]` | the static gate |
-| `numable run [package…] [--flow a,b] [--full] [--fixtures <dir>]` | really runs the data layer |
+| `numable run [package…] [--flow a,b] [--file x.df] [--full] [--fixtures <dir>]` | really runs the data layer. `--file` runs any single `.df`, including a probe flow no widget is bound to |
 | `numable render [package…] [--widget a,b] [--states light,dark,empty] [--locales zh-CN,en-US]` | renders images |
 | `numable render [package…] --page [/route,…] [--locales zh-CN,en-US]` | renders pages (html / xpage, light + dark full-page screenshots) |
-| `numable docs [topic]` | reads this documentation |
+| `numable docs [topic] [--toc] [--section word] [--search word]` | reads this documentation. For a long chapter, `--toc` shows the outline, `--section` reads one part, `--search` searches every chapter |
 | `numable doctor [package…]` | checks the environment, engine version and workspace |
 
 Three global switches and three environment variables:
@@ -141,7 +142,7 @@ Break any of these and the package is not finished. The "How it is caught" colum
 
 | Rule | How it is caught | Symptom when broken | Fix |
 |---|---|---|---|
-| **Source files are the single source of truth**: no generator scripts, no fixtures left behind | `check` G1b / G1 | fixtures ship with the package, or the folder layout is the old style | put fixtures in `.numable/params/`; RCN under `rc/`, flows under `flow/` |
+| **Source files are the single source of truth**: no generator scripts, no fixtures left behind | `check` G1b / G1 | fixtures ship with the package, or files sit where nothing loads them (written but never takes effect) | put fixtures in `.numable/params/`; RCN under `rc/`, flows under `flow/` |
 | **The allowlist must match exactly**: the set of hosts requested by the `.df` == `manifest.network`, no more and no less | `check` G3 | too few: silently blocked on device, the widget is stuck at `--`; too many: the install panel lists domains you never use and alarms the user | align with the allowlist that `run` prints |
 | **Secrets never ship**: not in `params`, not as a `.df` literal, not in `data.*` | `check` G18 | a plaintext secret is distributed to everyone with the package | declare `manifest.credentials` and use the local fixture `.numable/params/_credentials.json`, see `numable docs credentials` |
 | **Never invent data**: if the fetch fails, let the flow fail — do not paper over it with 0, an empty string, or a fake timestamp | `check` G26 | the flow reports success on a failed fetch, empty data overwrites the last good data, and a plausible-looking fake number appears on the widget | test the load-bearing fields for emptiness → `action:"error"`; "the collection is empty" is a success, not a failure |
@@ -149,7 +150,7 @@ Break any of these and the package is not finished. The "How it is caught" colum
 | **light\|dark color pairs**: every hex color field in the `.rcn` is written `light\|dark` | `check` G7 | whole blocks invisible in dark mode, or white text on white | `"textColor": "#1A1A1A\|#FFFFFF"` |
 | **Write units as `pt`** | `check` G28 (doubled unit suffix) + visual inspection of the `render` output | `px`: content shrinks into the top-left corner and type is too small; `14.0ptpt`: the whole widget fails to render and nothing reports an error | use `pt` for all geometry and font sizes |
 | **Copy goes through i18n**: user-visible text is written `${@i18n.key}` | `check` G8 / G8b (publish profile) | half the widget is in Chinese in an English environment | put the text table in each asset's own `i18n`, see `numable docs i18n` |
-| **Test emptiness with an explicit flag**: `gt::(length::(${x}),0)` or a sentinel — never `eq::(x,)` / `eq::(x,0)` | the `run` layer (point the URL at a 404 and run again) | the empty state renders self-contradictory output like a colored `▼ --%` | set a `hasX` flag in the `.df` and have the `.rcn` test only the flag |
+| **Test emptiness with an explicit flag**: the sentinel form `$[if::(eq::(findNotEmpty::(${x},__none__),__none__),0,1)]` — never `eq::(x,)` / `eq::(x,0)`, and never `length::` (it always returns 0 for a number) | the `run` layer (point the URL at a 404 and run again) | the empty state renders self-contradictory output like a colored `▼ --%` | set a `hasX` flag in the `.df` and have the `.rcn` test only the flag |
 
 ## Personal use vs publishing
 
@@ -177,6 +178,7 @@ A package for personal use does not have to satisfy the publishing requirements 
 | Add clicks, parameter editing, forms | `numable docs add-interaction` |
 | Connect a source that needs a secret | `numable docs credentials` |
 | Ship in both Chinese and English | `numable docs localize` |
+| Add an alert or a background job | `numable docs alerts` |
 | Go from personal use to the store | `numable docs publish` |
 | Look up how to write a given file | `numable docs layout` · `xwidget` · `df` · `rcn` · `af` · `page` · `bridge` · `i18n` · `params` |
 | Build a declarative page (eight layouts, conditional visibility, input fields, infinite scroll) | `numable docs xpage` |

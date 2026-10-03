@@ -9,7 +9,7 @@
 | Code | What it guards | Profile | Chapter |
 |---|---|---|---|
 | G0 | Package structure and JSON syntax | personal too | `numable docs layout` |
-| G1 | No leftover legacy formats or test fixtures | personal too | `numable docs layout` |
+| G1 | No files that are never loaded, no test fixtures | personal too | `numable docs layout` |
 | G2 | Required manifest fields and identity | personal too | `numable docs layout` |
 | G3 | The network allowlist must match exactly | personal too | `numable docs layout` |
 | G4 | Cross-platform-safe idioms in a data flow | personal too | `numable docs df` |
@@ -34,7 +34,7 @@
 | G26 | A failed fetch must fail the flow | personal too | `numable docs df` |
 | G27 | One layout for the add-widget button | publish only | `numable docs page` |
 | G28 | Expression typos and the render scope | personal too | `numable docs rcn` |
-| G29 | Do not use the legacy click string | personal too | `numable docs rcn` |
+| G29 | Do not write a tap as a click string | personal too | `numable docs rcn` |
 | G30 | Renderable glyphs and the condition key | personal too | `numable docs df` |
 | G31 | Method names must be in the VParser inventory | personal too | `numable docs df` |
 | G32 | No $[method] inside size fields | personal too | `numable docs rcn` |
@@ -50,13 +50,17 @@
 | G42 | Bridge methods must actually exist | personal too | `numable docs bridge` |
 | G43 | banner.xbanner must use the v2 canvas shape | personal too | `numable docs layout` |
 | G44 | A .df should end with a resultFilter that limits its output | personal too | `numable docs df` |
-| G45 | A .xjob must be one of the three shapes | personal too | `numable docs xwidget` |
+| G45 | A .xjob must be one of the three shapes | personal too | `numable docs alerts` |
 | G46 | A widget's jobs declaration must resolve and map cleanly | personal too | `numable docs xwidget` |
 | G47 | A .xjob's i18n has four slots, and translations must keep every variable | personal too | `numable docs i18n` |
 | G48 | File references must point at files that exist in the package | personal too | `numable docs layout` |
 | G49 | A call-type bridge method returns an envelope | personal too | `numable docs bridge` |
 | G50 | Numeric inputs: no type="number", and normalize full-width characters | personal too | `numable docs page` |
 | G51 | Tabular data needs minEngine 3 | personal too | `numable docs df` |
+| G52 | request / sleep parameters must be strings | personal too | `numable docs df` |
+| G53 | No Chinese text in .xwidget default params | personal too | `numable docs xwidget` |
+| G54 | Check for Chinese, not for English | personal too | `numable docs i18n` |
+| G55 | Sticky elements in H5 pages sit under the collapsed title bar | personal too | `numable docs page` |
 
 ## G0 Package structure and JSON syntax
 
@@ -65,13 +69,13 @@
 |  | The package root must contain a manifest.json that parses | E | manifest.json is missing or fails to parse; the package will not install on a device | Generate the skeleton with numable init, or put manifest.json back |
 |  | Every .json .rcn .df .af .xwidget .xbanner .xpage .xform .xmenu must be valid JSON | E | The whole widget renders nothing on the device, with a clean log and no error at all | Fix the syntax error (usually a trailing comma, a comment, or single quotes) |
 
-## G1 No leftover legacy formats or test fixtures
+## G1 No files that are never loaded, no test fixtures
 
 | Item | What is checked | Level | Symptom | Fix |
 |---|---|---|---|---|
-|  | No page.json, no legacy folders xWidget/template/ and **/actionFlow/, no legacy suffix .flow.json | E | A deleted format, a legacy folder layout, or a legacy suffix is still present | Put RCN in rc/, flows in flow/, and use the suffixes .af (action flow) / .df (data flow) |
+|  | No page.json, no xWidget/template/ or **/actionFlow/ folders, no .flow.json suffix | E | These files and folders are never loaded, so what you wrote looks like it had no effect | Put RCN in rc/, flows in flow/, and use the suffixes .af (action flow) / .df (data flow) |
 | G1b | The package must not contain test fixtures (*.params.json, fixtures/ folders) | E | Fixtures get sealed into the signed package — neither their size nor their content should ship | Move fixtures to .numable/params/, which never goes into the package |
-| G1c | An .xpage node must not set the removed loading / error fields | W | It has no effect: the app never reads these fields; loading and error states are always rendered by the app | Delete both fields |
+| G1c | An .xpage node must not set loading / error fields | W | It has no effect: the app never reads these fields; loading and error states are always rendered by the app | Delete both fields |
 
 ## G2 Required manifest fields and identity
 
@@ -267,11 +271,11 @@ This group hangs off the store front-of-house section and does not run in the pe
 |  | A $[...] must not nest another $[ inside it | E | The whole widget fails to render | Write the inner call as a bare method name, such as if::(...) |
 |  | A ${x} in a .rcn must come from the output of this widget's depends .df (a key of resultFilter); shell parameters are not in the render scope | E | That spot renders empty, or always takes the fallback value | Pass the parameter into the .df through depends.params, land it in the flow, expose it through resultFilter, and only then read it on the widget |
 
-## G29 Do not use the legacy click string
+## G29 Do not write a tap as a click string
 
 | Item | What is checked | Level | Symptom | Fix |
 |---|---|---|---|---|
-|  | A legacy click string in a .rcn must not contain @[file:// | E | The tap behavior is out of your control | Use events.* bindings instead |
+|  | A click string in a .rcn must not contain @[file:// | E | The tap behavior is out of your control | Use events.* bindings instead |
 
 ## G30 Renderable glyphs and the condition key
 
@@ -365,7 +369,7 @@ A package can only ask about credentials it declared, so "declared but never act
 
 | Item | What is checked | Level | Symptom | Fix |
 |---|---|---|---|---|
-|  | `banner.xbanner` must be { version:2, canvas:{source,depends[,refresh]} } with no top-level `rcn` / `flow` | E | The App reads only `canvas`; a banner in the old shape is treated as missing and replaced by the default template, with no error and a clean log | Move `rcn.rc` into `canvas.source` and turn fetching into `canvas.depends` pointing at a `.df`; see `numable docs layout` |
+|  | `banner.xbanner` must be { version:2, canvas:{source,depends[,refresh]} } with no top-level `rcn` / `flow` | E | The App reads only `canvas`; a banner with a top-level `rcn` / `flow` is treated as missing and replaced by the default template, with no error and a clean log | Move `rcn.rc` into `canvas.source` and turn fetching into `canvas.depends` pointing at a `.df`; see `numable docs layout` |
 |  | `canvas.source` is an `@[file://…rcn]` reference or an inline {cells,…} object; `canvas.depends` is an array | E | The whole banner does not show, or the fetch flow never runs | Write references as package-root paths (`xWidget/rc/…`); write `depends` the same way as in a `.xwidget` |
 
 ## G44 A .df should end with a resultFilter that limits its output
@@ -395,8 +399,9 @@ A `.xjob` has no `type` field; its shape comes from the combination: `alert` wit
 | G45.message-scope | In an alert without `depends`, `alert.message` may only reference `params` and `@app` | E | Those are the only two things that exist when the alert is armed; any other key renders empty — and by then the notification has already gone out | Only use `params` the user has filled in; if you need data, make it a dynamic alert by adding `task.depends` |
 | G45.days / G45.at-param | `refresh.days` and a `${param}` inside `refresh.at` / `refresh.interval` belong only to a static alert with no `depends`; a `.xwidget`'s `canvas.refresh` does not accept `days` either (`cooldown` there is merely inert) | E | A dynamic job's evaluation cadence is the host's business; filtering by weekday or using a parameter as the time only means something for a system timer, so neither takes effect | To fire on selected weekdays or at a time the user picked, make it a static alert (no `depends`) |
 | G45.once | A dated `at` entry (`YYYY-MM-DD HH:MM`, fires once) belongs only to a static alert with no `depends`; the same `at` may not mix it with daily `HH:MM` entries, and it may not be combined with `interval` or `days`; a literal date without `${}` must be valid (one ASCII space, 24-hour clock, zero-padded, a date that actually exists). An entry counts as dated when, after trimming, it contains whitespace in the middle; a bare `${when}` cannot be told apart and is not checked | E | None of these fail at runtime: the dated entry is still scheduled, a daily entry still fires every day, `days` is ignored — and the author never gets what they meant; a hard-coded February 30 can never be scheduled, so the alert never fires | Give the fire-once alert a rule of its own: `"at": ["${date} ${time}"]`, with `date` as a `datePicker` (`format: "YYYY-MM-DD"`) and `time` as a `timePicker` in `form`; write a separate rule for anything that repeats daily |
+| G45.recipe | `task.then` is either a decision flow `{flow, params}` or a runtime decision recipe `{recipe, …}`: only `cross` (threshold cross: `value` + `line`, `dir` defaults to below) and `changed` (value change: 1–4 `keys`) exist; each field is a whole-string `${key}` or a literal; `oncePerDay` / `fireOnFirst` are booleans; recipes are for alerts only (a rule with `alert`) | E | With both recipe and flow, the flow never runs; a misspelled recipe, a missing field or an unknown key leaves the host unable to decide, so the alert never fires; a recipe on a background task writes nothing to data.* | For a threshold cross write `{"recipe":"cross","value":"${px}","line":"${price}","dir":"${dir}"}`; for a value change `{"recipe":"changed","keys":["${ver}"]}`; "above threshold" needs no recipe — write `alert.activeCondition` + `refresh.cooldown`; background tasks still use a write flow |
 | G45.all-urgent | Not every alert in a package should be marked `alert.level: "urgent"` (checked in the publish profile only) | W · publish only | The levels exist for the one alert that truly cannot wait; when everything is urgent there is no level at all, and the user most likely silences the package's notifications altogether — taking the genuinely urgent one down with them | Keep `urgent` for the one that really should interrupt, use `normal` for the rest and `quiet` for purely informational ones |
-| G45.min-engine | If the package has an `xJob/` folder, any `.af` uses `alert.add` / `alert.skip`, or an H5 page calls `xbridge.alertAdd`, `manifest.minEngine` must be ≥ 2; if it uses a dated `at` (a one-time alert), `alert.remove` in an `.af`, or `xbridge.alertRemove` in an H5 page, it must be ≥ 3 (the requirement is the major each feature shipped with and does not rise with the current major) | E | On an older client `xJob/` merely stays silent, but `alert.*` in an `.af` is an unknown action — the whole flow fails and the user's tap does nothing; a client before engine major 3 cannot parse a dated `at` and silently drops that entry — it installs fine and simply never fires | Set `manifest.minEngine` to the major the features require (2 or 3) or higher so older clients never install the package |
+| G45.min-engine | If the package has an `xJob/` folder, any `.af` uses `alert.add` / `alert.skip`, or an H5 page calls `xbridge.alertAdd`, `manifest.minEngine` must be ≥ 2; if it uses a dated `at` (a one-time alert), `alert.remove` in an `.af`, or `xbridge.alertRemove` in an H5 page, it must be ≥ 3; if `task.then` uses a runtime decision recipe (`recipe`), it must be ≥ 4 (the requirement is the major each feature shipped with and does not rise with the current major) | E | On an older client `xJob/` merely stays silent, but `alert.*` in an `.af` is an unknown action — the whole flow fails and the user's tap does nothing; a client before engine major 3 cannot parse a dated `at` and silently drops that entry — it installs fine and simply never fires; a client before engine major 4 does not know decision recipes and judges every round unknown — again it installs fine and never fires | Set `manifest.minEngine` to the major the features require (2, 3 or 4) or higher so older clients never install the package |
 
 ## G46 A widget's jobs declaration must resolve and map cleanly
 
@@ -445,3 +450,27 @@ A `.xjob`'s `i18n` is a single side table: `i18n[locale] = { title, sub, message
 | Item | What is checked | Level | Symptom | Fix |
 |---|---|---|---|---|
 |  | If any `.df` / `.af` / `.rcn` / page in the package uses `formatType: "tsv"` / `"csv"` on a `request` (a literal, case-insensitive) or calls `mapField` / `groupSum` / `convertSum`, the major version of `manifest.minEngine` must be ≥ 3 | E | An older app does not know tsv / csv and hands back the raw table text (nothing at all on iOS); the three methods do not exist there and silently evaluate to empty — no error anywhere, it installs and runs, and sales always show 0 or blank | Set `"minEngine": "3.0.0"` in the manifest; an older app then asks the user to update before installing |
+
+## G52 request / sleep parameters must be strings
+
+| Item | What is checked | Level | Symptom | Fix |
+|---|---|---|---|---|
+|  | `timeout` on a `request`, every value inside its `queryParams` / `header`, and `timestamp` on a `sleep` must not be a JSON number / boolean / object, nor a whole string that is a single number-returning method call (`$[calc::(…)]`, `$[floor::(…)]` and the like); `${key}` references can't be typed statically and are not checked | E | On HarmonyOS the step fails with a parameter error and never runs (the same happens on iOS for `queryParams` / `header`), so the widget always fails — while the web engine, the CLI and the render preview all run it fine and look green | Write them as strings: `"timeout": "8000"`, `"timestamp": "1500"`; wrap computed numbers in `parseNumber::(…,0)` (which yields a string), e.g. `"$[parseNumber::(calc::(5050-${el}),0)]"` |
+
+## G53 No Chinese text in .xwidget default params
+
+| Item | What is checked | Level | Symptom | Fix |
+|---|---|---|---|---|
+|  | Any string value in an `.xwidget`'s `params` contains Chinese, Japanese or Korean characters (arrays and objects are walked; `_note` doesn't count) | W | `params` are the widget's defaults, and that is exactly what a user with a non-Chinese interface gets: the title shows Chinese, and defaults such as a city or a holiday land on the Chinese one | Keep natural language out of default params: write `""` or `"auto"` and fill it in the `.df` with the China-default rule (`${@app.region}` is `cn`, or it is empty and `${@app.language}` starts with `zh`); for titles use `${@i18n.*}` in the RCN |
+
+## G54 Check for Chinese, not for English
+
+| Item | What is checked | Level | Symptom | Fix |
+|---|---|---|---|---|
+|  | An expression contains `startsWith::(${@app.language},en)` (or `en-…`; same for `@app.locale` / `@device.language`); `_note` doesn't count | W | It asks "is this English?", so Japanese, German and other systems fall into the Chinese branch — non-Chinese users see Chinese | There is only one language rule: starts with `zh` → Chinese, everything else (including empty) → English. Write `$[startsWith::(${@app.language},zh)]` |
+
+## G55 Sticky elements in H5 pages sit under the collapsed title bar
+
+| Item | What is checked | Level | Symptom | Fix |
+|---|---|---|---|---|
+|  | Under page/html, a CSS declaration block or style attribute has position: sticky with top set to 0 or var(--xb-content-top) | W | Once the page scrolls past its header, the container fades in a small title bar at the top; a toolbar with top: 0 slides underneath it and gets covered, and one with var(--xb-content-top) leaves a gap below it | Use top: var(--xb-bar-bottom), and add --xb-bar-bottom: 0px to :root as a fallback for local preview |

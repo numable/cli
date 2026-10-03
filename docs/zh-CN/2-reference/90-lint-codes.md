@@ -9,7 +9,7 @@
 | 码 | 管什么 | 档位 | 章 |
 |---|---|---|---|
 | G0 | 包结构与 JSON 语法 | personal 也查 | `numable docs layout` |
-| G1 | 不许残留旧格式与测试夹具 | personal 也查 | `numable docs layout` |
+| G1 | 不写不会被加载的文件,不带测试夹具 | personal 也查 | `numable docs layout` |
 | G2 | manifest 必填字段与身份 | personal 也查 | `numable docs layout` |
 | G3 | 网络白名单不多不少 | personal 也查 | `numable docs layout` |
 | G4 | 取数流的跨端安全写法 | personal 也查 | `numable docs df` |
@@ -34,7 +34,7 @@
 | G26 | 取数失败必须让流失败 | personal 也查 | `numable docs df` |
 | G27 | 添加组件按钮统一版式 | 仅 publish | `numable docs page` |
 | G28 | 表达式笔误与渲染取值域 | personal 也查 | `numable docs rcn` |
-| G29 | 不要用旧式 click 串 | personal 也查 | `numable docs rcn` |
+| G29 | 点击不写成 click 串 | personal 也查 | `numable docs rcn` |
 | G30 | 字形可渲染与条件键写法 | personal 也查 | `numable docs df` |
 | G31 | 方法名必须在 VParser 白名单里 | personal 也查 | `numable docs df` |
 | G32 | 尺寸字段里不许有 $[方法] | personal 也查 | `numable docs rcn` |
@@ -50,13 +50,17 @@
 | G42 | 桥方法必须真存在 | personal 也查 | `numable docs bridge` |
 | G43 | banner.xbanner 必须是 v2 canvas 形态 | personal 也查 | `numable docs layout` |
 | G44 | .df 末尾应有 resultFilter 限定输出 | personal 也查 | `numable docs df` |
-| G45 | .xjob 的组合必须是三型之一 | personal 也查 | `numable docs xwidget` |
+| G45 | .xjob 的组合必须是三型之一 | personal 也查 | `numable docs alerts` |
 | G46 | 组件的 jobs 声明必须指得到、传得进 | personal 也查 | `numable docs xwidget` |
 | G47 | .xjob 的 i18n 只有四个槽,译文里的变量不能写丢 | personal 也查 | `numable docs i18n` |
 | G48 | 文件引用必须指向包里存在的文件 | personal 也查 | `numable docs layout` |
 | G49 | 桥 call 型方法的返回值是信封 | personal 也查 | `numable docs bridge` |
 | G50 | 数字输入框别用 type="number",且要把全角归一 | personal 也查 | `numable docs page` |
 | G51 | 用了表格取数,minEngine 要到 3 | personal 也查 | `numable docs df` |
+| G52 | request / sleep 的参数要写成字符串 | personal 也查 | `numable docs df` |
+| G53 | .xwidget 的默认参数不写中文 | personal 也查 | `numable docs xwidget` |
+| G54 | 判语言只判中文,不判英文 | personal 也查 | `numable docs i18n` |
+| G55 | H5 吸顶元素要贴在折叠栏下面 | personal 也查 | `numable docs page` |
 
 ## G0 包结构与 JSON 语法
 
@@ -65,13 +69,13 @@
 |  | 包根必须有 manifest.json,且能被解析 | E | 缺 manifest.json / manifest.json 解析失败;这个包装不上 | 用 numable init 生成骨架,或补回 manifest.json |
 |  | 所有 .json .rcn .df .af .xwidget .xbanner .xpage .xform .xmenu 必须是合法 JSON | E | 整个组件不渲染,日志干净、什么都不报 | 修掉语法错(常见:多余逗号、注释、单引号) |
 
-## G1 不许残留旧格式与测试夹具
+## G1 不写不会被加载的文件,不带测试夹具
 
 | 子项 | 检查什么 | 级别 | 现象 | 修法 |
 |---|---|---|---|---|
-|  | 不得残留 page.json、旧目录 xWidget/template/ 与 **/actionFlow/、旧后缀 .flow.json | E | 残留已删除格式 / 旧目录布局 / 旧后缀 | RCN 放 rc/,流放 flow/,后缀用 .af(交互流)/.df(取数流) |
+|  | 不得出现 page.json、xWidget/template/ 与 **/actionFlow/ 目录、.flow.json 后缀 | E | 这些文件与目录不会被加载,写了像「没生效」 | RCN 放 rc/,流放 flow/,后缀用 .af(交互流)/.df(取数流) |
 | G1b | 包内不得含测试夹具(*.params.json、fixtures/ 目录) | E | 夹具被打进签名包,体积与内容都不该发出去 | 夹具移到 .numable/params/,它不会进包 |
-| G1c | .xpage 节点不得写已删除的 loading / error 字段 | W | 写了也不生效:App 不读这两个字段,loading / error 态恒由 App 内置渲染 | 删掉这两个字段 |
+| G1c | .xpage 节点不写 loading / error 字段 | W | 写了也不生效:App 不读这两个字段,loading / error 态恒由 App 内置渲染 | 删掉这两个字段 |
 
 ## G2 manifest 必填字段与身份
 
@@ -267,11 +271,11 @@
 |  | $[...] 里不得再嵌一层 $[ | E | 整个组件渲不出来 | 内层写裸方法名,如 if::(...) |
 |  | .rcn 里的 ${x} 必须来自这个组件 depends 的 .df 输出(resultFilter 的键);外壳参数不在渲染取值域里 | E | 那一处渲成空,或恒走兜底值 | 参数经 depends.params 传进 .df,在流里落地后由 resultFilter 透出,再在卡上取 |
 
-## G29 不要用旧式 click 串
+## G29 点击不写成 click 串
 
 | 子项 | 检查什么 | 级别 | 现象 | 修法 |
 |---|---|---|---|---|
-|  | .rcn 的旧式 click 字符串里不得出现 @[file:// | E | 点击行为不可控 | 改用 events.* 事件绑定 |
+|  | .rcn 的 click 字符串里不得出现 @[file:// | E | 点击行为不可控 | 改用 events.* 事件绑定 |
 
 ## G30 字形可渲染与条件键写法
 
@@ -365,7 +369,7 @@
 
 | 子项 | 检查什么 | 级别 | 现象 | 修法 |
 |---|---|---|---|---|
-|  | `banner.xbanner` 须为 { version:2, canvas:{source,depends[,refresh]} },不得再有顶层 `rcn` / `flow` | E | App 只读 `canvas`,旧写法的横幅被当作没有、换成默认模板,不报错、日志干净 | 把 `rcn.rc` 挪进 `canvas.source`,取数改成 `canvas.depends` 引用 `.df`,写法见 `numable docs layout` |
+|  | `banner.xbanner` 须为 { version:2, canvas:{source,depends[,refresh]} },不得再有顶层 `rcn` / `flow` | E | App 只读 `canvas`,顶层 `rcn` / `flow` 写法的横幅被当作没有、换成默认模板,不报错、日志干净 | 把 `rcn.rc` 挪进 `canvas.source`,取数改成 `canvas.depends` 引用 `.df`,写法见 `numable docs layout` |
 |  | `canvas.source` 是 `@[file://…rcn]` 引用或内联 {cells,…} 对象;`canvas.depends` 是数组 | E | 横幅整块不显示,或取数流一次都不跑 | 引用写包根路径(`xWidget/rc/…`),`depends` 与 `.xwidget` 同一种写法 |
 
 ## G44 .df 末尾应有 resultFilter 限定输出
@@ -395,8 +399,9 @@
 | G45.message-scope | 没有 `depends` 的提醒,`alert.message` 只能引 `params` 与 `@app` | E | 布防那一刻只有这两样,别的键渲出来是空 —— 通知已经发出去了,事后无从复现 | 文案里只用用户填过的 `params`;要引数据就把它做成动态提醒(加 `task.depends`) |
 | G45.days / G45.at-param | `refresh.days` 与 `refresh.at` / `refresh.interval` 里的 `${参数}` 都只属于没有 `depends` 的静态提醒;`.xwidget` 的 `canvas.refresh` 也不认 `days`(`cooldown` 只是无效) | E | 动态 Job 的评估节律归宿主,按星期几过滤、拿参数当时刻都只对系统定时有意义,写了不生效 | 要按星期几或用户填的时刻触发,就做成静态提醒(不写 `depends`) |
 | G45.once | 日期式 `at`(`YYYY-MM-DD HH:MM`,只响一次)只能写在没有 `depends` 的静态提醒里;同一条 `at` 里不能与每日式 `HH:MM` 混写,不能再配 `interval` / `days`;不含 `${}` 的字面日期必须合法(一个半角空格、24 小时制、全部补零、日期真实存在)。模板首尾去空白后中间含空白即算日期式,纯 `${when}` 看不出、不查 | E | 这几种写法运行时都不报错:日期式照排、每日式照每天响、`days` 被忽略 —— 作者得到的一定不是想要的;写死一个 2 月 30 日则那一项永远排不出来,提醒永远不响 | 只响一次的提醒单独一条规则:`"at": ["${date} ${time}"]`,`form` 里 `date` 用 `datePicker`(`format: "YYYY-MM-DD"`)、`time` 用 `timePicker`;要每天响的另写一条 |
+| G45.recipe | `task.then` 与判定流程 `{flow, params}` 二选一,也可写运行时判定配方 `{recipe, …}`:只有 `cross`(越线:`value` + `line`,`dir` 缺省 below)与 `changed`(数值变化:`keys` 1~4 个)两种;字段整串 `${键}` 或字面值;`oncePerDay` / `fireOnFirst` 为布尔;配方只用于有 `alert` 的提醒 | E | 配方与 flow 同写时 flow 不会跑;写错配方名、缺字段或多了未知键,宿主判不出触发,这条提醒永远不响;后台任务写配方什么也不会写进 data.* | 越线写 `{"recipe":"cross","value":"${px}","line":"${price}","dir":"${dir}"}`;数值变化写 `{"recipe":"changed","keys":["${ver}"]}`;「超出阈值」不用配方,直接写 `alert.activeCondition` + `refresh.cooldown`;后台任务仍用写入流程 |
 | G45.all-urgent | 一个包里不该**所有**提醒都标 `alert.level: "urgent"`(只在 publish 档查) | W · 仅 publish | 分档是留给「真的不能等」的那一条的;一包全 urgent 等于没有分档,用户多半把这个包的通知整体关掉 —— 那时真急的那条也一起哑了 | 只给最该打断人的那条留 `urgent`,其余写 `normal`,纯信息的写 `quiet` |
-| G45.min-engine | 包里有 `xJob/`,或 `.af` 里用了 `alert.add` / `alert.skip`、H5 里调了 `xbridge.alertAdd` 时,`manifest.minEngine` 必须 ≥ 2;用了日期式 `at`(一次性提醒)、`.af` 里的 `alert.remove` 或 H5 里的 `xbridge.alertRemove` 时必须 ≥ 3(比的是能力引入时的轴,不随当前轴上涨) | E | 老版本客户端遇到 `xJob/` 只是不响,但 `.af` 里的 `alert.*` 对它是未知 action —— 整条流报错,用户点一下什么都不发生;日期式 `at` 在引擎轴 3 之前的应用里解析失败、那一项静默丢掉 —— 装得上、就是不响 | 把 `manifest.minEngine` 写成能力要求的轴(2 或 3)或更高,老客户端就不会装到这个包 |
+| G45.min-engine | 包里有 `xJob/`,或 `.af` 里用了 `alert.add` / `alert.skip`、H5 里调了 `xbridge.alertAdd` 时,`manifest.minEngine` 必须 ≥ 2;用了日期式 `at`(一次性提醒)、`.af` 里的 `alert.remove` 或 H5 里的 `xbridge.alertRemove` 时必须 ≥ 3;`task.then` 写了运行时判定配方(`recipe`)时必须 ≥ 4(比的是能力引入时的轴,不随当前轴上涨) | E | 老版本客户端遇到 `xJob/` 只是不响,但 `.af` 里的 `alert.*` 对它是未知 action —— 整条流报错,用户点一下什么都不发生;日期式 `at` 在引擎轴 3 之前的应用里解析失败、那一项静默丢掉 —— 装得上、就是不响;引擎轴 4 之前的应用不认识判定配方,每轮判为未知 —— 同样装得上、永远不响 | 把 `manifest.minEngine` 写成能力要求的轴(2、3 或 4)或更高,老客户端就不会装到这个包 |
 
 ## G46 组件的 jobs 声明必须指得到、传得进
 
@@ -445,3 +450,27 @@
 | 子项 | 检查什么 | 级别 | 现象 | 修法 |
 |---|---|---|---|---|
 |  | 包里任何 `.df` / `.af` / `.rcn` / 页面用了 `request` 的 `formatType: "tsv"` / `"csv"`(字面量,大小写不敏感),或调了 `mapField` / `groupSum` / `convertSum`,`manifest.minEngine` 的主版本必须 ≥ 3 | E | 老版本 App 不认 tsv / csv,把表格原文当普通文本返回(iOS 上是空);三个方法在老版本上不存在、静默求空 —— 都不报错,装得上、跑得动,销量恒 0 或空白 | manifest 写 `"minEngine": "3.0.0"`,老版本 App 装包时会提示先升级 |
+
+## G52 request / sleep 的参数要写成字符串
+
+| 子项 | 检查什么 | 级别 | 现象 | 修法 |
+|---|---|---|---|---|
+|  | `request` 的 `timeout`、`queryParams` / `header` 里的每个值,以及 `sleep` 的 `timestamp`,不能是 JSON 数字 / 布尔 / 对象,也不能整串就是一个求出来是数字的方法调用(`$[calc::(…)]`、`$[floor::(…)]` 这类);`${key}` 引用静态看不出类型,不查 | E | 鸿蒙上这一步「参数解析错误」直接不执行(`queryParams` / `header` 在 iOS 上也一样),组件恒失败;而网页引擎、CLI 与渲染台都照跑,本地全绿 | 写成字符串:`"timeout": "8000"`、`"timestamp": "1500"`;算出来的数外面套 `parseNumber::(…,0)`(出来是字符串),例如 `"$[parseNumber::(calc::(5050-${el}),0)]"` |
+
+## G53 .xwidget 的默认参数不写中文
+
+| 子项 | 检查什么 | 级别 | 现象 | 修法 |
+|---|---|---|---|---|
+|  | `.xwidget` 的 `params` 里任何字符串值含中日韩文字(递归数组与对象;`_note` 不算) | W | `params` 是组件的默认参数,非中文界面的用户拿到的就是这份默认值:标题直接显示中文,城市、节日这类默认值落在中国的那一个上 | 默认参数不写自然语言:写 `""` 或 `"auto"`,在 `.df` 里按国内默认判据(`${@app.region}` 是 `cn`,或为空且 `${@app.language}` 以 `zh` 开头)兜底;标题类在 RCN 里用 `${@i18n.*}` |
+
+## G54 判语言只判中文,不判英文
+
+| 子项 | 检查什么 | 级别 | 现象 | 修法 |
+|---|---|---|---|---|
+|  | 表达式里出现 `startsWith::(${@app.language},en)`(或 `en-…`;`@app.locale` / `@device.language` 同);`_note` 不算 | W | 判的是「是不是英文」,于是日语、德语等系统掉进中文分支 —— 非中文用户看到中文 | 语言判据只有一条:`zh` 开头 → 中文,其余(含空)一律英文。写 `$[startsWith::(${@app.language},zh)]` |
+
+## G55 H5 吸顶元素要贴在折叠栏下面
+
+| 子项 | 检查什么 | 级别 | 现象 | 修法 |
+|---|---|---|---|---|
+|  | page/html 下同一个 CSS 声明块或 style 属性里写了 position: sticky,同时 top 是 0 或 var(--xb-content-top) | W | 页面滚过头部后,容器顶部淡入一条小标题栏;top: 0 的工具条钻到栏底下被盖住,var(--xb-content-top) 的与栏之间留一道缝 | 改成 top: var(--xb-bar-bottom),本地预览在 :root 里写一份 --xb-bar-bottom: 0px 兜底 |

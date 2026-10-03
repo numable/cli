@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/2-reference/75-params.md sha256:bef2ff443b4d -->
+<!-- translated-from: zh-CN/2-reference/75-params.md sha256:a0e97b7f2c83 -->
 
 # params — parameters and user-editable fields
 
-> Audience: people building a source, and the AI working on their behalf. Both read this same page.
+> Audience: people building a tool, and the AI working on their behalf. Both read this same page.
 
 ## What it is
 

@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/1-guides/30-add-interaction.md sha256:c073385ddfb2 -->
+<!-- translated-from: zh-CN/1-guides/30-add-interaction.md sha256:1214175e3bde -->
 
 # add-interaction — add taps and parameter editing
 
-> Audience: people building a source, and the AI working on their behalf. Both read this same page.
+> Audience: people building a tool, and the AI working on their behalf. Both read this same page.
 
 ## Goal
 

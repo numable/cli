@@ -1,12 +1,12 @@
-<!-- translated-from: zh-CN/1-guides/10-first-card.md sha256:af02752eb6e4 -->
+<!-- translated-from: zh-CN/1-guides/10-first-card.md sha256:f1a7845d6ebc -->
 
 # first-card — build one widget from scratch, end to end
 
-> Audience: the person building a source, and the AI working on their behalf. Both read this same page.
+> Audience: the person building a tool, and the AI working on their behalf. Both read this same page.
 
 ## Goal
 
-Build a source (an XBundle package) you can install in the App and put on the dashboard and the home screen: one 158×158 widget showing the current top story on Hacker News with its score, a time anchor, a light and a dark palette, and an empty state instead of a blank widget when the data cannot be fetched.
+Build a tool (an XBundle package) you can install in the App and put on the dashboard and the home screen: one 158×158 widget showing the current top story on Hacker News with its score, a time anchor, a light and a dark palette, and an empty state instead of a blank widget when the data cannot be fetched.
 
 Data source: `https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=1` (public, no key, one GET returning JSON).
 
@@ -27,7 +27,7 @@ hn/
 
 1. Node ≥ 18, with the `numable` command available.
 2. Chrome / Chromium installed (only `numable render` needs it).
-3. An authoring workspace folder that you have already added as a workspace folder in the Numable App's Workbench (Mac / Windows) — every package in that folder shows up in the App's source list. If you do not have one, run `numable workspace init` first.
+3. An authoring workspace folder that you have already added as a workspace folder in the Numable App's Workbench (Mac / Windows) — every package in that folder shows up in the App's tool list. If you do not have one, run `numable workspace init` first.
 
 One command checks all of it:
 
@@ -286,7 +286,7 @@ Field by field:
 | `events.onClick` | where a tap goes. `numable://self` opens the package's home page; for a specific page write `numable://self/page/<path>` |
 | `canvas.source` | the drawing. In the widget host, `@[file://…]` is resolved relative to `xWidget/`, hence `rc/top.rcn` |
 | `canvas.depends` | the data binding. **It must be a `{flow, params}` object**, even when `params` is empty |
-| `canvas.refresh` | the refresh cadence. `interval` is bare seconds, with **a floor of 10 seconds**; how fast to go depends on what the upstream API's rate limit and quota can take |
+| `canvas.refresh` | the refresh cadence. `interval` is bare seconds; two fetches are at least 3 seconds apart, and **free users are slowed to every 5 minutes** while Pro users get what you wrote; how fast to go depends on what the upstream API's rate limit and quota can take |
 
 Writing `depends` as the bare string `"@[file://flow/top.df]"` is the most common silent failure of all: that form passes **empty input parameters**, so a widget that consumes parameters renders a field of `--` and reports nothing. This widget takes no parameters, but write it in object form anyway — then you will not forget on the day you add one.
 
@@ -330,7 +330,7 @@ Give it a pass yourself first: one widget answers one question; a `22` holds at 
 The package is already visible once the folder sits inside the workspace folder — there is nothing to build.
 
 1. Open the Numable App (Mac / Windows).
-2. Go to the source list and pull to refresh — "HN 榜首" should appear.
+2. Go to the tool list and pull to refresh — "HN 榜首" should appear.
 3. Open it and add "此刻榜首" to the dashboard.
 4. The widget should show the same thing as the light image from `render`.
 

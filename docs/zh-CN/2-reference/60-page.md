@@ -1,6 +1,6 @@
 # page —— 页面(router.json / html / xpage / xform)
 
-> 读者:做信息源的用户,和替他干活的 AI。两者读同一份。
+> 读者:做工具的用户,和替他干活的 AI。两者读同一份。
 
 ## 它是什么
 
@@ -26,8 +26,8 @@
     {
       "path": "/",
       "entry": "html/home/index.html",
-      "title": "我的信息源",
-      "i18n": { "en-US": { "title": "My Source" } }
+      "title": "我的工具",
+      "i18n": { "en-US": { "title": "My Tool" } }
     },
     {
       "path": "/detail",
@@ -52,7 +52,7 @@ page/
   assets/…                     # 页面图片等资产
 ```
 
-固定约定:页面调的流一律找 `page/flow/<名>.<后缀>`(`runDataFlow` 只搜 `.df`,`runFlow` / `runActionFlow` 只搜 `.af`)。`page/html/<路由>/page.json` 是旧格式,已经没有了,包里出现即 `check` G1 报错。
+固定约定:页面调的流一律找 `page/flow/<名>.<后缀>`(`runDataFlow` 只搜 `.df`,`runFlow` / `runActionFlow` 只搜 `.af`)。不要写 `page/html/<路由>/page.json`:它不会被读取,包里出现即 `check` G1 报错。
 
 ## router.json 逐字段
 
@@ -87,7 +87,14 @@ page/
 - `remote` 是这条路由的远程页,可与 `entry` 共存作兜底;顶层 `fallback` 管的是「请求了一条不存在的 path」。
 - 这两个字段的域名都要写进 `manifest.network`,否则请求发不出去(`check` G3)。它们是包**声明的组成页面**,所以照旧压容器栈、照旧带 `···` 菜单 —— 这是外链一律交给系统浏览器那条规则的唯一例外。
 
-标题的优先级:`routes[].title` > query 里带的 title > `manifest.title`。页面在运行期改不了它 —— 容器 chrome 恒是一条浮动胶囊、不画标题栏。
+**标题只在滚动之后出现**:页面没滚动时,容器只有一条浮动胶囊、不画标题,头部归页面自己画;页面主滚动滚过 44px 之后,胶囊那一行淡入一条半透明底 + 小标题,告诉用户「现在在哪」。小标题按这个顺序取,前一档为空才往下落:
+
+1. 页面自己给的动态标题 —— html 页是脚本改出来的 `document.title`,xpage 页是根节点的 `title` 表达式(见 `numable docs xpage`);
+2. 路由 query 里的 `name` / `title` —— 列表跳详情时带上对象名(`/detail?secid=1.600519&name=贵州茅台`),进页那一刻就有标题;
+3. `routes[].title`;
+4. 包名(`manifest.title`)。
+
+form 页不出这条小标题(表单自己有标题头)。
 
 ## 三种页型
 
@@ -101,7 +108,7 @@ page/
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>我的信息源</title>
+<title>我的工具</title>
 <style>
   /* 容器注入这两个变量;浏览器里打开时回落 0,所以本地预览也不塌 */
   :root { --xb-content-top: 0px; --xb-content-bottom: 0px; }
@@ -119,7 +126,7 @@ page/
 </style>
 </head>
 <body>
-  <h1>我的信息源</h1>
+  <h1>我的工具</h1>
   <p id="out">加载中…</p>
 <script>
   // 语言:容器在 <html> 上打 data-lang,切语言时派发 languagechange(页面不重载)
@@ -151,7 +158,8 @@ page/
 
 四件必须知道的事:
 
-1. **让位**:`--xb-content-top` / `--xb-content-bottom` / `--xb-safe-bottom` 由容器注入;不读就被胶囊压住顶部,各平台都不报错。
+1. **让位**:`--xb-content-top` / `--xb-content-bottom` / `--xb-safe-bottom` 由容器注入;不读就被胶囊压住顶部,各平台都不报错。页内要贴顶吸附的工具条(搜索框、分段)写 `position: sticky; top: var(--xb-bar-bottom)`,滚动后贴在小标题栏下面;写 `top: 0` 会钻到栏底下。
+   **标题**:HTML 里写死的 `<title>` 不会显示;想让滚动后的小标题跟着数据走,就由脚本改 `document.title`(例如数据回来后改成股票名;页面解析时同步写的也算),改回 `<title>` 里写的值等于撤销。
 2. **主题**:写 `[data-theme="dark"]` 选择器,**不要靠 `prefers-color-scheme`** —— 页面在 iframe/WebView 里,那个媒体查询跟的是宿主系统,App 内切主题拨不动它。
 3. **语言**:读 `document.documentElement.dataset.lang`;切换只派发 `languagechange` 事件、不重载页面,所以文案渲染要能被重跑。
 4. **网络**:`fetch` / `XHR` 直连被 CSP 焊死(图片是例外)。数据一律 `xbridge.runDataFlow("<flow 名>", params)`,副作用一律 `xbridge.runActionFlow` / `runFlow`;它们回的是信封 `{ code, msg, data }`,结果在 `data`(上面的 `call()`)。全部方法见 `numable docs bridge`。
@@ -251,9 +259,9 @@ query 参数读 `location.search`,和普通网页一样。
 
 要点:字段顺序 = 声明顺序,键就是结果键;**不写 `container`**(呈现形态由容器定);值只有 `string` 与 `string[]`,布尔用字符串。14 种组件类型、`props` 逐个字段、以及取数型组件(`searchSelect` / `dynamicCascader`)怎么接 `.df`,见 `numable docs params`。
 
-## 信息源海报 banner.xbanner
+## 工具海报 banner.xbanner
 
-`banner.xbanner` 不是页面,是包在信息源列表里的那张 16:9 门面组件。它放在**包根**(和 `logo.png` 平级),是**可选**的:不写就用系统默认模板(纯色底 + logo/首字母 + 包名),写了就整张由你画。
+`banner.xbanner` 不是页面,是包在工具列表里的那张 16:9 门面组件。它放在**包根**(和 `logo.png` 平级),是**可选**的:不写就用系统默认模板(纯色底 + logo/首字母 + 包名),写了就整张由你画。
 
 它是一个自包含的单文件 —— 内联 RCN、内联流,不引 `xWidget/` 与 `page/` 下的任何文件:
 

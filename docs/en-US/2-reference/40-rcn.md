@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/2-reference/40-rcn.md sha256:f96dc4efe124 -->
+<!-- translated-from: zh-CN/2-reference/40-rcn.md sha256:2cfe37f1a683 -->
 
 # rcn — how a widget is drawn (.rcn)
 
-> Audience: people building a source, and the AI working on their behalf. Both read this same page.
+> Audience: people building a tool, and the AI working on their behalf. Both read this same page.
 
 ## What it is
 
@@ -441,15 +441,13 @@ There is exactly one thing that works: make the whitespace **come out of a looke
 - `lineBreak` on = allow wrapping; off = one line only, anything past the edge is cut. As long as `maxLines` is set, text still wraps with it off.
 - ⚠️ **This field is the ellipsis switch, and "not set" is not the same as "set to `"0"`"**:
   - **Explicitly write `"lineBreak": "0"` together with `maxLines`** → a "…" is appended where the text is cut. This is the only way to get one.
-  - **Leave the field out** → a fixed-width node still wraps (exactly as before), but **no dots**.
+  - **Leave the field out** → a fixed-width node still wraps, but **no dots**.
   - **Write `"1"`** → wraps, no dots.
   - **Auto width** (`w: "-1"`) → grows to fit its content and never truncates, so no "…" either.
 
-  Why "not set" cannot mean the same as "set to 0": the layout stage rewrites fixed-width nodes that never stated a preference, treating them as wrapping (a fixed width has to reflow into multiple lines for auto height to grow). Two thousand-odd text nodes with `maxLines` depend on that rewrite, so it has to stay — only an **explicitly written** `"0"` says the author wanted truncation with an ellipsis rather than wrapping.
+  Why "not set" cannot mean the same as "set to 0": the layout stage rewrites fixed-width nodes that never stated a preference, treating them as wrapping (a fixed width has to reflow into multiple lines for auto height to grow). So only an **explicitly written** `"0"` says the author wanted truncation with an ellipsis rather than wrapping.
 
   Measured (`numable render`; the preview here and the phone run the same rendering core, so what you see is the real result): a fixed 140pt width with `maxLines:"1"` and `lineBreak:"0"` renders `Mid-Autumn…`; the same node with `lineBreak:"1"` renders `Mid-Autumn` with no dots.
-
-  ⚠️ **This needs an updated client.** On older versions it degrades to "wrap and keep the first N lines, no dots" — nothing breaks or misrenders, you just do not get the three dots.
 - Use only the enum values from the typeface list, and get bold by picking the `-Bold` variant (there is no `bold` field). **With no `typeface` the default is `Inter`**; text containing CJK characters is switched to `NotoSansSC` automatically (bold variants preserved), so mixed scripts never lose glyphs — but **Latin digits and CJK characters will not have the same glyph width**, so pick a monospaced family such as `JetBrainsMono` explicitly for a table that has to align in columns.
 
 ### Arcs and ring progress: arc
@@ -662,7 +660,7 @@ The accent is close to the "down" color, so on a numbers widget use the accent o
 | A number takes exactly one unit suffix | `check` G28 | The widget renders nothing, with no error | Delete the extra `pt` |
 | No `$[` nested inside `$[…]` | `check` G28 | A literal `$[…]` appears on screen | Write the inner call as a bare method name, `if::(…)` |
 | `${x}` must come from this widget's `.df` `resultFilter` output | `check` G28 | That spot renders empty or always takes the fallback | Pass it in via `depends.params` → land it in `.df` → expose it through `resultFilter` |
-| No `@[file://` inside a legacy `click` string | `check` G29 | Tapping does nothing | Use `events.onClick` instead |
+| Do not write a tap as a `click` string (and never put `@[file://` in one) | `check` G29 | Tapping does nothing | Write `events.onClick` |
 | No emoji in visible text (≥U+1F000) | `check` G30 | Blank spot | Draw a `path`, or use a BMP symbol |
 | A cell-bound `.af` puts `ui.haptic` first | `check` G22 | ~250ms of no feedback after the tap, so the user taps again | Move it to `actions[0]` |
 | Sizes and type sizes are always `pt` | Manual review / render layer | Content squeezed into the top-left corner, type too small | Replace every `px` |

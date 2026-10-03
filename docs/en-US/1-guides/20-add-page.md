@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/1-guides/20-add-page.md sha256:033a150fa484 -->
+<!-- translated-from: zh-CN/1-guides/20-add-page.md sha256:62ede19a0aa8 -->
 
 # add-page — add a detail page to an existing widget
 
-> Audience: people building a source, and the AI working on their behalf. Both read this same page.
+> Audience: people building a tool, and the AI working on their behalf. Both read this same page.
 
 ## Goal
 

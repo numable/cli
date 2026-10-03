@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/2-reference/60-page.md sha256:cabb518a8c92 -->
+<!-- translated-from: zh-CN/2-reference/60-page.md sha256:5b7d04558b77 -->
 
 # page — pages (router.json / html / xpage / xform)
 
-> Audience: people building a source (an XBundle package), and the AI working on their behalf. Both read the same document.
+> Audience: people building a tool (an XBundle package), and the AI working on their behalf. Both read the same document.
 
 ## What it is
 
@@ -28,8 +28,8 @@ The container carries its own permanently floating chrome pill (‹ and ···|�
     {
       "path": "/",
       "entry": "html/home/index.html",
-      "title": "我的信息源",
-      "i18n": { "en-US": { "title": "My Source" } }
+      "title": "我的工具",
+      "i18n": { "en-US": { "title": "My Tool" } }
     },
     {
       "path": "/detail",
@@ -54,7 +54,7 @@ page/
   assets/…                     # page images and other assets
 ```
 
-Fixed convention: a flow called from a page is always looked up at `page/flow/<name>.<ext>` (`runDataFlow` only searches `.df`; `runFlow` / `runActionFlow` only search `.af`). `page/html/<route>/page.json` is a legacy format that no longer exists — if it appears in the package, `check` reports G1.
+Fixed convention: a flow called from a page is always looked up at `page/flow/<name>.<ext>` (`runDataFlow` only searches `.df`; `runFlow` / `runActionFlow` only search `.af`). Do not write `page/html/<route>/page.json`: nothing reads it, and if it appears in the package `check` reports G1.
 
 ## router.json field by field
 
@@ -89,7 +89,14 @@ One line of example for each of the last three fields:
 - `remote` is this route's remote page and may coexist with `entry` as a fallback; the top-level `fallback` covers "a path that does not exist was requested".
 - The domains of both fields have to be listed in `manifest.network` or the request never leaves (`check` G3). They are pages the package **declares as its own**, so they still push onto the container stack and still carry the `···` menu — the one exception to the rule that external links are handed to the system browser.
 
-Title precedence: `routes[].title` > a title carried in the query > `manifest.title`. A page cannot change it at runtime — the container chrome is always a floating pill and never draws a title bar.
+**The title only appears after scrolling**: while the page is not scrolled, the container shows just a floating pill and draws no title — the header is the page's own. Once the page's main scroll passes 44px, the pill row fades in a translucent bar with a small title that tells the user where they are. The small title is taken in this order, falling through only when a level is empty:
+
+1. A dynamic title the page provides — for an html page, `document.title` as changed by script; for an xpage, the root node's `title` expression (see `numable docs xpage`);
+2. `name` / `title` in the route query — when a list opens a detail page, carry the object's name (`/detail?secid=1.600519&name=Kweichow Moutai`) and the title is there the moment the page opens;
+3. `routes[].title`;
+4. The package name (`manifest.title`).
+
+Form pages never show this small title (the form has its own title header).
 
 ## The three page kinds
 
@@ -103,7 +110,7 @@ A minimal template (`page/html/home/index.html`, the home page `numable init` ge
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>My Source</title>
+<title>My Tool</title>
 <style>
   /* The container injects these two variables; in a browser they fall back to 0, so local preview does not collapse */
   :root { --xb-content-top: 0px; --xb-content-bottom: 0px; }
@@ -121,7 +128,7 @@ A minimal template (`page/html/home/index.html`, the home page `numable init` ge
 </style>
 </head>
 <body>
-  <h1>My Source</h1>
+  <h1>My Tool</h1>
   <p id="out">Loading…</p>
 <script>
   // Language: the container sets data-lang on <html> and dispatches languagechange on switch (no reload)
@@ -153,7 +160,8 @@ A minimal template (`page/html/home/index.html`, the home page `numable init` ge
 
 Four things you have to know:
 
-1. **Making room**: `--xb-content-top` / `--xb-content-bottom` / `--xb-safe-bottom` are injected by the container; ignore them and the pill sits on top of your header, with no error on any platform.
+1. **Making room**: `--xb-content-top` / `--xb-content-bottom` / `--xb-safe-bottom` are injected by the container; ignore them and the pill sits on top of your header, with no error on any platform. For a toolbar that should stick to the top while scrolling (a search box, a segmented control), write `position: sticky; top: var(--xb-bar-bottom)` so it sits just under the small title bar; `top: 0` slides it underneath the bar.
+   **Title**: the `<title>` hard-coded in the HTML is never shown. To make the small title that appears after scrolling follow your data, change `document.title` from script (for example, to the stock name once the data arrives; a synchronous write while the page is still parsing counts too); changing it back to the value written in `<title>` withdraws it.
 2. **Theme**: write a `[data-theme="dark"]` selector, **not `prefers-color-scheme`** — the page lives in an iframe/WebView, that media query follows the host system, and switching the theme inside the app cannot move it.
 3. **Language**: read `document.documentElement.dataset.lang`; a switch only dispatches `languagechange` and does not reload the page, so text rendering has to be re-runnable.
 4. **Network**: direct `fetch` / `XHR` are sealed off by CSP (images are the exception). Data always goes through `xbridge.runDataFlow("<flow name>", params)`, side effects through `xbridge.runActionFlow` / `runFlow`; they resolve an envelope `{ code, msg, data }` with the result in `data` (the `call()` above). Full method list in `numable docs bridge`.
@@ -253,9 +261,9 @@ The fields of each of the eight `layout` values, the page scopes (`params` / `st
 
 Key points: field order = declaration order, and the keys are the result keys; **do not write `container`** (the presentation is the container's call); values are only `string` and `string[]`, so booleans are strings. The 14 component types, their `props` field by field, and how the data-driven components (`searchSelect` / `dynamicCascader`) hook up to a `.df` are in `numable docs params`.
 
-## The source poster banner.xbanner
+## The tool poster banner.xbanner
 
-`banner.xbanner` is not a page: it is the 16:9 face your package shows in the source list. It sits at the **package root** (next to `logo.png`) and is **optional** — leave it out and the system default template is used (a solid ground plus the logo or first letter and the package name); write one and the whole thing is yours to draw.
+`banner.xbanner` is not a page: it is the 16:9 face your package shows in the tool list. It sits at the **package root** (next to `logo.png`) and is **optional** — leave it out and the system default template is used (a solid ground plus the logo or first letter and the package name); write one and the whole thing is yours to draw.
 
 It is a self-contained single file — inline RCN, inline flow, referencing nothing under `xWidget/` or `page/`:
 

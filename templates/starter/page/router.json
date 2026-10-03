@@ -3,10 +3,10 @@
     {
       "path": "/",
       "entry": "html/home/index.html",
-      "title": "我的信息源",
+      "title": "我的工具",
       "i18n": {
         "en-US": {
-          "title": "My Source"
+          "title": "My Tool"
         }
       }
     }

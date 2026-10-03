@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/1-guides/90-publish.md sha256:bf2d4e24bb91 -->
+<!-- translated-from: zh-CN/1-guides/90-publish.md sha256:49b98d1ed12c -->
 
 # publish — from personal use to publishing to the store
 
-> Audience: the person building a source, and the AI working on their behalf. Both read this same page.
+> Audience: the person building a tool, and the AI working on their behalf. Both read this same page.
 
 ## Goal
 
@@ -29,7 +29,7 @@ Publishing itself **does not happen in the CLI**: the CLI only gets the package 
 | **G19** store front | `manifest.subtitle` is required and ≤22 characters; `manifest.i18n["en-US"].title` and `.subtitle` are required | With no subtitle, the store row can only read "name + version"; with no English, English users see a column of Chinese |
 | **G24** add-widget entry (same section as G19) | The add-widget entry is **one button** (`pickWidgets`), not a hand-copied widget catalog inside the page; do not write "Added" | A hand-copied catalog is a second source of truth: forget to update the page after adding a widget and users can never add it; only the panel knows whether adding succeeded, so an "Added" label inside the package will lie |
 | **G20** English widget titles | `i18n["en-US"].title` and `.sub` on every `.xwidget` | In an English environment, dashboard widget titles, the widget panel, and the home-screen widget configuration list all show Chinese |
-| **G21** title width | Display width of `title` ≤24 per locale (full-width counts 2, half-width 1), ≤16 recommended; `manifest.i18n` structurally valid, `category` using a platform enum key | The source grid tile title is always two lines, and the overflow **is not hidden, it is eaten by an ellipsis**, so users see half a name they cannot recognize |
+| **G21** title width | Display width of `title` ≤24 per locale (full-width counts 2, half-width 1), ≤16 recommended; `manifest.i18n` structurally valid, `category` using a platform enum key | The tool grid tile title is always two lines, and the overflow **is not hidden, it is eaten by an ellipsis**, so users see half a name they cannot recognize |
 | **G8 / G8b** bilingual content | The text tables in the package (`rc.i18n` in `.rcn`, top-level `i18n` in `.xpage` / `.af` / `.xform`) have matching keys in both `zh-CN` and `en-US`; hard-coded Chinese in user-visible fields is lifted out into keys | Chinese leaks onto widgets in an English environment; wherever a key is missing, the literal is rendered |
 | **G23** first-paint cache | For packages with a detail page: the `.df` a page consumes needs three-state `data.get` / `data.set` caching (render from cache first, revalidate in the background, bypass on pull-to-refresh, never overwrite on failure); a cached page's root node needs `events.onRefresh`; **cache write-back in the `.df` a widget consumes must be gated by an input parameter that defaults to off**; no credentials in the cache | Every first paint waits a full network round trip; pull-to-refresh hits the cache again, so refreshing changes nothing; on the widget side the whole point of a refresh is "skip the cache and fetch", and another cache layer underneath makes the entire refresh chain spin idle |
 | **G25** direct credential entry | A package that declares a `required: true` credential needs an entry point in `page/` going straight to `numable://app/mine?section=credentials` | Users install it, see an empty widget, and have no idea where to bind a key; "add the widget first, then follow the hint on it" is a detour, not an entry point |
@@ -85,7 +85,7 @@ If the English column still renders Chinese, the text table is not wired up; if 
 `check` tells you whether things run, not whether the words are any good. Before handing the package to other people, go through every line users can see — in widgets, pages and reminders — against these points:
 
 - **Write for users, not for yourself.** Users only want to know what happened, what it means for them, and what they can do. Implementation reasons (why it is 30 minutes, which endpoint broke) stay off the screen.
-- **Use words users recognise.** The visual unit is a "widget" (组件 in Chinese), not a "card"; to users your package is a "source" (信息源), not a "package" or "bundle"; words like fetch / host / token / render become "get data" / "site" / "update". In Chinese, count widgets and sources with 个 and reminders with 条.
+- **Use words users recognise.** The visual unit is a "widget" (组件 in Chinese), not a "card"; to users your package is a "tool" (工具), not a "package" or "bundle"; words like fetch / host / token / render become "get data" / "site" / "update". In Chinese, count widgets and tools with 个 and reminders with 条.
 - **In Chinese, use full-width punctuation** (`，。：？（）`), put a space between Chinese and Latin text or digits ("每 5 分钟", "在 Mac 上"), and use the single `…` for an ellipsis.
 - **Error messages come in parts**: what happened → what you can do. Write "Couldn't get data. Check your connection and try again.", not "Request failed 500"; **never ask users to do developer work** (read logs, change an API URL).
 - **Don't promise what you can't deliver.** Not a word of "real time" or "on the dot every day" (see `numable docs alerts` for why).
@@ -97,12 +97,12 @@ If the English column still renders Chinese, the text table is not wired up; if 
 
 The CLI does not publish. Go to the desktop app (Mac / Windows) → Workbench → find the package → Publish.
 
-The panel asks for three decisions:
+The panel has three things to look at:
 
-| Decision | Notes |
+| Item | Notes |
 |---|---|
 | **Version** | "Publish as v(next)" is checked by default. Each `(id, version)` can be published only once, and re-uploading one is rejected. If the content changed, let it go up by one |
-| **Distribution region** | Overseas / China / global. Defaults to whatever the already-published version uses; the first publish defaults to overseas |
+| **Distribution region** | Read-only, set by the platform: the first publish goes overseas (outside mainland China); availability in mainland China is set by the platform after review; every later version keeps the region of the version currently live. Publishing from mainland China is not available yet, and the panel says "Publishing isn't available in mainland China yet" |
 | **Checks** | Hitting Publish runs the static checks first, **using exactly the `--profile publish` rule set**. Any error blocks the upload and is listed line by line |
 
 After a successful upload the panel shows one of two outcomes:
@@ -132,6 +132,18 @@ The copy in your workspace folder is the **source**; it is never overwritten by 
 - To get your changes to users you must publish again (version +1);
 - To see what users actually installed, install it from the store on another device (or under another account).
 
+**A widget's file name is its identity**
+
+Each widget on a user's dashboard records "which package + which `.xwidget` file name". If a new version deletes or renames a `.xwidget`, the widgets that point at it show "Widget removed" and are cleared when the package updates. So once a widget file is named, keep the name; to replace a widget, add a new file, and delete the old one only if users can do without it.
+
+**A version that widens access is not installed automatically**
+
+"Auto-update tools" is on by default, but if a new version reaches **more** than the installed one — more websites (`manifest.network`), more credentials (a new `credentials[].id`, or an existing credential sent to a new website), or new background jobs — it is not updated silently: the user taps update and confirms each one, with the install panel saying "New in this version: …". A version that only narrows access installs automatically. So ship a change that widens access as its own version, not bundled with a fix users are waiting for.
+
+**Version history and going back**
+
+In the Workbench, the package row's `···` → **Version history** lists every version you published and its state. A version that was replaced by a newer one, or that you withdrew yourself, offers **Go back to this one**: it republishes that version's content under a **new version number** and replaces the version currently live (the app only accepts a higher version number, so going back is also a step forward, not a renumbering). A version the platform took down cannot be restored this way; appeal instead.
+
 **What you can still do after shipping**
 
 The Workbench lets you take down your own published packages; if a package is taken down or reported, you can appeal. Both live on the package list in the Workbench.
@@ -150,6 +162,9 @@ The Workbench lets you take down your own published packages; if a package is ta
 | A white ring at the icon's corners | `logo.png` has rounded corners baked in over an opaque background, and the host rounds it again so the backing leaks (G11b) | Go full-bleed and fill the corners with the backing color |
 | After installing there is one empty widget and users do not know a key is needed | A `required` credential is declared but the page has no direct entry point (G25) | Put numbered steps plus a direct button on the home page |
 | A message saying the account is restricted from publishing | The account is on the publisher denylist | Contact the platform through in-app feedback |
+| "Publishing isn't available in mainland China yet" | You are publishing from mainland China | Not available yet; publish from outside mainland China |
+| A new version shipped but users are slow to get it automatically | It reaches more websites, credentials or background jobs than the installed version, so users must confirm each one | Expected; ship access-widening changes as their own version |
+| After a new release, a widget on the user's dashboard shows "Widget removed" | That `.xwidget` was deleted or renamed | Never rename a widget file; add a new file to replace a widget |
 
 ---
 

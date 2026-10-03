@@ -1,6 +1,6 @@
 # bridge —— H5 页 JS 桥契约
 
-> 读者:做信息源的用户,和替他干活的 AI。两者读同一份。
+> 读者:做工具的用户,和替他干活的 AI。两者读同一份。
 
 ## 它是什么
 
@@ -178,6 +178,7 @@ body { padding: calc(var(--xb-content-top) + 16px) 16px calc(var(--xb-content-bo
 | `--xb-content-bottom` | 底部要让出的高度 |
 | `--xb-safe-bottom` | 纯系统安全区底部 |
 | `--xb-safe-top` | 纯系统安全区顶部。**只有手机上有,桌面版没有** —— 别拿它当唯一让位依据 |
+| `--xb-bar-bottom` | 滚动后那条小标题栏的底边(安全区 + 44)。页内吸顶工具条写 `position: sticky; top: var(--xb-bar-bottom)`,贴在栏下面;写 `top: 0` 会钻到栏底下 |
 
 **主题与语言**:容器在 `documentElement` 上打 `data-theme`(`light` / `dark`)与 `data-lang`(语言码),切换时**改属性 + 派发事件,不重载页面**:
 

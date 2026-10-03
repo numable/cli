@@ -1,7 +1,7 @@
 {
   "id": "00000000000000000000000000",
   "version": 1,
-  "title": "我的信息源",
+  "title": "我的工具",
   "lang": "zh-CN",
   "category": "dashboard",
   "subtitle": "从一个时间组件开始",
@@ -10,7 +10,7 @@
   "network": [],
   "i18n": {
     "en-US": {
-      "title": "My Source",
+      "title": "My Tool",
       "subtitle": "Start from a clock widget"
     }
   }

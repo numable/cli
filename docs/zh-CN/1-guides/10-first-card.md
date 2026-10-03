@@ -1,10 +1,10 @@
 # first-card —— 从零做一个组件,完整走一遍
 
-> 读者:做信息源的用户,和替他干活的 AI。两者读同一份。
+> 读者:做工具的用户,和替他干活的 AI。两者读同一份。
 
 ## 目标
 
-做出一个能装进 App、能放上仪表盘和桌面的信息源包:一个 158×158 的组件,显示 Hacker News 此刻的榜首标题与分数,带取数时间锚,浅色 / 暗色两套配色,取不到数据时显示空态而不是白板。
+做出一个能装进 App、能放上仪表盘和桌面的工具:一个 158×158 的组件,显示 Hacker News 此刻的榜首标题与分数,带取数时间锚,浅色 / 暗色两套配色,取不到数据时显示空态而不是白板。
 
 数据源:`https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=1`(公开、零密钥、GET 一个 JSON)。
 
@@ -25,7 +25,7 @@ hn/
 
 1. Node ≥ 18,`numable` 命令可用。
 2. 装了 Chrome / Chromium(只有 `numable render` 需要它)。
-3. 有一个创作工作区目录,并且已经在 Numable App(Mac / Windows)工作台里把它加成工作区目录 —— 目录里的每个包都会出现在 App 的信息源列表里。还没有就先 `numable workspace init`。
+3. 有一个创作工作区目录,并且已经在 Numable App(Mac / Windows)工作台里把它加成工作区目录 —— 目录里的每个包都会出现在 App 的工具列表里。还没有就先 `numable workspace init`。
 
 一条命令自检:
 
@@ -282,7 +282,7 @@ numable render hn
 | `events.onClick` | 点组件去哪。`numable://self` = 打开本包首页;去具体页写 `numable://self/page/<路径>` |
 | `canvas.source` | 画法。`@[file://…]` 在组件这个宿主里的基准是 `xWidget/`,所以写 `rc/top.rcn` |
 | `canvas.depends` | 取数绑定。**必须写成 `{flow, params}` 对象**,哪怕 `params` 是空的 |
-| `canvas.refresh` | 刷新节奏。`interval` 裸秒数;**下限 10 秒**,写多快看上游接口的限流与配额扛不扛得住 |
+| `canvas.refresh` | 刷新节奏。`interval` 裸秒数;两次取数最短间隔 3 秒,**免费版用户会被放慢到每 5 分钟**、Pro 用户按你写的走;写多快看上游接口的限流与配额扛不扛得住 |
 
 `depends` 写成裸字符串 `"@[file://flow/top.df]"` 是最常见的一处静默失效:那种形态传**空入参**,吃参数的组件会渲一片 `--` 且不报错。这个组件虽然不吃参数,也照对象形态写 —— 加参数的那天就不会忘。
 
@@ -326,7 +326,7 @@ numable check hn
 包目录落在工作区目录里就已经可见了,不需要打包。
 
 1. 打开 Numable App(Mac / Windows)。
-2. 到信息源列表,下拉刷新 —— 「HN 榜首」应该出现在列表里。
+2. 到工具列表,下拉刷新 —— 「HN 榜首」应该出现在列表里。
 3. 点进去,把「此刻榜首」加到仪表盘。
 4. 组件显示的内容应该和 `render` 出来的浅色那张一致。
 

@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/2-reference/78-builtins.md sha256:aa2b51c31669 -->
+<!-- translated-from: zh-CN/2-reference/78-builtins.md sha256:59e474cb23e5 -->
 
 # builtins — the built-in variables (@app / @i18n / @env / @device / @time / @contentInset / @safeArea / @window / @fetch / @event)
 
-> Audience: people building a source, and the AI working on their behalf. Both read this same page.
+> Audience: people building a tool, and the AI working on their behalf. Both read this same page.
 
 ## What it is
 
@@ -41,8 +41,16 @@ In a widget's RCN: the time anchor, a fallback hint, and a width that follows th
 | `appId` | string | the install identifier | `.df` |
 | `language` | string | `zh-CN` | `.rcn` `.xpage` `.xform` `.af` `.df` |
 | `locale` | string | `zh-CN`, same value as `language` | `.rcn` `.xpage` `.xform` `.af` `.df` |
+| `region` | string | `cn` / `overseas` / `""` | `.af` `.df` |
+| `country` | string | `US` (the system region, two uppercase letters; `""` when unknown) | `.rcn` `.xpage` `.xform` `.af` `.df` |
+| `firstWeekday` | string | `"1"` = Monday … `"7"` = Sunday; `""` when unknown | `.rcn` `.xpage` `.xform` `.af` `.df` |
+| `upColor` | string | `red` / `green` (the color for "up"; `""` on older app versions) | `.rcn` `.xpage` `.xform` `.af` `.df` |
 
-⚠️ **`@app` carries different things in the two families of files**: in rendering and event files (`.rcn` / `.xpage` / `.xform` / `.af`), `@app` guarantees only `language` and `locale` — the five environment keys above cannot be read there. To branch on platform, read `${@app.platform}` in the `.df`, land the conclusion in a top-level key and expose it (`isIos = $[eq::(${@app.platform},ios)]`); the rendering layer looks only at that key.
+⚠️ **`@app` carries different things in the two families of files**: in rendering and event files (`.rcn` / `.xpage` / `.xform` / `.af`), `@app` guarantees only `language` and `locale` (`.af` also has `region`) — the environment keys above cannot be read there. To branch on platform, read `${@app.platform}` in the `.df`, land the conclusion in a top-level key and expose it (`isIos = $[eq::(${@app.platform},ios)]`); the rendering layer looks only at that key.
+
+`region` is the region this device is distributed under. It comes from the install channel; it is not the language, and it does not say whether a given site is reachable: `cn` = mainland China, `overseas` = everywhere else, an empty string = unknown. Typical use: when a data flow has a fallback source that cannot be reached from mainland China, skip it under `cn` rather than making the user wait out a timeout first.
+
+`country`, `firstWeekday` and `upColor` are this device's conventions: `country` is the region from the system settings (not the store front, not the current location), `firstWeekday` is the day the system calendar starts the week on (always Monday in China), and `upColor` is the up/down color the user picked under Me (on Automatic: red for up in China, green elsewhere). Any of the three can be empty (older app versions don't have them), so always read them with a fallback — for the up color write `$[if::($[ne::(${@app.upColor},)],$[eq::(${@app.upColor},red)],$[startsWith::(${@app.language},zh)])]`, and when the week start is empty use 1 in China and 7 elsewhere. Switching the up/down color makes widgets fetch again, just like switching the language.
 
 ### `@i18n` — the content table for the current language
 
@@ -89,12 +97,12 @@ Use it to log while developing, or to point temporarily at a test endpoint. **Do
 | Root | Keys | Type | Notes |
 |---|---|---|---|
 | `@contentInset` | `top` `right` `bottom` `left` | number (pt) | the safe area **plus** the container's own floating chrome (the capsule, the top bar, the ✕, the bottom navigation) and the keyboard |
-| `@safeArea` | `top` `right` `bottom` `left` | number (pt) | the system safe area only. Any edge where the container does not touch the screen is always 0 |
+| `@safeArea` | `top` `right` `bottom` `left` | number (pt) | the system safe area only. On edges where the container does not touch the screen (a card on a large screen, a Mac / Windows window): the top is always 5 (the card's rounded corner), left, right and bottom are always 0 |
 | `@window` | `width` `height` | number (pt) | the size of the **container**, not of the physical window |
 
 Where they work: XPage nodes, the `.rcn` of a canvas inside a page, and the `params` of an `.af` event binding. **A data flow (`.df`) has none of the three** — write one there and it evaluates to empty, so every size you compute comes out as 0.
 
-- **To stay clear of the UI, always use `@contentInset`.** Reading `@safeArea` runs you into the floating capsule: on a large screen the container does not touch the edge of the screen, so all four sides of `@safeArea` are 0 while the capsule still floats right there.
+- **To stay clear of the UI, always use `@contentInset`.** Reading `@safeArea` runs you into the floating capsule: on a large screen the container does not touch the edge of the screen, so `@safeArea` is only 5 at the top and 0 on the other three sides, while the capsule still floats right there.
 - All three are **values that change** (folding, rotation, split screen and the keyboard all re-issue them), so do not cache them into a key of your own as if they were first-frame constants.
 - A page normally needs **none of them**: the container already lays the content out in the right place. Only a page that needs fine control (a hero image running up under the status bar, say) reads them.
 - `@window.width` is the container width, not the screen width. On a large screen the container is a single phone-width column of widgets, and drawing to the screen width draws outside it.

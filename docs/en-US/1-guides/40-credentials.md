@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/1-guides/40-credentials.md sha256:2708d5d0a566 -->
+<!-- translated-from: zh-CN/1-guides/40-credentials.md sha256:39a3a5898c15 -->
 
 # credentials — connect a data source that needs a key
 
-> Audience: people building a source, and the AI working on their behalf. Both read this same page.
+> Audience: people building a tool, and the AI working on their behalf. Both read this same page.
 
 ## Goal
 
@@ -25,7 +25,7 @@ Some data sources are useless without a token (or their quota is too low to be u
 
 ## Step 1 · Declare it in the manifest
 
-**What to do**: add a `credentials` array. The whole chapter uses a made-up sample package, "GitHub Sample" (not the GitHub source in the store): it reads a user's public activity, which works anonymously and gets a higher quota once a token is bound — exactly the two tiers of `required: false`.
+**What to do**: add a `credentials` array. The whole chapter uses a made-up sample package, "GitHub Sample" (not the GitHub tool in the store): it reads a user's public activity, which works anonymously and gets a higher quota once a token is bound — exactly the two tiers of `required: false`.
 
 ```json
 {
@@ -192,6 +192,8 @@ numable run <package> --flow events --full
 The user's path is fixed and you do not have to build any onboarding UI, but each `required` setting asks one thing of you.
 
 **How the user binds a key**: at install time the install panel uses `credentials` to list which keys the package needs and which hosts they will be sent to; the binding itself happens under **"Mine → Credentials" in the app**, triggered by the user's own gesture, and the value goes only into the app's vault and is never echoed back to the package.
+
+**A free user can save only 1 credential in total** (one credential shared by several tools counts once); Pro has no limit. For your package design this means a `required: true` package either takes up a free user's only slot, or — if they already saved a credential for another package — needs an upgrade before they can bind it. If the source can fall back to anonymous access, write `required: false`, and do not turn "not bound" into "cannot be used".
 
 ### `required: false` — usable anonymously, better once bound
 

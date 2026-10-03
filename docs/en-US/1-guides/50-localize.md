@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/1-guides/50-localize.md sha256:c2a8ddce1018 -->
+<!-- translated-from: zh-CN/1-guides/50-localize.md sha256:0a87a75911ea -->
 
 # localize — turning a Chinese-only package bilingual
 
-> Audience: the person building a source, and the AI working on their behalf. Both read this same page.
+> Audience: the person building a tool, and the AI working on their behalf. Both read this same page.
 
 ## Goal
 

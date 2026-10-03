@@ -2,19 +2,19 @@
 > (English and Chinese), the templates, and the issue tracker. The CLI itself ships on npm
 > (`npx numable`); its source currently lives in Numable's main repository and will be published
 > here once its internal dependencies are untangled. Everything below is mirrored from
-> **numable@0.1.8**. Bugs, questions and ideas: [open an issue](https://github.com/numable/cli/issues).
+> **numable@0.1.9**. Bugs, questions and ideas: [open an issue](https://github.com/numable/cli/issues).
 >
 > **关于这个仓库** —— `numable` 创作命令行的公开主页:中英创作文档、模板和问题反馈。命令行本身在 npm 上
 > (`npx numable`);源码目前在 Numable 主仓里,理清内部依赖后会放到这里。下面的内容同步自
-> **numable@0.1.8**。报 bug、提问题、提想法:[开一个 issue](https://github.com/numable/cli/issues)。
+> **numable@0.1.9**。报 bug、提问题、提想法:[开一个 issue](https://github.com/numable/cli/issues)。
 
 # numable
 
-Authoring CLI for **Numable** info sources — the content bundles (XBundle) that show up as widgets on a
+Authoring CLI for **Numable** tools — the content bundles (XBundle) that show up as widgets on a
 Numable dashboard and as native widgets on your home screen.
 
 It is built to be driven **by your own AI agent** (Claude Code, Codex, Cursor…) as much as by you:
-`numable workspace init` writes an `AGENTS.md` into the folder, the whole spec ships inside the tool
+`numable workspace init` writes an `AGENTS.md` into the folder, the whole spec ships inside the CLI
 (`numable docs`), and every rule the spec states is enforced by a command the agent can run itself.
 
 ```bash
@@ -46,7 +46,7 @@ npm i -g numable
 Common flags: `--json` for machine-readable output, `--lang zh|en` for the interface language.
 Env vars: `NUMABLE_PROFILE`, `NUMABLE_LANG`, `NUMABLE_CHROME`.
 
-## The spec travels with the tool
+## The spec travels with the CLI
 
 There is no separate documentation site to keep in sync — the same Markdown the CLI prints is what
 the Numable desktop app shows in its reader, in English and Chinese:
@@ -77,7 +77,7 @@ Fixtures for local runs live in `<bundle>/.numable/` and are never shipped insid
 
 # numable(中文)
 
-**Numable 信息源**的创作命令行。信息源就是那些内容包(XBundle):装进来是仪表盘上的组件,
+**Numable 工具**的创作命令行。工具就是那些内容包(XBundle):装进来是仪表盘上的组件,
 钉出去是系统桌面上的小组件。
 
 它是**给你自己的 AI 助手**(Claude Code、Codex、Cursor……)和你共用的:`numable workspace init`
@@ -113,7 +113,7 @@ npm i -g numable --registry=https://registry.npmmirror.com
 通用参数:`--json` 机器可读输出、`--lang zh|en` 界面语言。
 环境变量:`NUMABLE_PROFILE`、`NUMABLE_LANG`、`NUMABLE_CHROME`。
 
-## 规范跟着工具走
+## 规范跟着命令行走
 
 没有另一个需要同步的文档站 —— CLI 打印的那份 Markdown,就是 Numable 桌面端阅读器里显示的那份,
 中英各一套:

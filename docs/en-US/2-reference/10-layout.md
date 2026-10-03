@@ -1,12 +1,12 @@
-<!-- translated-from: zh-CN/2-reference/10-layout.md sha256:a56dcb20ca2f -->
+<!-- translated-from: zh-CN/2-reference/10-layout.md sha256:22b3a246d119 -->
 
 # layout — package structure and manifest
 
-> Audience: the person building a source, and the AI working on their behalf. Both read this same page.
+> Audience: the person building a tool, and the AI working on their behalf. Both read this same page.
 
 ## What it is
 
-A source (an XBundle package) is a folder. Inside it there is a `manifest.json` (identity and metadata), some widgets (`xWidget/`), optional pages (`page/`) and assets. At publish time the whole folder is sealed into a `.xbundle`: the file set in the archive is `manifest.files` ∪ `manifest.json`, not one byte more. So "what is in the folder" = "what lands on the user's device".
+A tool (an XBundle package) is a folder. Inside it there is a `manifest.json` (identity and metadata), some widgets (`xWidget/`), optional pages (`page/`) and assets. At publish time the whole folder is sealed into a `.xbundle`: the file set in the archive is `manifest.files` ∪ `manifest.json`, not one byte more. So "what is in the folder" = "what lands on the user's device".
 
 The folder layout and the file extensions are **hard conventions**: the client picks a parsing engine by extension and looks for `page/router.json` and `xWidget/*.xwidget` at fixed paths. A file in the wrong place raises no error — it is simply never loaded.
 
@@ -20,7 +20,7 @@ This is exactly what `numable init` produces, ready to copy and edit:
 {
   "id": "01KZ58G6AXEKVWCQFYNY9S6EEM",
   "version": 1,
-  "title": "我的信息源",
+  "title": "我的工具",
   "lang": "zh-CN",
   "category": "dashboard",
   "subtitle": "从一张时间卡开始",
@@ -28,7 +28,7 @@ This is exactly what `numable init` produces, ready to copy and edit:
   "minEngine": "1.0.0",
   "network": [],
   "i18n": {
-    "en-US": { "title": "My Source", "subtitle": "Start from a clock widget" }
+    "en-US": { "title": "My Tool", "subtitle": "Start from a clock widget" }
   }
 }
 ```
@@ -39,7 +39,7 @@ And the folder it goes with:
 <package folder>/
   manifest.json              identity and metadata (required)
   logo.png                   512×512 full-bleed square (required to publish)
-  banner.xbanner             banner at the top of the source page (optional)
+  banner.xbanner             banner at the top of the Tools page (optional)
   page/
     router.json              page route table (only needed if there are pages)
     html/<route>/index.html  H5 page
@@ -69,7 +69,7 @@ And the folder it goes with:
 | `.af` | Action flow (something the user's finger takes part in) | Same as above |
 | `.xpage` | XPage page | `page/xpage/` |
 | `.xform` | Form page | `page/form/` |
-| `.xbanner` | Source-page banner (a widget's canvas: source / depends / refresh) | Package root |
+| `.xbanner` | Tools-page banner (a widget's canvas: source / depends / refresh) | Package root |
 
 The widget scope `xWidget/` and the page scope `page/` **each have their own** `rc/` + `flow/`, physically separated; the `@[file://…]` base differs between them too (see `numable docs xwidget`).
 
@@ -81,10 +81,10 @@ The widget scope `xWidget/` and the page scope `page/` **each have their own** `
 | `version` | yes | int | Content version of the whole package. Bump it whenever the content changes — distribution updates key off it alone |
 | `title` | yes | string | Package name. The bare value is in the `lang` language; ≤16 characters recommended, hard limit width 24 (full-width counts 2) |
 | `subtitle` | required to publish | string | One-line pitch, ≤22 characters recommended. Shown in the store and the install panel |
-| `description` | no | string | A short paragraph. It is the widget subtitle when someone shares this source, and **without it that subtitle falls back to the category name**; can be overridden via `i18n` |
+| `description` | no | string | A short paragraph. It is the widget subtitle when someone shares this tool, and **without it that subtitle falls back to the category name**; can be overridden via `i18n` |
 | `category` | yes | string | A platform enum key, see below |
 | `domain` | yes | string | Business domain key. `init` fills it in; leave it alone |
-| `minEngine` | yes | string | Write `"1.0.0"`. **Only the major integer is compared**, and it is a separate axis from the app version; `numable doctor` compares it against the current engine major |
+| `minEngine` | yes | string | Write the lowest level that covers the features you use: `"1.0.0"` for the basics; at least `"2.0.0"` with alerts / background jobs; at least `"3.0.0"` with one-time alerts, `alert.remove`, or tabular data (`tsv` / `csv`); at least `"4.0.0"` with a decision recipe `task.then.recipe`. `numable init --job` raises it for you, and `check` stops a value that is too low with G45 / G51. **Only the major integer is compared**, and it is a separate axis from the app version; `numable doctor` compares it against the current engine major |
 | `lang` | no (defaults to `zh-CN`) | BCP-47 | The package's base language — a statement of "which language every bare field is in". Write it explicitly |
 | `network` | required once you make requests | string[] | Outbound host allowlist, bare hosts with no protocol or path; `*.example.com` is supported (subdomains only, not the apex). Absent / empty array = everything outbound is refused |
 | `credentials` | no | object[] | Declaration of user-supplied keys, see below |
@@ -96,7 +96,7 @@ The widget scope `xWidget/` and the page scope `page/` **each have their own** `
 
 `finance` · `developer` · `productivity` · `life` · `health` · `system` · `tech` · `news` · `tools` · `dashboard` · `testing`.
 
-The platform ships Chinese and English wording for all 11 keys, so writing an enum key gets you both languages for free. Free-form text outside the enum also installs, but then you have to supply an English override in `i18n` yourself, or an English environment shows Chinese.
+The platform ships Chinese and English wording for all 11 keys, so writing an enum key gets you both languages for free. `tools` displays the same name as `productivity`; use `productivity` for new packages. Free-form text outside the enum also installs, but then you have to supply an English override in `i18n` yourself, or an English environment shows Chinese.
 
 ### `credentials` (user-supplied keys)
 
@@ -169,7 +169,7 @@ JSON has no comment syntax, so packages use a **`_note` key** throughout:
 
 - **`logo.png`**: package root, 512×512 square, **full-bleed, with no rounded corners baked in**. The host rounds every icon at `side × 0.2237`; round it yourself first and the corners end up with transparent notches or a double arc.
 - **Total size limit 1.5MB** (the sum of every file in the source folder). Prefer drawing images in RCN, or use an in-package `.uri` text asset.
-- **Do not park non-shippable things in the package folder**: fixtures, screenshots and notes all go in `.numable/` (names starting with `.` are skipped by every tool), or outside the package folder entirely.
+- **Do not park non-shippable things in the package folder**: fixtures, screenshots and notes all go in `.numable/` (names starting with `.` are always skipped and never packaged), or outside the package folder entirely.
 
 ### What happens without a `logo.png`
 
@@ -183,7 +183,7 @@ To control what that first character looks like, change the first character of `
 
 ### `banner.xbanner`
 
-A single file at the package root: the 16:9 banner at the top of the source page. Leave it out and the platform's default template is used (package name, category and the initial-letter icon); write it and the whole block is yours to draw. It is a widget's `canvas`: the three keys `source` (what to draw), `depends` (what data to fetch) and `refresh` (how often to fetch again) are written exactly as in a `.xwidget`; the only difference is that the size comes from `scene` and there is no `layout`.
+A single file at the package root: the 16:9 banner at the top of the Tools page. Leave it out and the platform's default template is used (package name, category and the initial-letter icon); write it and the whole block is yours to draw. It is a widget's `canvas`: the three keys `source` (what to draw), `depends` (what data to fetch) and `refresh` (how often to fetch again) are written exactly as in a `.xwidget`; the only difference is that the size comes from `scene` and there is no `layout`.
 
 ```json
 {
@@ -207,8 +207,8 @@ A single file at the package root: the 16:9 banner at the top of the source page
           "fontSize": "12pt", "textColor": "#B8FFFFFF|#B8FFFFFF", "maxLines": "1" }
       ],
       "i18n": {
-        "zh-CN": { "t": "我的信息源", "s": "一句话说明" },
-        "en-US": { "t": "My source", "s": "One line about it" }
+        "zh-CN": { "t": "我的工具", "s": "一句话说明" },
+        "en-US": { "t": "My tool", "s": "One line about it" }
       }
     },
     "depends": []
@@ -216,7 +216,7 @@ A single file at the package root: the 16:9 banner at the top of the source page
 }
 ```
 
-A banner that fetches data (say, a price ticker on the poster) keeps its canvas and fetch flow in `xWidget/` and references them; the source page fetches again on the `refresh` schedule:
+A banner that fetches data (say, a price ticker on the poster) keeps its canvas and fetch flow in `xWidget/` and references them; the Tools page fetches again on the `refresh` schedule:
 
 ```json
 {
@@ -236,7 +236,7 @@ Five things to remember:
 4. **`params` are fixed values.** `${key}` in the fetch flow reads them; there is only one banner, so users cannot change them from the dashboard the way they can for a widget. If nothing is fetched, leave it an empty object, leave `depends` an empty array and omit `refresh`.
 5. **Both languages are on you**: the i18n rule in `check` (G8) does not scan `.xbanner`. Nobody will tell you that the banner text has no English, so switch languages and look at it before publishing.
 
-The old shape (top-level `rcn` / `flow`) is no longer read; `check` stops it with G43, and the App treats such a file as having no banner and falls back to the default template.
+Do not write a top-level `rcn` / `flow`: the App reads only `canvas`, so that shape is treated as having no banner and falls back to the default template; `check` stops it with G43.
 
 ## Rules (break one and you rework)
 
@@ -245,10 +245,10 @@ The old shape (top-level `rcn` / `flow`) is no longer read; `check` stops it wit
 | Every `.json .rcn .df .af .xwidget .xpage .xform .xmenu .xbanner` must be valid JSON | `check` G0 | The whole widget / page does not render in the app, with clean logs | Fix the syntax; write comments as `_note` strings |
 | The six fields `id/version/title/category/domain/minEngine` are required | `check` G2 | Will not install into the app | Fill them in |
 | `id` must be a 26-character ULID | `check` G2 (warn) · `doctor` | The store cannot address it and the update chain does not line up | Create packages with `numable init`; do not `cp -r` another one |
-| No legacy leftovers: `page.json` / `*.flow.json` / `xWidget/template/` / `actionFlow/` | `check` G1 | Those files are never loaded, which looks like "I wrote it and nothing happened" | RCN goes in `rc/`, flows in `flow/`, extensions become `.af` / `.df` |
+| No files or folders that are never loaded: `page.json` / `*.flow.json` / `xWidget/template/` / `actionFlow/` | `check` G1 | Those files are never loaded, which looks like "I wrote it and nothing happened" | RCN goes in `rc/`, flows in `flow/`, extensions become `.af` / `.df` |
 | No test fixtures in the package (`*.params.json`, `fixtures/`) | `check` G1b | Real keys inside a fixture get signed and distributed | Move them into `.numable/params/` |
 | Total source-folder bytes ≤ 1.5MB | `check` G13 | Publishing is rejected | Cut image assets |
-| `banner.xbanner` must carry `scene.width` / `scene.height` (positive numbers) | manual review (open the source page in the app and look at the banner) | That whole block is missing while everything else is fine | Add `"scene": {"width": 338, "height": 190, "corner": 18}` |
+| `banner.xbanner` must carry `scene.width` / `scene.height` (positive numbers) | manual review (open the Tools page in the app and look at the banner) | That whole block is missing while everything else is fine | Add `"scene": {"width": 338, "height": 190, "corner": 18}` |
 | `network` and the hosts actually requested **match exactly** (no more, no less) | `check` G3 | Too few: requests are silently blocked on a real device while the flow still reports success and the widget renders `--`; too many: the install panel lists a scary set of unused hosts | Line it up with `request.url` in `.df` / `.af` and `remote` / `fallback` in `router.json` |
 | Each `credentials[i]` needs a unique `id`, an allowed `type`, explicit `hosts ⊆ network`, a `label` in both languages, and an https `help` | `check` G18 | The binding panel cannot render, or the key is sent to an undeclared host | Fill it in per the table above |
 | A widget's `params` key names must not look like secrets (`token`/`secret`/`password`/`api_key`, or the Chinese words for key/token) | `check` G18 | The key ends up in the plain-text echo panel and in shared screenshots | Move it to `manifest.credentials` |
@@ -256,7 +256,7 @@ The old shape (top-level `rcn` / `flow`) is no longer read; `check` stops it wit
 | A published package must have `subtitle`, plus complete `i18n["en-US"].title/subtitle` | `check --profile publish` G19 | The store and install panel show Chinese in an English environment | Add the English overrides |
 | Title width ≤ 24 units per language (full-width 2 / half-width 1) | `check --profile publish` G21 | It does not fit the two lines of a store grid tile and the name is truncated | Shorten `title` |
 | A published package must have `logo.png`: square, 512, full-bleed, no baked corners | `check --profile publish` G11 | Falls back to the initial-letter icon; or transparent notches / double arcs at the corners | Re-export a full-bleed square |
-| `minEngine`'s major must not exceed the current engine | `doctor` | "App version too low" only blows up at install time | Write `1.0.0` |
+| `minEngine`'s major must not exceed the current engine, nor fall below what the features you use require | `doctor` (too high) · `check` G45 / G51 (too low) | Too high: "App version too low" only blows up at install time; too low: older apps install it and the feature silently does nothing | Follow the `minEngine` row above |
 | `version` +1 on every content change | manual review | Installed users never receive the update and the update chain never matches | Bump it before publishing |
 
 ## When something goes wrong
@@ -269,8 +269,8 @@ The old shape (top-level `rcn` / `flow`) is no longer read; `check` stops it wit
 | Installing says "app version too low" | `minEngine`'s major is above the client's | Check the current engine major with `numable doctor` and lower it |
 | Users get no update after publishing | `manifest.version` was not bumped | Bump it and publish again |
 | The store truncates the name / shows Chinese in an English environment | The name is too long / `i18n["en-US"]` is missing | `numable check --profile publish` lists both line by line |
-| The banner at the top of the source page is entirely blank | `banner.xbanner` has no `scene`, or some cell has no `type` | Add `scene`; `check` G7c points at the cell that is missing `type` |
-| The source icon is a letter tile | There is no `logo.png` at the package root, so the initial-letter placeholder kicked in | Ship a 512×512 full-bleed square; `check --profile publish` G11 also stops it |
+| The banner at the top of the Tools page is entirely blank | `banner.xbanner` has no `scene`, or some cell has no `type` | Add `scene`; `check` G7c points at the cell that is missing `type` |
+| The tool icon is a letter tile | There is no `logo.png` at the package root, so the initial-letter placeholder kicked in | Ship a 512×512 full-bleed square; `check --profile publish` G11 also stops it |
 | Two packages overwrite each other in the app | Copying a package with `cp -r` gave them the same `id` | `numable init <new folder> --from <old package>`, which regenerates the identity |
 
 ## Related

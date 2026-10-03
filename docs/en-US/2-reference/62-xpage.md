@@ -1,8 +1,8 @@
-<!-- translated-from: zh-CN/2-reference/62-xpage.md sha256:5fb2323c6b9f -->
+<!-- translated-from: zh-CN/2-reference/62-xpage.md sha256:c6b451b09efa -->
 
 # xpage — declarative pages (.xpage)
 
-> Audience: people building sources, and the AI working on their behalf. Both read this same page.
+> Audience: people building tools, and the AI working on their behalf. Both read this same page.
 
 ## What it is
 
@@ -76,7 +76,9 @@ The shell has only four keys, three of them required:
 | `root` | ✓ | The content root, which must be a `container` |
 | `i18n` | | The page-level string table `{locale: {key: string}}`, used by `${@i18n.key}` at the node level |
 
-The shell has **no** `depends` / `events` / `layout` / `state` / `width`. Page-level fetching is the `depends` on `root`, the page lifecycle is the `events` on `root`, the width is always given by the container, and the title and presentation belong to `router.json`.
+The shell has **no** `depends` / `events` / `layout` / `state` / `width`. Page-level fetching is the `depends` on `root`, the page lifecycle is the `events` on `root`, the width is always given by the container, and the presentation belongs to `router.json`.
+
+**The page title** goes on `root` (optional): `"title": "${detail.name}"`. Once the page scrolls past its header, the container shows a small title in the pill row, and this is where it comes from. It is evaluated against everything the root node can read (route params, `state`, `data`, the output of the root's `depends`) and recomputed on first paint, on every redraw and when the root's fetch returns, so the title follows the data; if it evaluates to empty, it falls back to `name` / `title` in the route query, then to the `router.json` title and the package name (see `numable docs page`). You can leave it out — users then see the route title after scrolling.
 
 There are only two kinds of node:
 
@@ -95,7 +97,7 @@ Besides `canvas.source`, a Canvas leaf can carry its own `canvas.depends` (re-fe
   "canvas": {
     "source": "@[file://page/rc/quote.rcn]",
     "depends": { "flow": "@[file://page/flow/quote.df]", "params": { "code": "${code}" } },
-    "refresh": { "interval": 300 }
+    "refresh": { "interval": ["300"] }
   }
 }
 ```

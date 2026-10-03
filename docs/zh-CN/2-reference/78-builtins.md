@@ -1,6 +1,6 @@
 # builtins —— 内置变量(@app / @i18n / @env / @device / @time / @contentInset / @safeArea / @window / @fetch / @event)
 
-> 读者:做信息源的用户,和替他干活的 AI。两者读同一份。
+> 读者:做工具的用户,和替他干活的 AI。两者读同一份。
 
 ## 它是什么
 
@@ -39,8 +39,16 @@
 | `appId` | string | 安装标识 | `.df` |
 | `language` | string | `zh-CN` | `.rcn` `.xpage` `.xform` `.af` `.df` |
 | `locale` | string | `zh-CN`,与 `language` 同值 | `.rcn` `.xpage` `.xform` `.af` `.df` |
+| `region` | string | `cn` / `overseas` / `""` | `.af` `.df` |
+| `country` | string | `US`(系统地区,两位大写;拿不到为 `""`) | `.rcn` `.xpage` `.xform` `.af` `.df` |
+| `firstWeekday` | string | `"1"` = 周一 … `"7"` = 周日;拿不到为 `""` | `.rcn` `.xpage` `.xform` `.af` `.df` |
+| `upColor` | string | `red` / `green`(涨用什么颜色;老版本 App 为 `""`) | `.rcn` `.xpage` `.xform` `.af` `.df` |
 
-⚠️ **`@app` 在两类文件里装的东西不一样**:渲染与事件类文件(`.rcn` / `.xpage` / `.xform` / `.af`)里的 `@app` 只保证 `language` 与 `locale` 两个键,上面那五个环境键在那里读不到。要按平台分支,在 `.df` 里读 `${@app.platform}`,把结论落成一个顶层键透出去(`isIos = $[eq::(${@app.platform},ios)]`),渲染层只看那个键。
+⚠️ **`@app` 在两类文件里装的东西不一样**:渲染与事件类文件(`.rcn` / `.xpage` / `.xform` / `.af`)里的 `@app` 只保证 `language` 与 `locale` 两个键(`.af` 另有 `region`),上面那几个环境键在那里读不到。要按平台分支,在 `.df` 里读 `${@app.platform}`,把结论落成一个顶层键透出去(`isIos = $[eq::(${@app.platform},ios)]`),渲染层只看那个键。
+
+`region` 是这台设备按哪个地区分发,由安装渠道决定,不是语言,也不代表能不能连上某个网站:`cn` = 中国大陆,`overseas` = 其余地区,空串 = 说不准。典型用法:取数流里有一个在中国大陆打不开的兜底源时,`cn` 下直接跳过它,别让用户先白等一轮超时。
+
+`country`、`firstWeekday`、`upColor` 是这台设备的习惯:`country` 是系统设置里的地区(不是店面、不是所在位置),`firstWeekday` 是系统日历一周从哪天开始(中国一律周一),`upColor` 是用户在「我的」里选的涨跌颜色(跟随习惯时:国内红涨、其余绿涨)。三个都可能为空(老版本 App 没有),读的时候一律带回落 —— 涨跌色写 `$[if::($[ne::(${@app.upColor},)],$[eq::(${@app.upColor},red)],$[startsWith::(${@app.language},zh)])]`,周首为空时按「国内 1、其余 7」。切涨跌颜色与切语言一样会让组件重新取数。
 
 ### `@i18n` —— 当前语言的文案表
 
@@ -87,12 +95,12 @@
 | 根 | 键 | 类型 | 说明 |
 |---|---|---|---|
 | `@contentInset` | `top` `right` `bottom` `left` | number(pt) | 安全区 **加上** 容器自己的悬浮 chrome(胶囊、顶栏、✕、底部导航)与键盘 |
-| `@safeArea` | `top` `right` `bottom` `left` | number(pt) | 只有系统安全区。容器不贴屏幕的那条边恒为 0 |
+| `@safeArea` | `top` `right` `bottom` `left` | number(pt) | 只有系统安全区。容器不贴屏幕的边(大屏上的卡片、Mac / Windows 的窗口):顶边恒为 5(卡片圆角),左、右、下恒为 0 |
 | `@window` | `width` `height` | number(pt) | **容器**的尺寸,不是物理窗口 |
 
 在哪能用:`.xpage` 的节点、页面里 canvas 的 `.rcn`、以及 `.af` 事件绑定的 `params`。**取数流(`.df`)里没有这三个**——写了求值为空,尺寸算出来就是 0。
 
-- **要避开 UI 一律用 `@contentInset`**。读 `@safeArea` 会撞上悬浮胶囊:大屏上容器不贴屏幕边,`@safeArea` 四边全是 0,而胶囊照样浮在那儿。
+- **要避开 UI 一律用 `@contentInset`**。读 `@safeArea` 会撞上悬浮胶囊:大屏上容器不贴屏幕边,`@safeArea` 顶边只有 5、其余三边是 0,而胶囊照样浮在那儿。
 - 三个都是**会变的量**(折叠、旋转、分屏、键盘弹起都会重新下发),别把它们当首帧常量缓存进自己的键。
 - 页面默认**一个都不用写**:容器已经把内容排在正确位置。只有要精细控制的那种页(比如头图顶到状态栏底下)才读它们。
 - `@window.width` 是容器宽,不是屏幕宽。大屏上容器是一列手机宽的组件,按屏幕宽画会画出界。

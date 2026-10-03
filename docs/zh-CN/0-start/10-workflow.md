@@ -1,11 +1,11 @@
 # workflow —— 创作流程与纪律
 
-> 读者:做信息源的用户,和替他干活的 AI。两者读同一份。
-> 先读这章,它定义「做一个信息源的顺序」与「不能越的线」;能不能做某件事见 `numable docs capabilities`,具体文件格式见 layout / xwidget / df / rcn 各章。
+> 读者:做工具的用户,和替他干活的 AI。两者读同一份。
+> 先读这章,它定义「做一个工具的顺序」与「不能越的线」;能不能做某件事见 `numable docs capabilities`,具体文件格式见 layout / xwidget / df / rcn 各章。
 
-## 一个信息源是什么
+## 一个工具是什么
 
-一个信息源就是**一个目录**,里面全是明文 JSON / HTML,没有构建产物、没有编译步骤。App 把工作区目录当根:文件写进去,包就在 App 里可见;改一个字,重渲就生效。
+一个工具就是**一个目录**,里面全是明文 JSON / HTML,没有构建产物、没有编译步骤。App 把工作区目录当根:文件写进去,包就在 App 里可见;改一个字,重渲就生效。
 
 最小的包长这样(`numable init` 生成的起步包):
 
@@ -28,7 +28,7 @@ my-source/
 |---|---|---|
 | `manifest.json` | 包的身份、商店门面、网络白名单、凭证声明、语言基准 | 不放任何业务数据 |
 | `.xwidget` | 把「画法 + 取数 + 尺寸 + 刷新 + 点击」绑在一起,并给出实例参数默认值 | 不写画法,不写取数逻辑 |
-| `.df` | 取数与加工:请求、解析、算派生量,最后 `resultFilter` 透出一组键 | 不碰 UI,不引语言/主题 |
+| `.df` | 取数与加工:请求、解析、算派生量,最后 `resultFilter` 透出一组键 | 不碰 UI,不引主题(可以读 `${@app.language}`、带自己的 `i18n` 表,见 `numable docs i18n`) |
 | `.rcn` | 画:用 `.df` 透出的键渲一个组件 | 不发请求,不做重计算 |
 
 多出来的两类是可选的:`page/` 下的详情页(html / xpage / form 三种页型,见 `numable docs page`),和 `.af` 交互流(点击、参数写回、刷新,见 `numable docs af`)。
@@ -44,7 +44,7 @@ numable init my-source
 numable init my-source --from ../已有的包目录
 ```
 
-从模板或一个已有的包克隆,不要手搓目录:身份 `id`(26 位 ULID)由工具生成并写进 `manifest.id` / `manifest.domain`,目录布局与文件后缀现成正确。看到 `✓ 新包 …  id=…` 即成功。
+从模板或一个已有的包克隆,不要手搓目录:身份 `id`(26 位 ULID)由命令行生成并写进 `manifest.id` / `manifest.domain`,目录布局与文件后缀现成正确。看到 `✓ 新包 …  id=…` 即成功。
 
 ### 2. 先取数,后画组件
 
@@ -106,12 +106,13 @@ numable check my-source
 | 命令 | 干什么 |
 |---|---|
 | `numable workspace init [目录]` | 把一个目录变成创作工作区:写一份给 AI 看的指引,之后在这个目录里直接对 AI 说需求即可 |
-| `numable init <目录> [--from <包>]` | 新建包(重新生成身份 ULID) |
+| `numable init <目录> [--from <包目录>\|installed:<id>]` | 新建包(重新生成身份 ULID)。`--from` 可以是本地任意包目录,也可以是桌面 App 里已装的包(`installed:<id>`,Mac / Windows 版) |
+| `numable init --job <id> --kind static\|once\|cross\|level\|changed\|task` | 在当前包目录里加一条提醒 / 后台任务,并按需抬高 `manifest.minEngine`,见 `numable docs alerts` |
 | `numable check [包…] [--profile personal\|publish]` | 静态闸 |
-| `numable run [包…] [--flow a,b] [--full] [--fixtures <目录>]` | 数据层真跑 |
+| `numable run [包…] [--flow a,b] [--file x.df] [--full] [--fixtures <目录>]` | 数据层真跑。`--file` 跑任意一条 `.df`(包括没被任何组件绑定的探针流) |
 | `numable render [包…] [--widget a,b] [--states light,dark,empty] [--locales zh-CN,en-US]` | 渲染层出图 |
 | `numable render [包…] --page [/路由,…] [--locales zh-CN,en-US]` | 页面出图(html / xpage,浅色 + 暗色整页截图) |
-| `numable docs [主题]` | 读这套文档 |
+| `numable docs [主题] [--toc] [--section 关键字] [--search 关键字]` | 读这套文档。长章先 `--toc` 看目录,`--section` 只读一节,`--search` 跨章检索 |
 | `numable doctor [包…]` | 环境 / 引擎版本 / 工作区体检 |
 
 三个通用开关与三个环境变量:
@@ -139,7 +140,7 @@ numable check my-source
 
 | 红线 | 检查方式 | 违反时的现象 | 修法 |
 |---|---|---|---|
-| **源文件唯一真相**:不写生成脚本,不留夹具 | `check` G1b / G1 | 夹具随包分发,或目录布局是旧式 | 夹具放 `.numable/params/`;RCN 归 `rc/`、流归 `flow/` |
+| **源文件唯一真相**:不写生成脚本,不留夹具 | `check` G1b / G1 | 夹具随包分发,或文件放在不被加载的位置(写了不生效) | 夹具放 `.numable/params/`;RCN 归 `rc/`、流归 `flow/` |
 | **网络白名单闭合**:`.df` 请求的 host 集合 == `manifest.network`,不多不少 | `check` G3 | 少了:真机静默拦掉,组件恒 `--`;多了:安装面板列一堆用不上的域名吓用户 | 按 `run` 打印的白名单对齐 |
 | **密钥不进包**:不写进 `params`、不写进 `.df` 字面量、不写进 `data.*` | `check` G18 | 明文密钥随包分发给所有人 | 走 `manifest.credentials` 声明 + 本机夹具 `.numable/params/_credentials.json`,见 `numable docs credentials` |
 | **不编数据**:取不到就让流失败,不要用 0 / 空串 / 假时间顶上 | `check` G26 | 取数失败时流报成功,空数据覆盖掉上一次的好数据,组件上出现一个看着正常的假数字 | 主干字段判空 → `action:"error"`;「集合为空」是成功,不是失败 |
@@ -147,7 +148,7 @@ numable check my-source
 | **双分支颜色**:`.rcn` 里所有带 hex 的颜色字段写 `浅\|深` | `check` G7 | 暗色下整块看不见,或白底上白字 | `"textColor": "#1A1A1A\|#FFFFFF"` |
 | **单位写 `pt`** | `check` G28(双单位后缀)+ `render` 层目检 | 写 `px`:内容缩到左上角、字号偏小;写成 `14.0ptpt`:整个组件渲不出且不报错 | 所有几何与字号统一 `pt` |
 | **文案走 i18n**:用户可见文本写 `${@i18n.key}` | `check` G8 / G8b(publish 档) | 英文环境下组件上一半中文 | 文案表放各资产自己的 `i18n`,见 `numable docs i18n` |
-| **判空用显式旗标**:`gt::(length::(${x}),0)` 或哨兵,不要 `eq::(x,)` / `eq::(x,0)` | `run` 层(把 URL 改成 404 再跑一遍) | 空态渲出「有颜色的 `▼ --%`」这类自相矛盾的画面 | 在 `.df` 里落一个 `hasX` 旗标,`.rcn` 只判旗标 |
+| **判空用显式旗标**:哨兵写法 `$[if::(eq::(findNotEmpty::(${x},__none__),__none__),0,1)]`,不要 `eq::(x,)` / `eq::(x,0)`,也不要 `length::`(对数字恒返 0) | `run` 层(把 URL 改成 404 再跑一遍) | 空态渲出「有颜色的 `▼ --%`」这类自相矛盾的画面 | 在 `.df` 里落一个 `hasX` 旗标,`.rcn` 只判旗标 |
 
 ## 个人自用 vs 发布
 
@@ -175,6 +176,7 @@ numable check my-source --profile publish
 | 加点击、参数编辑、表单 | `numable docs add-interaction` |
 | 接需要密钥的数据源 | `numable docs credentials` |
 | 做中英双语 | `numable docs localize` |
+| 加提醒或后台任务 | `numable docs alerts` |
 | 从自用到上架 | `numable docs publish` |
 | 查某个文件怎么写 | `numable docs layout` · `xwidget` · `df` · `rcn` · `af` · `page` · `bridge` · `i18n` · `params` |
 | 做一张声明式页面(八种布局、条件显隐、输入框、触底分页) | `numable docs xpage` |

@@ -1,10 +1,10 @@
 # layout —— 包结构与 manifest
 
-> 读者:做信息源的用户,和替他干活的 AI。两者读同一份。
+> 读者:做工具的用户,和替他干活的 AI。两者读同一份。
 
 ## 它是什么
 
-一个信息源就是一个目录。目录里有一份 `manifest.json`(身份与元数据)、若干个组件(`xWidget/`)、可选的页面(`page/`)和资产。发布时这个目录被整个封成一个 `.xbundle`:归档里的文件集合 = `manifest.files` ∪ `manifest.json`,一个字节都不多。所以「目录里有什么」= 「用户设备上会下载到什么」。
+一个工具就是一个目录。目录里有一份 `manifest.json`(身份与元数据)、若干个组件(`xWidget/`)、可选的页面(`page/`)和资产。发布时这个目录被整个封成一个 `.xbundle`:归档里的文件集合 = `manifest.files` ∪ `manifest.json`,一个字节都不多。所以「目录里有什么」= 「用户设备上会下载到什么」。
 
 目录布局与文件后缀都是**硬约定**:客户端按后缀决定用哪个引擎解析,按固定路径去找 `page/router.json`、`xWidget/*.xwidget`。放错位置的文件不会报错,只是永远不被加载。
 
@@ -18,7 +18,7 @@
 {
   "id": "01KZ58G6AXEKVWCQFYNY9S6EEM",
   "version": 1,
-  "title": "我的信息源",
+  "title": "我的工具",
   "lang": "zh-CN",
   "category": "dashboard",
   "subtitle": "从一个时间组件开始",
@@ -26,7 +26,7 @@
   "minEngine": "1.0.0",
   "network": [],
   "i18n": {
-    "en-US": { "title": "My Source", "subtitle": "Start from a clock card" }
+    "en-US": { "title": "My Tool", "subtitle": "Start from a clock card" }
   }
 }
 ```
@@ -37,7 +37,7 @@
 <包目录>/
   manifest.json              身份与元数据(必需)
   logo.png                   512×512 满幅方图(发布必需)
-  banner.xbanner             信息源页顶部横幅(可选)
+  banner.xbanner             工具页顶部横幅(可选)
   page/
     router.json              页面路由表(有页面才需要)
     html/<route>/index.html  H5 页
@@ -67,7 +67,7 @@
 | `.af` | 交互流(用户手指参与的动作) | 同上 |
 | `.xpage` | XPage 页面 | `page/xpage/` |
 | `.xform` | 表单页 | `page/form/` |
-| `.xbanner` | 信息源页横幅(一个组件的 canvas:source / depends / refresh) | 包根 |
+| `.xbanner` | 工具页横幅(一个组件的 canvas:source / depends / refresh) | 包根 |
 
 组件域 `xWidget/` 与页面域 `page/` **各有一套** `rc/` + `flow/`,物理隔离;两边的 `@[file://…]` 基准也不同(见 `numable docs xwidget`)。
 
@@ -79,10 +79,10 @@
 | `version` | 是 | int | 整包内容版本。内容变了就 +1 —— 分发更新只认它 |
 | `title` | 是 | string | 包名。裸值 = `lang` 那门语言;建议 ≤16 字,硬上限单位宽 24(全角算 2) |
 | `subtitle` | 发布必填 | string | 一句话介绍,建议 ≤22 字。商店与安装面板显示 |
-| `description` | 否 | string | 一段话简介。分享这个信息源时当组件副标显示,**不写就回落成分类名**;可被 `i18n` 覆盖 |
+| `description` | 否 | string | 一段话简介。分享这个工具时当组件副标显示,**不写就回落成分类名**;可被 `i18n` 覆盖 |
 | `category` | 是 | string | 平台枚举 key,见下 |
 | `domain` | 是 | string | 业务域键。`init` 已填好,不必改 |
-| `minEngine` | 是 | string | 写 `"1.0.0"`。**只比大版本整数**,与 App 版本是两条独立的轴;`numable doctor` 会拿它跟当前引擎大版本对一次 |
+| `minEngine` | 是 | string | 按用到的能力写够用的最低一档:只用基础能力写 `"1.0.0"`;用了提醒 / 后台任务至少 `"2.0.0"`;一次性提醒、`alert.remove`、表格取数(`tsv` / `csv`)至少 `"3.0.0"`;判定配方 `task.then.recipe` 至少 `"4.0.0"`。`numable init --job` 会自动抬,写低了 `check` 用 G45 / G51 拦下。**只比大版本整数**,与 App 版本是两条独立的轴;`numable doctor` 会拿它跟当前引擎大版本对一次 |
 | `lang` | 否(缺省 `zh-CN`) | BCP-47 | 包的基准语言 = 「所有裸字段是哪门话」的陈述。显式写出来 |
 | `network` | 有请求就必填 | string[] | 出网 host 白名单,纯 host 不带协议与路径;支持 `*.example.com`(只配子域,不含裸域)。缺省 / 空数组 = 拒一切出口 |
 | `credentials` | 否 | object[] | 用户自带密钥声明,见下 |
@@ -92,9 +92,9 @@
 
 ### `category` 的 11 个枚举值
 
-`finance` 财经 · `developer` 开发者 · `productivity` 效率 · `life` 生活 · `health` 健康 · `system` 系统 · `tech` 科技 · `news` 资讯 · `tools` 工具 · `dashboard` 看板 · `testing` 测试。
+`finance` 财经 · `developer` 开发者 · `productivity` 效率 · `life` 生活 · `health` 健康 · `system` 系统 · `tech` 科技 · `news` 资讯 · `tools` 效率 · `dashboard` 看板 · `testing` 测试。
 
-平台自带这 11 个 key 的中英词表,写枚举 key 就自动双语。写枚举以外的自由文本也能装,但你得自己在 `i18n` 里给它英文覆盖,否则英文环境显示中文。
+平台自带这 11 个 key 的中英词表,写枚举 key 就自动双语。`tools` 与 `productivity` 显示同一个名字,新包用 `productivity`。写枚举以外的自由文本也能装,但你得自己在 `i18n` 里给它英文覆盖,否则英文环境显示中文。
 
 ### `credentials`(用户自带密钥)
 
@@ -167,7 +167,7 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 
 - **`logo.png`**:包根,512×512 正方形,**满幅、自己不烤圆角**。宿主统一按 `边长 × 0.2237` 裁圆角;图自己先圆一次,四角会出现透明缺口或双重圆角。
 - **总量上限 1.5MB**(源目录全部文件之和)。图片优先用 RCN 画,或用包内 `.uri` 文本资产。
-- **别往包目录塞不发布的东西**:夹具、截图、笔记一律放 `.numable/`(`.` 开头的名字被一切工具跳过),或放到包目录之外。
+- **别往包目录塞不发布的东西**:夹具、截图、笔记一律放 `.numable/`(`.` 开头的名字一律被跳过,不会打进包),或放到包目录之外。
 
 ### 没有 `logo.png` 会怎样
 
@@ -181,7 +181,7 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 
 ### `banner.xbanner`
 
-包根一个单文件,信息源页顶部那张 16:9 的横幅。不写就用平台的默认模板(把包名、分类、首字母图标摆上去);写了就整块归你画。它就是一个组件的 `canvas`:`source`(画什么)、`depends`(取什么数)、`refresh`(多久重取一次)三个键与 `.xwidget` 里的写法完全一样,只是尺寸由 `scene` 给、没有 `layout`。
+包根一个单文件,工具页顶部那张 16:9 的横幅。不写就用平台的默认模板(把包名、分类、首字母图标摆上去);写了就整块归你画。它就是一个组件的 `canvas`:`source`(画什么)、`depends`(取什么数)、`refresh`(多久重取一次)三个键与 `.xwidget` 里的写法完全一样,只是尺寸由 `scene` 给、没有 `layout`。
 
 ```json
 {
@@ -205,7 +205,7 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
           "fontSize": "12pt", "textColor": "#B8FFFFFF|#B8FFFFFF", "maxLines": "1" }
       ],
       "i18n": {
-        "zh-CN": { "t": "我的信息源", "s": "一句话说明" },
+        "zh-CN": { "t": "我的工具", "s": "一句话说明" },
         "en-US": { "t": "My source", "s": "One line about it" }
       }
     },
@@ -214,7 +214,7 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 }
 ```
 
-要取数的横幅(比如海报上放一条行情)把画布与取数流都放进 `xWidget/`,在横幅里引用它们;信息源页会按 `refresh` 定时重取:
+要取数的横幅(比如海报上放一条行情)把画布与取数流都放进 `xWidget/`,在横幅里引用它们;工具页会按 `refresh` 定时重取:
 
 ```json
 {
@@ -234,7 +234,7 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 4. **`params` 是固定值**。取数流里写 `${键名}` 取到的就是它;横幅只有一份,用户不能像组件那样在仪表盘上改。不取数就留空对象,`depends` 留空数组、不写 `refresh`。
 5. **双语靠自觉**:`check` 的 i18n 闸(G8)不扫 `.xbanner`。横幅上的字漏了英文没人会告诉你,发布前自己切语言看一眼。
 
-旧写法(顶层 `rcn` / `flow`)已经不认,`check` 用 G43 拦下;App 里遇到旧写法会当作没有横幅,换成默认模板。
+不要写顶层 `rcn` / `flow`:App 只读 `canvas`,那种写法会被当作没有横幅、换成默认模板,`check` 用 G43 拦下。
 
 ## 规则(违反 = 返工)
 
@@ -243,10 +243,10 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 | 所有 `.json .rcn .df .af .xwidget .xpage .xform .xmenu .xbanner` 必须是合法 JSON | `check` G0 | App 里整个组件/整页不渲染,日志干净 | 修语法;注释写成 `_note` 字符串 |
 | `id/version/title/category/domain/minEngine` 六个字段必填 | `check` G2 | 装不进 App | 补齐 |
 | `id` 必须是 26 位 ULID | `check` G2(warn)· `doctor` | 商店寻址不到,更新链路对不上 | 用 `numable init` 建包;不要 `cp -r` 别的包 |
-| 不留旧格式残留:`page.json` / `*.flow.json` / `xWidget/template/` / `actionFlow/` | `check` G1 | 那些文件永远不被加载,像「写了没生效」 | RCN 归 `rc/`,流归 `flow/`,后缀改 `.af`/`.df` |
+| 不写不会被加载的文件与目录:`page.json` / `*.flow.json` / `xWidget/template/` / `actionFlow/` | `check` G1 | 那些文件永远不被加载,像「写了没生效」 | RCN 归 `rc/`,流归 `flow/`,后缀改 `.af`/`.df` |
 | 包里不得有测试夹具(`*.params.json`、`fixtures/`) | `check` G1b | 夹具里的真实密钥被签名分发出去 | 移进 `.numable/params/` |
 | 源目录总字节 ≤ 1.5MB | `check` G13 | 发布被拒 | 砍图片资产 |
-| `banner.xbanner` 必须带 `scene.width` / `scene.height`(正数) | 人审(App 里打开信息源页看横幅) | 横幅那一整块不显示,别处正常 | 补 `"scene": {"width": 338, "height": 190, "corner": 18}` |
+| `banner.xbanner` 必须带 `scene.width` / `scene.height`(正数) | 人审(App 里打开工具页看横幅) | 横幅那一整块不显示,别处正常 | 补 `"scene": {"width": 338, "height": 190, "corner": 18}` |
 | `network` 与实际请求 host **恰好相等**(不多不少) | `check` G3 | 少了:真机请求被静默拦掉,流仍报成功、组件渲 `--`;多了:安装面板列一堆用不到的域名吓人 | 按 `.df`/`.af` 里的 `request.url` 与 `router.json` 的 `remote`/`fallback` 对齐 |
 | `credentials[i]` 必须有唯一 `id`、白名单内的 `type`、显式 `hosts ⊆ network`、中英双份 `label`、https 的 `help` | `check` G18 | 绑定面板渲不出、密钥发到没声明的域 | 照上表补齐 |
 | 组件的 `params` 键名不得像密钥(`token`/`secret`/`password`/`api_key`/密钥/令牌) | `check` G18 | 密钥进了明文回显面与分享截图 | 改走 `manifest.credentials` |
@@ -254,7 +254,7 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 | 发布包必须有 `subtitle`,且 `i18n["en-US"].title/subtitle` 齐全 | `check --profile publish` G19 | 英文环境的商店与安装面板显示中文 | 补英文覆盖 |
 | 各语言的包名单位宽 ≤ 24(全角 2 / 半角 1) | `check --profile publish` G21 | 商店宫格两行放不下,名字被截断 | 缩短 `title` |
 | 发布包必须有 `logo.png`,正方形、512、满幅不烤圆角 | `check --profile publish` G11 | 回落首字母图标;或四角出现透明缺口/双重圆角 | 重新导出满幅方图 |
-| `minEngine` 的大版本不得高于当前引擎 | `doctor` | 装包那一刻才爆「App 版本过低」 | 写 `1.0.0` |
+| `minEngine` 的大版本不得高于当前引擎,也不得低于用到的能力要求的那一档 | `doctor`(写高了)· `check` G45 / G51(写低了) | 写高了:装包那一刻才爆「App 版本过低」;写低了:旧版应用上装得上、相关能力静默不工作 | 按上面 `minEngine` 那一行写 |
 | `version` 每次改内容都 +1 | 人审 | 已装用户永远收不到更新,更新链路不命中 | 发布前 +1 |
 
 ## 出错怎么办
@@ -267,8 +267,8 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 | 装包报「App 版本过低」 | `minEngine` 大版本高于客户端 | `numable doctor` 看当前引擎大版本,改回去 |
 | 发布后用户收不到更新 | `manifest.version` 没 +1 | +1 再发 |
 | 商店里名字被截断 / 英文环境显示中文 | 名字太长 / 缺 `i18n["en-US"]` | `numable check --profile publish` 会逐条列出来 |
-| 信息源页顶部的横幅整块空白 | `banner.xbanner` 缺 `scene`,或某个 cell 缺 `type` | 补 `scene`;`check` G7c 会指出缺 `type` 的那个 cell |
-| 信息源图标是一个字母方块 | 包根没有 `logo.png`,走了首字母占位 | 放一张 512×512 满幅方图;`check --profile publish` 的 G11 也会拦 |
+| 工具页顶部的横幅整块空白 | `banner.xbanner` 缺 `scene`,或某个 cell 缺 `type` | 补 `scene`;`check` G7c 会指出缺 `type` 的那个 cell |
+| 工具图标是一个字母方块 | 包根没有 `logo.png`,走了首字母占位 | 放一张 512×512 满幅方图;`check --profile publish` 的 G11 也会拦 |
 | 两个包在 App 里互相覆盖 | `cp -r` 复制包导致 `id` 相同 | `numable init <新目录> --from <老包>`,它会重新生成身份 |
 
 ## 相关

@@ -1,10 +1,10 @@
-<!-- translated-from: zh-CN/2-reference/20-xwidget.md sha256:badf41693113 -->
+<!-- translated-from: zh-CN/2-reference/20-xwidget.md sha256:a2c9c7db1bfa -->
 
 # xwidget — the widget declaration (.xwidget)
 
 > For the full field table (what is required, where it is edited, what each one does) see `numable docs xwidget-fields` — that table is generated from the editor contract and cannot drift from the code. This chapter is about the rules and the idioms.
 
-> Audience: people building a source, and the AI working on their behalf. Both read this same page.
+> Audience: people building a tool, and the AI working on their behalf. Both read this same page.
 
 ## What it is
 
@@ -60,7 +60,7 @@ The complete declaration of a quote widget — copy it and edit:
 | `canvas` | yes | object | `{ source, depends?, refresh? }`, only these three keys |
 | `jobs` | no | array | Which reminders a long-press on this widget can create, each `{ id, params? }`. `id` is the file name of `xJob/<id>.xjob` in this package; `params` maps widget instance parameters onto reminder parameters, and a value **may only be `${widgetParam}` or a literal** (fetch output is a result, not an identity, and does not exist at the moment of the long press). Leave the key out and the long-press menu has no "Add reminder". See `numable docs alerts` (G46) |
 
-Fields that no longer exist: `scene` `preview` `previewData` `kind` `order` `open`. There is no `params` inside `canvas`, no `events` either, and **no `onEdit`** — `canvas` reads only `source` / `depends` / `refresh`, and an `onEdit` written inside it has no consumer at all (interaction events hang off the shell's `events`). This is the easiest block to drag along when cloning an existing package, and it copies without complaint: long-pressing the widget simply has no "Edit parameters".
+Only the top-level keys in the table above are read: keys such as `scene` `preview` `previewData` `kind` `order` `open` have no consumer and raise no error, so do not write them. There is no `params` inside `canvas`, no `events` either, and **no `onEdit`** — `canvas` reads only `source` / `depends` / `refresh`, and an `onEdit` written inside it has no consumer at all (interaction events hang off the shell's `events`). This is the easiest block to drag along when cloning an existing package, and it copies without complaint: long-pressing the widget simply has no "Edit parameters".
 
 ### `layout`: the grid code and the resulting size
 
@@ -193,6 +193,8 @@ The object form passes **only the keys you write out**. To hand shell params to 
 
 One more rule from the same root: **shell params are not in RCN's rendering scope**. RCN only sees the keys exposed by the data flow's `resultFilter`. So a key that takes no part in fetching but still has to show on the widget (a city name, an alias) must also be passed into the `.df`, landed inside the flow, and exposed again before RCN can read it — otherwise that slot is permanently empty or permanently on its fallback, again with no error.
 
+**The preview in the add-widget panel**: for the preview the user sees in the "Add widget" panel, the App adds one reserved key to the instance parameters, `_preview`, with the value `"1"` — for that one render only, never saved; the dashboard, home-screen widgets and sharing never get it. A widget receives it only if its `depends` `params` spells out `"_preview": "${_preview}"`; without that it fetches as usual. The typical use is a widget that needs a credential: while the user has not connected yet, the flow sees `_preview` as `1` and returns a set of made-up sample data, and the widget marks itself "Sample", so the user can see what they would get; once connected, it fetches real data as usual. The sample must be made up — never any user's real data.
+
 ### `refresh`
 
 ```json
@@ -212,7 +214,7 @@ Four details that are easy to get wrong:
 1. **With several windows, the first match in array order wins**, not the shortest one. In `["09:00-18:00@600", "09:30-15:00@60"]` the second entry never gets a turn — half past nine also falls inside the first window. Put the narrow window first.
 2. **The out-of-window fallback is the first bare number**; any bare number after it is ignored. If no window matches and there is no bare number, the result is **no polling at all**.
 3. **A missed `at` time is caught up on**: if `15:05` passes while the app is closed, the condition still holds the next time it opens, so one fetch happens then rather than being skipped.
-4. **Anything less than 5 seconds after the last real fetch is skipped**, and no `interval`, however small, gets past that floor.
+4. **Anything less than 3 seconds after the last real fetch is skipped**, and no `interval`, however small, gets past that floor.
 
 ```json
 "refresh": { "interval": ["09:30-15:00@60", "21:00-23:00@300", "3600"], "at": ["15:05"] }
@@ -220,7 +222,7 @@ Four details that are easy to get wrong:
 
 Read that as: every 60 seconds while the market is open, every 300 seconds in the evening window, hourly the rest of the time, plus one catch-up at 15:05 after the close.
 
-**The upstream decides the cadence; the floor is 10 seconds.** The dashboard checks every 10 seconds, so anything smaller still runs at 10. If the data changes and the API can take it, refresh eagerly (quotes every 10 seconds while the market is open, weather and leaderboards every 5 minutes); if the upstream only updates once a day, a faster interval just fetches the same numbers again. The sum to check is "requests per refresh × refreshes per hour" against the upstream rate limit — go over and the widget quietly stays on stale data, with no error. Home-screen widgets do not follow this number: each platform has its own floor (iOS 15 minutes, Android 1 minute, HarmonyOS only shows the image the App last drew). To update once, right now, use `widget.refresh` in an action flow.
+**The upstream decides the cadence.** The dashboard wakes when its earliest widget falls due rather than on a fixed tick, so 10 seconds means a fetch every 10 seconds. **For free users, periodic refresh is slowed to every 5 minutes** (both the `@N` in a window and bare seconds), while Pro users get the cadence you wrote; manual updates, the first load, a language switch, and `widget.refresh` are not affected. If the data changes and the API can take it, refresh eagerly (quotes every 10 seconds while the market is open, weather and leaderboards every 5 minutes); if the upstream only updates once a day, a faster interval just fetches the same numbers again. The sum to check is "requests per refresh × refreshes per hour" against the upstream rate limit — go over and the widget quietly stays on stale data, with no error. Home-screen widgets do not follow this number: each platform has its own floor (iOS 15 minutes, Android 1 minute, HarmonyOS only shows the image the App last drew). To update once, right now, use `widget.refresh` in an action flow.
 
 ## Rules (breaking one means rework)
 

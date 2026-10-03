@@ -1,6 +1,6 @@
 # pitfalls —— 按现象查:组件坏了怎么定位
 
-> 读者:做信息源的用户,和替他干活的 AI。两者读同一份。
+> 读者:做工具的用户,和替他干活的 AI。两者读同一份。
 
 这一章按**你看到的现象**索引,不按技术分类。组件是位图,坏掉时几乎不报错:流报 success、日志干净、`check` 全绿,只有屏幕上一片 `--` 或整块白。所以先按下面三层跑一遍,再拿现象去下面的表里对号。
 
@@ -87,7 +87,7 @@ numable render --widget quote --states light,dark,empty
 | 整组件白,只在某些数据下复现 | `path.d` 由数据拼出且带了逗号(逗号被当参数分隔符) | 换一组数据重跑 `render` | `d` 里一律空格分隔 | `numable docs rcn` |
 | 整组件白,取数失败那天才复现 | `line.points` 有空槽,或尺寸串里 `calc` 算出 null 后裸接 `pt` | `numable render --states empty` | 每个值套 `$[findNotEmpty::(…, 0)]`;端点兜 `-99`、y 兜 `999` | `numable docs rcn` |
 | 整组件白,包完全打不开 | JSON 语法错(尾逗号、缺引号) | `check` 拦(报「JSON 语法错误」) | 修 JSON。App 里表现是整组件不渲且日志干净 | `numable docs layout` |
-| 信息源页顶部横幅整块空白,别处都正常 | `banner.xbanner` 没写 `scene`(它没有档位可依,尺寸只能自己声明) | App 里打开信息源页 | 补 `"scene": {"width": 338, "height": 190, "corner": 18}` | `numable docs layout` |
+| 工具页顶部横幅整块空白,别处都正常 | `banner.xbanner` 没写 `scene`(它没有档位可依,尺寸只能自己声明) | App 里打开工具页 | 补 `"scene": {"width": 338, "height": 190, "corner": 18}` | `numable docs layout` |
 | 整组件白,数据某天变 0 | 除零把宽算成 NaN;或用 `layer` 的宽表达进度条,宽 0 时圆角大于宽 | `--states empty` | 分母套 `max::(x,1)`;进度条/游标用 `line` + `lineCap:"round"` | `numable docs rcn` |
 
 ### 2.2 字段是 `--` 或整片空
@@ -96,6 +96,7 @@ numable render --widget quote --states light,dark,empty
 |---|---|---|---|---|
 | `run` 报 success 但所有字段空 | `${resp.a.b}` 取值路径错一层 | `numable run --full` 对着真实响应形状看 | 改路径 | `numable docs df` |
 | 组件上一片 `--`,但 `run` 全绿 | `depends` 用了裸字符串形态 → 入参被吞成空 | `check` 拦(报「depends 用裸绑定」) | 写 `{"flow":"@[file://flow/x.df]","params":{"secid":"${secid}"}}`,不吃参数的也写 `params:{}` | `numable docs xwidget` |
+| `run` 与 `render` 全绿,iOS / 鸿蒙上组件恒失败或一片 `--` | `request` 的 `timeout`、`queryParams` / `header` 的值,或 `sleep` 的 `timestamp` 写成了数字:鸿蒙上这一步参数解析失败、直接不执行,`queryParams` / `header` 在 iOS 上也一样;网页引擎与 CLI 照跑 | `check` 拦(G52) | 一律写成字符串 `"8000"`;算出来的数外面套 `parseNumber::(…,0)` | `numable docs df` |
 | 组件上某处恒空 / 恒走兜底 | `.rcn` 里的 `${x}` 不在该组件 `.df` 的 `resultFilter` 输出里(外壳 params 不在渲染域) | `check` 拦(G28) | 参数经 `depends.params` 传进 `.df`,再由 `resultFilter` 透出来 | `numable docs xwidget` |
 | 取数根本没发生 | `@[file://…]` 路径基准写错 | `run` 里该组件无网络记录 | 组件宿主基准是 `xWidget/`(`@[file://flow/x.df]`),页面宿主基准是包根(`@[file://page/flow/x.df]`) | `numable docs xwidget` |
 | 紧跟 `concurrent` 之后的字段为 null | 并发结果晚一拍才可见 | `check` 拦 | 中间插屏障 `{"op":"set","props":{"key":"_barrier","value":"1"}}` | `numable docs af` |
@@ -174,7 +175,7 @@ numable render --widget quote --states light,dark,empty
 |---|---|---|---|---|
 | 点击整个没反应 | 事件串以 `${` 开头(被当表达式,不当导航) | App 里;`check` 拦不住这一形态 | 写成 `"https://${tail}"` / `"numable://self/page/detail?id=${id}"` | `numable docs af` |
 | 点击没反应 | 目标路由不在 `router.json`,或 `numable://self/widget/<id>` 的 id 不存在 | `check` 拦(G12) | 补路由;跳自己首页写 `numable://self` | `numable docs page` |
-| 点击弹「信息源『self』未安装」 | 在 `nav.open` 里用了 `numable://self`(它只在页内路由成立) | App 里 | 跨包写目标包的 ULID 字面量 | `numable docs af` |
+| 点击弹「工具『self』未安装」 | 在 `nav.open` 里用了 `numable://self`(它只在页内路由成立) | App 里 | 跨包写目标包的 ULID 字面量 | `numable docs af` |
 | 点到文字上没反应,点空白处才有 | 可点区只在底板 cell 上 | App 里 | 按钮做成一个 `txt` cell,事件绑它 | `numable docs rcn` |
 | 打开的页面里 `${id}` 是字面量 | query 只插顶层标量,插不进嵌套路径 | `run --full` | 在 `.df` 里提成顶层键 | `numable docs af` |
 | 长按组件没有「编辑参数」这一项 | `onEdit` 写在了 `canvas` 里面 —— `canvas` 只认 `source` / `depends` / `refresh`,事件一律挂在外壳的 `events` 上 | 打开 `.xwidget` 看 `onEdit` 在哪一层 | 移到顶层 `"events": {"onEdit": "/edit"}` | `numable docs xwidget` |
@@ -228,6 +229,7 @@ numable render --widget quote --states light,dark,empty
 | `numable render` 出的图还是旧的 | 看的是 `.numable/render/` 里上一次的 PNG | 看文件时间戳 | 重跑 `numable render`;拼图页 `index.html` 也会一起重写 | `numable docs workflow` |
 | 装到手机上更新不生效 | `manifest.version` 没 +1 | 跟已发布的版本号对一下 | 每次发布 `version` 必须 +1 | `numable docs publish` |
 | 改了数据但组件停在旧值 | 该组件的 `refresh` 周期还没到 | 手动下拉刷新一次 | 写盘类操作用 `widget.refresh` 主动刷 | `numable docs xwidget` |
+| 发了新版,用户盘上某个组件显示「组件已下线」 | 新版本删掉或改名了那个 `.xwidget`:文件名就是组件的身份 | 对比新旧两版的 `xWidget/` | 别改组件文件名;要换组件就新增一个文件 | `numable docs publish` |
 
 ### 2.11 多语言
 
@@ -245,7 +247,8 @@ numable render --widget quote --states light,dark,empty
 | 现象 | 最可能原因 | 怎么确认 | 修法 | 相关章 |
 |---|---|---|---|---|
 | 刷新太频繁、配额被打光 | `interval` 比上游限流允许的更密 | 看 `.xwidget` 的 `canvas.refresh` 和对应 `.df` 每次打几个请求 | 按「每次请求数 × 每小时次数 ≤ 上游配额」调;分时段用窗口写法 `"09:30-15:00@10"` | `numable docs xwidget` |
-| 桌面小组件的数据停在「上次打开 App 那一刻」(鸿蒙) | 鸿蒙服务组件进程只读封面图,不跑渲染、不联网 | App 里 | 这是平台能力差异,不是包的问题;别把关键新鲜度押在鸿蒙桌面组件上 | `numable docs capabilities` |
+| 写了 `"60"`,实际 5 分钟才刷新一次 | 免费版用户的周期刷新会被放慢到每 5 分钟,Pro 用户按你写的走 | 看当前账号是不是 Pro | 这是会员档位,不是包的问题;文案别承诺比 5 分钟更快的更新 | `numable docs xwidget` |
+| 桌面小组件的数据停在「上次打开 App 那一刻」(鸿蒙) | 鸿蒙服务卡片进程只读封面图,不跑渲染、不联网 | App 里 | 这是平台能力差异,不是包的问题;别把关键新鲜度押在鸿蒙桌面组件上 | `numable docs capabilities` |
 | 下拉刷新了等于没刷(带缓存的页面) | 根 `depends` 带首屏缓存但没有 `events.onRefresh` | `check --profile publish` 拦(G23) | `onRefresh` 里先 `data.remove` 缓存键,再 `xpage.reloadPage` | `numable docs page` |
 | 组件整条刷新链空转 | 组件消费的 `.df` 里有无开关的缓存写回 | `check --profile publish` 拦(G23) | 缓存写回受入参 `${_cache}` 开关控制、默认关(页面传 `"_cache":1`,`.xwidget` 不传) | `numable docs df` |
 | 取数失败后好数据被空数据覆盖 | 组件的 `.df` 没有 `action:"error"` 出口,失败被报成成功 | `check` 拦(G26,两档都查) | 主干字段判空 → `error`;「集合为空」算成功 | `numable docs df` |
