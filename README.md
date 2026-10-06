@@ -2,11 +2,11 @@
 > (English and Chinese), the templates, and the issue tracker. The CLI itself ships on npm
 > (`npx numable`); its source currently lives in Numable's main repository and will be published
 > here once its internal dependencies are untangled. Everything below is mirrored from
-> **numable@0.1.10**. Bugs, questions and ideas: [open an issue](https://github.com/numable/cli/issues).
+> **numable@0.1.11**. Bugs, questions and ideas: [open an issue](https://github.com/numable/cli/issues).
 >
 > **关于这个仓库** —— `numable` 创作命令行的公开主页:中英创作文档、模板和问题反馈。命令行本身在 npm 上
 > (`npx numable`);源码目前在 Numable 主仓里,理清内部依赖后会放到这里。下面的内容同步自
-> **numable@0.1.10**。报 bug、提问题、提想法:[开一个 issue](https://github.com/numable/cli/issues)。
+> **numable@0.1.11**。报 bug、提问题、提想法:[开一个 issue](https://github.com/numable/cli/issues)。
 
 # numable
 
