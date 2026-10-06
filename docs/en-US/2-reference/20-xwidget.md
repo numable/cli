@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/2-reference/20-xwidget.md sha256:a2c9c7db1bfa -->
+<!-- translated-from: zh-CN/2-reference/20-xwidget.md sha256:f800d131fe08 -->
 
 # xwidget — the widget declaration (.xwidget)
 
@@ -59,6 +59,7 @@ The complete declaration of a quote widget — copy it and edit:
 | `events` | no | object | only the two keys `onClick` / `onEdit` |
 | `canvas` | yes | object | `{ source, depends?, refresh? }`, only these three keys |
 | `jobs` | no | array | Which reminders a long-press on this widget can create, each `{ id, params? }`. `id` is the file name of `xJob/<id>.xjob` in this package; `params` maps widget instance parameters onto reminder parameters, and a value **may only be `${widgetParam}` or a literal** (fetch output is a result, not an identity, and does not exist at the moment of the long press). Leave the key out and the long-press menu has no "Add reminder". See `numable docs alerts` (G46) |
+| `ai` | no | object | Notes for the AI that builds dashboards: what the widget shows and how to fill each parameter. Never shown; the app does not read it. See the `ai` section below (G56) |
 
 Only the top-level keys in the table above are read: keys such as `scene` `preview` `previewData` `kind` `order` `open` have no consumer and raise no error, so do not write them. There is no `params` inside `canvas`, no `events` either, and **no `onEdit`** — `canvas` reads only `source` / `depends` / `refresh`, and an `onEdit` written inside it has no consumer at all (interaction events hang off the shell's `events`). This is the easiest block to drag along when cloning an existing package, and it copies without complaint: long-pressing the widget simply has no "Edit parameters".
 
@@ -117,6 +118,37 @@ Position things in RCN with `{parent.w}` / `{parent.h}`; never hardcode 158 / 33
 - Do not name keys like secrets (`token`/`secret`/`api_key`…) — a static check will reject them; a user's own secret goes through `manifest.credentials`.
 - How users change these values and how they are written back: see `numable docs params`.
 
+### `ai`: notes for the AI that builds dashboards
+
+When a user describes a dashboard in one sentence in the app, or asks their own AI for a dashboard link, the model picks widgets from the **widget catalog** and fills their parameters. This block is what the catalog carries for each widget — it never appears in the UI and the app does not read it.
+
+```json
+"params": { "secid": "auto", "mask": "0", "alias": "" },
+"ai": {
+  "shows": "A stock's current price, change and today's intraday chart",
+  "params": {
+    "secid": { "kind": "auto", "format": "market prefix + code: 1.=Shanghai 0.=Shenzhen 105.=NASDAQ 106.=NYSE 116.=Hong Kong (pad to 5 digits) 100.=index",
+               "examples": ["105.NVDA", "1.600519"] },
+    "mask":  { "kind": "enum", "values": { "0": "show amounts", "1": "hide amounts" } },
+    "alias": { "kind": "user" }
+  }
+}
+```
+
+| `kind` | Which parameters | What the model does | Must include |
+|---|---|---|---|
+| `enum` | A few fixed values | Picks from `values` | `values` (value → meaning) |
+| `auto` | The default works (`auto` or a sensible default) | Leaves it unset when unsure; follows `format` when filling | `format` or `hint` |
+| `value` | A free value that must be set (e.g. a package name like `react`) | Fills it per `format`; keeps the default when unsure | `format` or `hint` |
+| `user` | Points at the user's own data (a check-in item, a tracked person) | **Never fills it**; the user picks after installing | — |
+| `account` | A resource inside an account (an app, a site, a zone) | **Never fills it** | — |
+
+- `shows`: one sentence on what the widget shows, at most 60 characters; without it the catalog uses `title` + `sub`.
+- `group`: when several parameters must be set together or all left unset (e.g. `city` / `lat` / `lon`), put it on one of them: `"group": ["city", "lat", "lon"]`.
+- `hint` / `format` / `examples` are written for the model and need no translation.
+- Parameters starting with `_` need no notes.
+- The rule is G56: mistakes (a key that is not in `params`, a misspelt `kind`, an `enum` without `values`) are errors; parameters without notes are a warning reported only at publish time.
+
 ### `events`
 
 Only two keys, and the value has **two possible types**; the platform dispatches on the parsed type:
@@ -127,6 +159,7 @@ Only two keys, and the value has **two possible types**; the platform dispatches
 | object | `"@[file://flow/mark-today.af]"`, or an inline flow object | treated as an action flow and run |
 
 - `onClick` = tapping the whole widget. `numable://self` opens the package home page; `numable://self/page/<route>` opens one route (that route must really exist in `router.json`). **A `${}` in a navigation string can only interpolate a top-level scalar** — a path like `${resp.list[0].id}` will not interpolate; lift it to a top-level key in the data flow first.
+  - **The home page can take parameters too**: `"/?tab=us"` or `numable://self?tab=us` opens the home page and hands `tab=us` to the home page itself (an html home page reads `location.search`; an xpage / form home page gets it as route parameters). It only arrives when the home page is **freshly opened**; if this package's window is already open (a separate Mac window, a tablet overlay), the home page is not reloaded and the parameter does not reach it. Older app versions drop home-page parameters; to support them, don't rely on the query: make `onClick` run an interaction flow that first writes a one-off key with `data.set` and then `nav.open`s the home page, and have the home page clear that key as soon as it reads it.
 - `onEdit` = the "Edit parameters" entry from a long-press on the widget. Each of its two forms has one hard requirement:
   - Via a route: **it must be a bare path** (`"/edit?ref=quote"`), never `numable://…` — it is matched literally against `router.json`, and a deeplink here opens a blank page without any error.
   - Via a flow: it must be an in-package `.af` reference (based at `xWidget/`, i.e. `"@[file://flow/edit.af]"`); `..` may not escape the package.

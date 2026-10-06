@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/0-start/20-capabilities.md sha256:b333474b2545 -->
+<!-- translated-from: zh-CN/0-start/20-capabilities.md sha256:34a2f6f53155 -->
 
 # capabilities — what you can build, what you cannot, and where the platforms differ
 
@@ -151,7 +151,7 @@ Common primitives:
 |---|---|---|
 | `request` (HTTP + parsing) | same everywhere | supports `queryParams` / `header` / `body` / `formData` / `timeout`; `formatType` defaults to `string`, so write `"json"` explicitly when you want JSON |
 | The domain allowlist `manifest.network` | same everywhere, and `run` applies the same test | the set must be **exactly equal** to the hosts the `.df` actually requests (`check` G3). This list is shown to the user at install time |
-| Per-hop redirect guard | same everywhere | a request that leaves the allowlist mid-flight is refused. When you use a short link or an endpoint that 302s to a CDN, declare the host it lands on too |
+| Per-hop redirect guard | same everywhere, and `run` / `render` apply the same test | a request that leaves the allowlist mid-flight is refused (`network_blocked:redirect_escaped:<host>`). When you use a short link or an endpoint that 302s to a CDN, prefer requesting the address it lands on; only if the redirect is unavoidable, declare that host too |
 | A server-side proxy | **not supported** | data goes straight from the user's device to the source. A source that is blocked in mainland China cannot be reached there, and sites that need a logged-in cookie cannot be used |
 | Picking a source by region `${@app.region}` | same everywhere (`.df` / `.af`) | the value is `cn` (mainland China) / `overseas` / an empty string (unknown). If you have a fallback source that is blocked in mainland China, skip it under `cn` rather than making the user wait out a timeout first |
 | `htmlParse` / `xmlParse` | the parser differs per platform | do not rely on `xmlParse`; for XML use `formatType:"string"` to get the raw text and cut it with `split::` |

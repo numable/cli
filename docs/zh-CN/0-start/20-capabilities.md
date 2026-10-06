@@ -149,7 +149,7 @@
 |---|---|---|
 | `request`(HTTP + 解析) | 各平台一致 | 支持 `queryParams` / `header` / `body` / `formData` / `timeout`;`formatType` 缺省 `string`,要 JSON 显式写 `"json"` |
 | 域名白名单 `manifest.network` | 各平台一致,`run` 同一套判据 | 集合必须与 `.df` 里实际请求的 host **完全相等**(`check` G3)。安装时这份清单会展示给用户看 |
-| 逐跳重定向守卫 | 各平台一致 | 请求中途跳出白名单会被拒。用短链或会 302 到 CDN 的接口时,把跳到的那个 host 也声明上 |
+| 逐跳重定向守卫 | 各平台一致,`run` / `render` 同一套判据 | 请求中途跳出白名单会被拒(`network_blocked:redirect_escaped:<host>`)。用短链或会 302 到 CDN 的接口时,优先直接请求跳到的地址;确实要经过跳转,再把跳到的那个 host 也声明上 |
 | 服务端代理 | **不支持** | 数据从用户设备直连数据源。被墙的源在中国大陆取不到;要登录态 cookie 的站点做不了 |
 | 按地区选源 `${@app.region}` | 各平台一致(`.df` / `.af`) | 值是 `cn`(中国大陆)/ `overseas` / 空串(说不准)。有被墙的兜底源时,`cn` 下跳过它,别让用户先白等一轮超时 |
 | `htmlParse` / `xmlParse` | 各平台的解析引擎不同 | 别依赖 `xmlParse`;XML 用 `formatType:"string"` 拿原文再 `split::` 切 |

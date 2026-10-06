@@ -84,7 +84,7 @@
 | `domain` | 是 | string | 业务域键。`init` 已填好,不必改 |
 | `minEngine` | 是 | string | 按用到的能力写够用的最低一档:只用基础能力写 `"1.0.0"`;用了提醒 / 后台任务至少 `"2.0.0"`;一次性提醒、`alert.remove`、表格取数(`tsv` / `csv`)至少 `"3.0.0"`;判定配方 `task.then.recipe` 至少 `"4.0.0"`。`numable init --job` 会自动抬,写低了 `check` 用 G45 / G51 拦下。**只比大版本整数**,与 App 版本是两条独立的轴;`numable doctor` 会拿它跟当前引擎大版本对一次 |
 | `lang` | 否(缺省 `zh-CN`) | BCP-47 | 包的基准语言 = 「所有裸字段是哪门话」的陈述。显式写出来 |
-| `network` | 有请求就必填 | string[] | 出网 host 白名单,纯 host 不带协议与路径;支持 `*.example.com`(只配子域,不含裸域)。缺省 / 空数组 = 拒一切出口 |
+| `network` | 有请求就必填 | string[] | 出网 host 白名单,纯 host 不带协议与路径;支持 `*.example.com`(只配子域,不含裸域)。缺省 / 空数组 = 拒一切出口。**重定向逐跳校验**:请求途中每一跳的 host 都按这份白名单再判一次,跳出去的那一跳直接拒(`network_blocked:redirect_escaped:<host>`),`numable run` / `render` 与 App 同一份判据 |
 | `credentials` | 否 | object[] | 用户自带密钥声明,见下 |
 | `i18n` | 否 | object | 元数据译文(B 表),见下 |
 | `system` | 否 | bool | 平台系统包专用,自制包不写 |
@@ -166,7 +166,7 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 ### 资产约定
 
 - **`logo.png`**:包根,512×512 正方形,**满幅、自己不烤圆角**。宿主统一按 `边长 × 0.2237` 裁圆角;图自己先圆一次,四角会出现透明缺口或双重圆角。
-- **总量上限 1.5MB**(源目录全部文件之和)。图片优先用 RCN 画,或用包内 `.uri` 文本资产。
+- **总量上限 3MB**(源目录全部文件之和);**单个文件超过 256KB 会出提示** —— 流越大每次取数越慢,拆成几条流或把重复展开的表达式改成查表。图片优先用 RCN 画,或用包内 `.uri` 文本资产。
 - **别往包目录塞不发布的东西**:夹具、截图、笔记一律放 `.numable/`(`.` 开头的名字一律被跳过,不会打进包),或放到包目录之外。
 
 ### 没有 `logo.png` 会怎样
@@ -245,7 +245,8 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 | `id` 必须是 26 位 ULID | `check` G2(warn)· `doctor` | 商店寻址不到,更新链路对不上 | 用 `numable init` 建包;不要 `cp -r` 别的包 |
 | 不写不会被加载的文件与目录:`page.json` / `*.flow.json` / `xWidget/template/` / `actionFlow/` | `check` G1 | 那些文件永远不被加载,像「写了没生效」 | RCN 归 `rc/`,流归 `flow/`,后缀改 `.af`/`.df` |
 | 包里不得有测试夹具(`*.params.json`、`fixtures/`) | `check` G1b | 夹具里的真实密钥被签名分发出去 | 移进 `.numable/params/` |
-| 源目录总字节 ≤ 1.5MB | `check` G13 | 发布被拒 | 砍图片资产 |
+| 源目录总字节 ≤ 3MB | `check` G13 | 发布被拒 | 砍图片资产 |
+| 单个文件 ≤ 256KB(提示) | `check` G13 | 取数变慢 | 拆流,或把重复展开改成查表 |
 | `banner.xbanner` 必须带 `scene.width` / `scene.height`(正数) | 人审(App 里打开工具页看横幅) | 横幅那一整块不显示,别处正常 | 补 `"scene": {"width": 338, "height": 190, "corner": 18}` |
 | `network` 与实际请求 host **恰好相等**(不多不少) | `check` G3 | 少了:真机请求被静默拦掉,流仍报成功、组件渲 `--`;多了:安装面板列一堆用不到的域名吓人 | 按 `.df`/`.af` 里的 `request.url` 与 `router.json` 的 `remote`/`fallback` 对齐 |
 | `credentials[i]` 必须有唯一 `id`、白名单内的 `type`、显式 `hosts ⊆ network`、中英双份 `label`、https 的 `help` | `check` G18 | 绑定面板渲不出、密钥发到没声明的域 | 照上表补齐 |
@@ -264,6 +265,7 @@ JSON 没有注释语法,包里统一用 **`_note` 键**:
 | `check` 报「取数用到 X 但 manifest.network 未声明」 | 新加了一个 `request` 忘了配白名单 | 把 host 加进 `network` |
 | `check` 报「声明了 X 但没有任何 flow 用它」 | 改了接口忘了删旧域名 | 删掉那条声明 |
 | 真机上请求全失败、日志干净 | host 不在白名单 | 同上;`numable run` 会用同一份白名单强制拦截,先在本机复现 |
+| `run` 报 `network_blocked:redirect_escaped:Y`(「X 重定向到 Y,Y 不在 network 里」) | 请求的地址会 3xx 跳到白名单外的 host;手机上这条请求同样失败 | 把 `url` 改成跳转后的最终地址(推荐 —— 白名单只留一个 host,`check` G3 也闭合);确实要经过跳转才把 Y 也加进 `network` |
 | 装包报「App 版本过低」 | `minEngine` 大版本高于客户端 | `numable doctor` 看当前引擎大版本,改回去 |
 | 发布后用户收不到更新 | `manifest.version` 没 +1 | +1 再发 |
 | 商店里名字被截断 / 英文环境显示中文 | 名字太长 / 缺 `i18n["en-US"]` | `numable check --profile publish` 会逐条列出来 |

@@ -305,12 +305,12 @@ numable check hn
 **What correct looks like**
 
 ```
-静态闸 · 档位 personal(个人自用:跳过商店门面/身份资产/双语/卡片档位/首屏缓存等发布向段;发布前用 --profile publish)
+Static gate · profile personal (personal use: skips publish-only sections — store presentation, identity assets, bilingual text, widget sizes, first-paint cache; use --profile publish before releasing)
 
 ── HN 榜首 (hn) ──
-· [01M200QWNNX1RFPNTX5S7M8PGW] 1 卡 · layout[22] · 4KB · net[hn.algolia.com]
+· [01M200QWNNX1RFPNTX5S7M8PGW] 1 widgets · layout[22] · 4KB · net[hn.algolia.com]
 
-✓ check 完成: 0 error / 0 warn
+✓ check done: 0 error / 0 warn
 ```
 
 **Zero errors is non-negotiable**; read each warning and decide deliberately whether to leave it. The default is the `personal` profile, which only asks "does it run, does it fail silently, does it overreach". The full set of gates for the store is in `numable docs publish`, and the error codes are in `numable docs lint-codes`.

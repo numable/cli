@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/2-reference/78-builtins.md sha256:59e474cb23e5 -->
+<!-- translated-from: zh-CN/2-reference/78-builtins.md sha256:d259d075ac51 -->
 
 # builtins — the built-in variables (@app / @i18n / @env / @device / @time / @contentInset / @safeArea / @window / @fetch / @event)
 
@@ -97,7 +97,7 @@ Use it to log while developing, or to point temporarily at a test endpoint. **Do
 | Root | Keys | Type | Notes |
 |---|---|---|---|
 | `@contentInset` | `top` `right` `bottom` `left` | number (pt) | the safe area **plus** the container's own floating chrome (the capsule, the top bar, the ✕, the bottom navigation) and the keyboard |
-| `@safeArea` | `top` `right` `bottom` `left` | number (pt) | the system safe area only. On edges where the container does not touch the screen (a card on a large screen, a Mac / Windows window): the top is always 5 (the card's rounded corner), left, right and bottom are always 0 |
+| `@safeArea` | `top` `right` `bottom` `left` | number (pt) | the system safe area only. On edges where the container does not touch the screen (a floating container on a large screen, a Mac / Windows window): the top is always 5 (the container's rounded corner), left, right and bottom are always 0 |
 | `@window` | `width` `height` | number (pt) | the size of the **container**, not of the physical window |
 
 Where they work: XPage nodes, the `.rcn` of a canvas inside a page, and the `params` of an `.af` event binding. **A data flow (`.df`) has none of the three** — write one there and it evaluates to empty, so every size you compute comes out as 0.

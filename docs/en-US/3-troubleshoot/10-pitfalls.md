@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/3-troubleshoot/10-pitfalls.md sha256:b88e9bddabf6 -->
+<!-- translated-from: zh-CN/3-troubleshoot/10-pitfalls.md sha256:469ff37362dc -->
 
 # pitfalls — find it by symptom: how to diagnose a broken widget
 
@@ -53,7 +53,7 @@ Runs every `.df` through the real ActionFlow engine, **hits the network for real
 
 - **What it catches**: whether the data source is still alive, whether the value path `${resp.a.b}` is right, whether your processing logic is right, which key is empty. It prints a summary by default; `--full` prints the complete value of every key — **read them key by key**, this is your only chance to find "there is a value, but it's the wrong one" (the summary only reports shape).
 - **What it can't catch**: what the widget looks like; whether the key names referenced in `.rcn` line up with the output here (misspell one letter and this layer is still all green).
-- `network_blocked:…` in the output means that host is not in `manifest.network`, and it will be silently blocked on the device too.
+- `network_blocked:…` in the output means that host is not in `manifest.network`, and it will be silently blocked on the device too. `network_blocked:redirect_escaped:<host>` is the same thing in another shape: the starting URL is on the allowlist, but it redirects to `<host>`, which is not (redirects are checked hop by hop, the same rule as the app).
 - Packages that need a key: put the test key at `<package>/.numable/params/_credentials.json` (that folder never ships in the package). See `numable docs credentials`.
 
 ### 1.3 `numable render` — three-state renders
@@ -216,7 +216,7 @@ What this group has in common: **if RCN source parsing fails, the whole widget d
 | Symptom | Most likely cause | How to confirm | Fix | Chapter |
 |---|---|---|---|---|
 | No data on the device, clean log | The host isn't in `manifest.network` and the network guard blocked it silently | `run` prints `network_blocked:…`; `check` catches it (G3) | The declared hosts and the hosts actually used must match **exactly** | `numable docs layout` |
-| The first few requests succeed, later ones fail | The server 302s to a domain outside the allowlist (every hop must be on it) | The log lines in `run` | Declare the redirect target in `network` too, or use an endpoint that doesn't redirect | `numable docs layout` |
+| `run` gets data locally but the widget shows "failed to load" on the phone (older CLI) / `run` reports `redirect_escaped` | The server 3xx-redirects to a domain outside the allowlist (every hop must be on it) | The `run` log line: `network_blocked:redirect_escaped:<host>` plus "X redirected to Y" | Request the final address directly (preferred); only if the redirect is unavoidable, declare its target in `network` too | `numable docs layout` |
 | The API returns 401 even though the credential is filled in | An empty credential still sent half a header (`Bearer ` followed by nothing) | `run --full` with the credential fixture emptied out | Swap the whole header object with `op:if`; when you don't send it, send no key at all | `numable docs credentials` |
 | The credential is silently downgraded to anonymous | `request.credential` contains a `${}` expression, or references an undeclared id | `check` catches it (G18) | Write the declId as a literal and declare it in `manifest.credentials` | `numable docs credentials` |
 | A secret shows up in the render cache / a shared screenshot | The credential ended up in the `resultFilter` output | Look at the output keys of `run --full` | Expose only flags such as `hasToken` | `numable docs credentials` |

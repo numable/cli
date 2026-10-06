@@ -57,6 +57,7 @@
 | `events` | 否 | object | 只有 `onClick` / `onEdit` 两个键 |
 | `canvas` | 是 | object | `{ source, depends?, refresh? }`,只有这三个键 |
 | `jobs` | 否 | array | 长按这个组件能加哪几条提醒,每条 `{ id, params? }`。`id` = 本包 `xJob/<id>.xjob` 的文件名;`params` 把组件实例参数映射成提醒参数,值**只能写 `${组件参数}` 或字面量**(取数输出是结果不是身份,长按那一刻还不存在)。不写这个键,长按菜单里就没有「添加提醒」。详见 `numable docs alerts`(G46)|
+| `ai` | 否 | object | 给建盘 AI 看的说明:组件显示什么、每个参数怎么填。不上屏,App 不读。见下文 `ai` 一节(G56)|
 
 顶层只认上表这些键:`scene` `preview` `previewData` `kind` `order` `open` 这类键写了没有任何消费者,也不报错,不要写。`canvas` 里没有 `params`,也没有 `events`,**也没有 `onEdit`** —— `canvas` 只认 `source` / `depends` / `refresh` 三个键,写在里面的 `onEdit` 一个消费者都没有(交互事件只挂在外壳的 `events` 上)。克隆现成包时最容易连这块一起抄走,而且抄了不报错:长按组件就是没有「编辑参数」。
 
@@ -115,6 +116,37 @@ RCN 里用 `{parent.w}` / `{parent.h}` 定位,别把 158 / 338 写死 —— 换
 - 键名不要像密钥(`token`/`secret`/`api_key`…),那会被闸拦下;用户自带的密钥走 `manifest.credentials`。
 - 用户怎么改这些值、怎么写回,见 `numable docs params`。
 
+### `ai`:给建盘 AI 看的说明
+
+用户在 App 里说一句话、或让自己的 AI 生成建盘链接时,模型从**组件目录**里挑组件、填参数。目录里每个组件带的就是这一段 —— 它不显示在界面上,App 也不读。
+
+```json
+"params": { "secid": "auto", "mask": "0", "alias": "" },
+"ai": {
+  "shows": "一只股票的现价、涨跌幅与今日分时",
+  "params": {
+    "secid": { "kind": "auto", "format": "市场前缀.代码:1.=沪 0.=深 105.=纳斯达克 106.=纽交所 116.=港股(补足 5 位) 100.=指数",
+               "examples": ["105.NVDA", "1.600519"] },
+    "mask":  { "kind": "enum", "values": { "0": "显示金额", "1": "隐藏金额" } },
+    "alias": { "kind": "user" }
+  }
+}
+```
+
+| `kind` | 什么参数 | 模型怎么做 | 必须带 |
+|---|---|---|---|
+| `enum` | 只有几个取值 | 从 `values` 里选 | `values`(值 → 含义) |
+| `auto` | 默认值能用(`auto` 或一个合理默认) | 不确定就不填;要填按 `format` | `format` 或 `hint` |
+| `value` | 必须有值的自由值(如包名 `react`) | 按 `format` 填,不确定用默认 | `format` 或 `hint` |
+| `user` | 指向用户自己的数据(打卡项、记录的人) | **不填**,装上后用户自己选 | — |
+| `account` | 账号里的资源(App、站点、Zone) | **不填** | — |
+
+- `shows`:一句话说这个组件显示什么,不超过 60 字;不写就用 `title` + `sub`。
+- `group`:几个参数必须一起填或一起留空时(如 `city` / `lat` / `lon`),写在其中一个上:`"group": ["city", "lat", "lon"]`。
+- `hint` / `format` / `examples` 是写给模型看的,不用翻译。
+- `_` 开头的参数不需要说明。
+- 规则是 G56:写错(键对不上 `params`、`kind` 拼错、`enum` 没有 `values`)报错;有参数却没写说明是提醒,只在发布时报。
+
 ### `events`
 
 只有两个键,值有**两种类型**,平台按解析后的类型分派:
@@ -125,6 +157,7 @@ RCN 里用 `{parent.w}` / `{parent.h}` 定位,别把 158 / 338 写死 —— 换
 | 结构体 | `"@[file://flow/mark-today.af]"` 或直接内联一个流对象 | 当作交互流跑 |
 
 - `onClick` = 整组件点击。`numable://self` 开包首页;`numable://self/page/<route>` 开某条路由(那条路由必须在 `router.json` 里真实存在)。**导航串里的 `${}` 只能插顶层标量**,`${resp.list[0].id}` 这种路径插不进去 —— 先在取数流里提成顶层键。
+  - **首页也能带参数**:`"/?tab=us"` 或 `numable://self?tab=us` 打开首页,`tab=us` 交给首页本身(html 首页读 `location.search`,xpage / form 首页拿到路由参数)。只在首页**新打开**时送达;这个包的窗口已经开着时(Mac 独立窗口、平板浮层),首页不会重新载入,参数送不到。较早的 App 版本会丢掉首页的参数,要兼容它们就别靠 query:改成 `onClick` 跑一个交互流,先 `data.set` 写一个一次性的键再 `nav.open` 首页,首页读到后立刻清掉。
 - `onEdit` = 长按组件「编辑参数」的入口。它的两种形态各有一条硬要求:
   - 走路由:**必须是裸 path**(`"/edit?ref=quote"`),不能写 `numable://…` —— 它是拿去跟 `router.json` 逐字匹配的,写成 deeplink 会打开一个空白页且不报错。
   - 走流:必须是包内的 `.af` 引用(基准 `xWidget/`,即 `"@[file://flow/edit.af]"`),不能用 `..` 跳出包。

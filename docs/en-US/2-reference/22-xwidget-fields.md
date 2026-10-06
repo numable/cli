@@ -15,6 +15,7 @@
 | `events.onClick` | — | the widget form | Whole-widget tap Tapping the widget on the home screen opens the app and replays this binding; both forms (nav string and action flow) work there. |
 | `events.onEdit` | — | the widget form | Long-press "Edit parameters" · optional With an action flow: collect the value via singleValue / xform, then write it back with widget.updateParams. With a route: html / xpage / form page types all work. |
 | `jobs` | — | the widget form | When users long-press this widget, "Add reminder" lists these rules. Widget parameters can be prefilled into the reminder. Each entry has a rule id and a parameter mapping. Parameters can take a widget parameter or a fixed value; data source outputs don't exist yet when the user adds the reminder, so they can't be mapped. Without entries, "Add reminder" is not shown in the long-press menu. |
+| `ai` | — | the JSON tab only | Notes for the AI that builds dashboards: what this widget shows (shows) and how to fill each parameter (params; kind is enum / auto / value / user / account). Never shown in the UI. |
 | `canvas.source` | yes | the canvas workspace | What this widget looks like — points at a .rcn |
 | `canvas.depends` | — | the canvas workspace | Where this widget's data comes from — one or more data-flow bindings |
 | `canvas.refresh.interval` | — | the canvas workspace | Window HH:MM-HH:MM@seconds or raw seconds |

@@ -61,6 +61,7 @@
 | G53 | No Chinese text in .xwidget default params | personal too | `numable docs xwidget` |
 | G54 | Check for Chinese, not for English | personal too | `numable docs i18n` |
 | G55 | Sticky elements in H5 pages sit under the collapsed title bar | personal too | `numable docs page` |
+| G56 | A widget's ai notes | publish only | `numable docs xwidget` |
 
 ## G0 Package structure and JSON syntax
 
@@ -147,7 +148,8 @@
 
 | Item | What is checked | Level | Symptom | Fix |
 |---|---|---|---|---|
-|  | The source form must not exceed 1.5MB in total bytes | E | The source form is over the 1.5MB limit | Compress or drop assets such as images; serve large images from a network address |
+|  | The source form must not exceed 3MB in total bytes | E | The source form is over the 3MB limit | Compress or drop assets such as images; serve large images from a network address |
+|  | No single file should exceed 256KB | W | The larger a flow, the slower every fetch | Split it into several flows, or turn repeated expanded expressions into a lookup table; serve large images from a network address |
 
 ## G14 Sealed package format (enforced when sealing)
 
@@ -474,3 +476,10 @@ A `.xjob`'s `i18n` is a single side table: `i18n[locale] = { title, sub, message
 | Item | What is checked | Level | Symptom | Fix |
 |---|---|---|---|---|
 |  | Under page/html, a CSS declaration block or style attribute has position: sticky with top set to 0 or var(--xb-content-top) | W | Once the page scrolls past its header, the container fades in a small title bar at the top; a toolbar with top: 0 slides underneath it and gets covered, and one with var(--xb-content-top) leaves a gap below it | Use top: var(--xb-bar-bottom), and add --xb-bar-bottom: 0px to :root as a fallback for local preview |
+
+## G56 A widget's ai notes
+
+| Item | What is checked | Level | Symptom | Fix |
+|---|---|---|---|---|
+|  | ai must be an object; every key in ai.params must exist in params; kind must be enum / auto / value / user / account; an enum needs values; keys in group must exist in params | E · personal too | When building a dashboard the model gets wrong notes and fills parameters the widget doesn't read or can't fetch data with | Match the keys and kind to params, and give every enum its values |
+|  | Parameters (other than those starting with _) without matching ai.params notes; an auto / value with neither format nor hint; shows longer than 60 characters | W | When building a dashboard the model can't tell how to fill these parameters and leaves them unset; the catalog entry is too long | Add the notes as described in the ai section of numable docs xwidget |

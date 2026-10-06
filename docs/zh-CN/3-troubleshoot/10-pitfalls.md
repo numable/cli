@@ -51,7 +51,7 @@ numable run --flow quote
 
 - **能看出什么**:数据源还活不活、取值路径 `${resp.a.b}` 对不对、加工逻辑对不对、哪个键是空的。默认打印摘要,`--full` 打印每个键的完整值 —— **逐个键看过去**,这是唯一能发现「值有但是错的」的机会(摘要只报形状)。
 - **看不出什么**:组件画成什么样;`.rcn` 里引用的键名是否与这里的输出对得上(拼错一个字母,这层依旧全绿)。
-- 输出里出现 `network_blocked:…` = 该 host 不在 `manifest.network`,真机上同样会被静默拦掉。
+- 输出里出现 `network_blocked:…` = 该 host 不在 `manifest.network`,真机上同样会被静默拦掉。`network_blocked:redirect_escaped:<host>` 是同一回事的另一种长相:起始地址在白名单里,但它重定向到了白名单外的 `<host>`(重定向逐跳校验,与 App 同一份判据)。
 - 需要密钥的包:测试用的密钥放 `<包>/.numable/params/_credentials.json`(该目录永不进包)。详见 `numable docs credentials`。
 
 ### 1.3 `numable render` —— 渲染层三态图
@@ -214,7 +214,7 @@ numable render --widget quote --states light,dark,empty
 | 现象 | 最可能原因 | 怎么确认 | 修法 | 相关章 |
 |---|---|---|---|---|
 | 真机上取不到数、日志干净 | host 不在 `manifest.network`,被网络守卫静默拦掉 | `run` 输出 `network_blocked:…`;`check` 拦(G3) | 声明的 host 与实际用到的 host **不多不少**恰好相等 | `numable docs layout` |
-| 头几次请求成功、跟着的失败 | 服务端 302 到了白名单外的域(逐跳都要在白名单内) | `run` 的日志行 | 把重定向终点也声明进 `network`,或改用不跳转的端点 | `numable docs layout` |
+| `run` 本机能取到、真机组件「加载失败」(老版本 CLI)/ `run` 报 `redirect_escaped` | 服务端 3xx 跳到了白名单外的域(逐跳都要在白名单内) | `run` 的日志行:`network_blocked:redirect_escaped:<host>` + 「X 重定向到 Y」 | 改用跳转后的最终地址(推荐);确实要经过跳转,再把终点也声明进 `network` | `numable docs layout` |
 | 接口回 401,凭证明明填了 | 空凭证时仍然发了半截头(`Bearer ` 后面是空) | `run --full`,把凭证夹具清空再跑 | 用 `op:if` 整体换掉 header 对象,不发就一个键都不发 | `numable docs credentials` |
 | 凭证被静默透传成匿名 | `request.credential` 写了 `${}` 表达式,或引用了未声明的 id | `check` 拦(G18) | 写字面量 declId,并在 `manifest.credentials` 里声明 | `numable docs credentials` |
 | 密钥出现在渲染缓存 / 分享截图里 | 凭证进了 `resultFilter` 输出 | 看 `run --full` 的输出键 | 只透 `hasToken` 这类旗标 | `numable docs credentials` |

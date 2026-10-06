@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/2-reference/10-layout.md sha256:22b3a246d119 -->
+<!-- translated-from: zh-CN/2-reference/10-layout.md sha256:3ccf4dd33b67 -->
 
 # layout — package structure and manifest
 
@@ -86,7 +86,7 @@ The widget scope `xWidget/` and the page scope `page/` **each have their own** `
 | `domain` | yes | string | Business domain key. `init` fills it in; leave it alone |
 | `minEngine` | yes | string | Write the lowest level that covers the features you use: `"1.0.0"` for the basics; at least `"2.0.0"` with alerts / background jobs; at least `"3.0.0"` with one-time alerts, `alert.remove`, or tabular data (`tsv` / `csv`); at least `"4.0.0"` with a decision recipe `task.then.recipe`. `numable init --job` raises it for you, and `check` stops a value that is too low with G45 / G51. **Only the major integer is compared**, and it is a separate axis from the app version; `numable doctor` compares it against the current engine major |
 | `lang` | no (defaults to `zh-CN`) | BCP-47 | The package's base language — a statement of "which language every bare field is in". Write it explicitly |
-| `network` | required once you make requests | string[] | Outbound host allowlist, bare hosts with no protocol or path; `*.example.com` is supported (subdomains only, not the apex). Absent / empty array = everything outbound is refused |
+| `network` | required once you make requests | string[] | Outbound host allowlist, bare hosts with no protocol or path; `*.example.com` is supported (subdomains only, not the apex). Absent / empty array = everything outbound is refused. **Redirects are checked hop by hop**: every hop's host is tested against this allowlist again, and the hop that leaves it is refused (`network_blocked:redirect_escaped:<host>`); `numable run` / `render` apply the same rule as the app |
 | `credentials` | no | object[] | Declaration of user-supplied keys, see below |
 | `i18n` | no | object | Metadata translations (table B), see below |
 | `system` | no | bool | Reserved for platform system packages; do not write it in your own |
@@ -168,7 +168,7 @@ JSON has no comment syntax, so packages use a **`_note` key** throughout:
 ### Asset conventions
 
 - **`logo.png`**: package root, 512×512 square, **full-bleed, with no rounded corners baked in**. The host rounds every icon at `side × 0.2237`; round it yourself first and the corners end up with transparent notches or a double arc.
-- **Total size limit 1.5MB** (the sum of every file in the source folder). Prefer drawing images in RCN, or use an in-package `.uri` text asset.
+- **Total size limit 3MB** (the sum of every file in the source folder); **any single file over 256KB gets a warning** — the larger a flow, the slower every fetch, so split it into several flows or turn repeated expanded expressions into a lookup table. Prefer drawing images in RCN, or use an in-package `.uri` text asset.
 - **Do not park non-shippable things in the package folder**: fixtures, screenshots and notes all go in `.numable/` (names starting with `.` are always skipped and never packaged), or outside the package folder entirely.
 
 ### What happens without a `logo.png`
@@ -247,7 +247,8 @@ Do not write a top-level `rcn` / `flow`: the App reads only `canvas`, so that sh
 | `id` must be a 26-character ULID | `check` G2 (warn) · `doctor` | The store cannot address it and the update chain does not line up | Create packages with `numable init`; do not `cp -r` another one |
 | No files or folders that are never loaded: `page.json` / `*.flow.json` / `xWidget/template/` / `actionFlow/` | `check` G1 | Those files are never loaded, which looks like "I wrote it and nothing happened" | RCN goes in `rc/`, flows in `flow/`, extensions become `.af` / `.df` |
 | No test fixtures in the package (`*.params.json`, `fixtures/`) | `check` G1b | Real keys inside a fixture get signed and distributed | Move them into `.numable/params/` |
-| Total source-folder bytes ≤ 1.5MB | `check` G13 | Publishing is rejected | Cut image assets |
+| Total source-folder bytes ≤ 3MB | `check` G13 | Publishing is rejected | Cut image assets |
+| Any single file ≤ 256KB (warning) | `check` G13 | Fetching gets slower | Split the flow, or turn repeated expansions into a lookup table |
 | `banner.xbanner` must carry `scene.width` / `scene.height` (positive numbers) | manual review (open the Tools page in the app and look at the banner) | That whole block is missing while everything else is fine | Add `"scene": {"width": 338, "height": 190, "corner": 18}` |
 | `network` and the hosts actually requested **match exactly** (no more, no less) | `check` G3 | Too few: requests are silently blocked on a real device while the flow still reports success and the widget renders `--`; too many: the install panel lists a scary set of unused hosts | Line it up with `request.url` in `.df` / `.af` and `remote` / `fallback` in `router.json` |
 | Each `credentials[i]` needs a unique `id`, an allowed `type`, explicit `hosts ⊆ network`, a `label` in both languages, and an https `help` | `check` G18 | The binding panel cannot render, or the key is sent to an undeclared host | Fill it in per the table above |
@@ -266,6 +267,7 @@ Do not write a top-level `rcn` / `flow`: the App reads only `canvas`, so that sh
 | `check` says a fetch uses X but `manifest.network` does not declare it | A new `request` was added without updating the allowlist | Add the host to `network` |
 | `check` says X is declared but no flow uses it | An endpoint changed and the old host was left behind | Delete that entry |
 | Every request fails on a real device with clean logs | The host is not on the allowlist | Same as above; `numable run` enforces the same allowlist, so reproduce it locally first |
+| `run` reports `network_blocked:redirect_escaped:Y` ("X redirected to Y; Y is not in manifest.network") | The URL you request 3xx-redirects to a host outside the allowlist; the request fails on the phone too | Point `url` at the final address the redirect lands on (preferred — the allowlist keeps a single host and `check` G3 stays closed); only if the redirect is unavoidable, add Y to `network` as well |
 | Installing says "app version too low" | `minEngine`'s major is above the client's | Check the current engine major with `numable doctor` and lower it |
 | Users get no update after publishing | `manifest.version` was not bumped | Bump it and publish again |
 | The store truncates the name / shows Chinese in an English environment | The name is too long / `i18n["en-US"]` is missing | `numable check --profile publish` lists both line by line |

@@ -95,7 +95,7 @@
 | 根 | 键 | 类型 | 说明 |
 |---|---|---|---|
 | `@contentInset` | `top` `right` `bottom` `left` | number(pt) | 安全区 **加上** 容器自己的悬浮 chrome(胶囊、顶栏、✕、底部导航)与键盘 |
-| `@safeArea` | `top` `right` `bottom` `left` | number(pt) | 只有系统安全区。容器不贴屏幕的边(大屏上的卡片、Mac / Windows 的窗口):顶边恒为 5(卡片圆角),左、右、下恒为 0 |
+| `@safeArea` | `top` `right` `bottom` `left` | number(pt) | 只有系统安全区。容器不贴屏幕的边(大屏上悬浮的容器卡、Mac / Windows 的窗口):顶边恒为 5(容器卡圆角),左、右、下恒为 0 |
 | `@window` | `width` `height` | number(pt) | **容器**的尺寸,不是物理窗口 |
 
 在哪能用:`.xpage` 的节点、页面里 canvas 的 `.rcn`、以及 `.af` 事件绑定的 `params`。**取数流(`.df`)里没有这三个**——写了求值为空,尺寸算出来就是 0。
