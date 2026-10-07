@@ -1,0 +1,17 @@
+{
+  "id": "00000000000000000000000000",
+  "version": 1,
+  "title": "状态灯",
+  "lang": "zh-CN",
+  "category": "dashboard",
+  "subtitle": "官方版式模板",
+  "domain": "00000000000000000000000000",
+  "minEngine": "1.0.0",
+  "network": [],
+  "i18n": {
+    "en-US": {
+      "title": "Status light",
+      "subtitle": "Official layout template"
+    }
+  }
+}

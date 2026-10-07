@@ -1,0 +1,234 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "list",
+  "version": 1,
+  "title": {
+    "zh-CN": "列表",
+    "en-US": "List"
+  },
+  "summary": {
+    "zh-CN": "3–5 行:每行一个名字 + 一个值(大档再加一行小字)",
+    "en-US": "3–5 rows: a name and a value per row (plus a small line on the large size)"
+  },
+  "pick": {
+    "zh-CN": "几条并列的东西:待办、最近的提交、几只自选、几个服务",
+    "en-US": "A few parallel items: tasks, recent commits, a watchlist, services"
+  },
+  "sizes": [
+    {
+      "layout": 42,
+      "grid": "4×2",
+      "widget": "list",
+      "primary": true
+    },
+    {
+      "layout": 44,
+      "grid": "4×4",
+      "widget": "list-44",
+      "primary": false
+    }
+  ],
+  "flow": "xWidget/flow/list.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "42": 20,
+        "44": 20
+      },
+      "example": {
+        "zh-CN": "我的自选",
+        "en-US": "Watchlist"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "names",
+      "kind": "data",
+      "type": "text[]",
+      "required": true,
+      "meaning": {
+        "zh-CN": "每行的名字(文字数组,从上到下)。接口给的是对象数组时用 pluck 摘一列",
+        "en-US": "Row names (array of text, top to bottom). From an array of objects, pluck one field"
+      },
+      "maxLen": {
+        "42": 18,
+        "44": 18
+      },
+      "example": {
+        "zh-CN": [
+          "贵州茅台",
+          "宁德时代",
+          "招商银行",
+          "比亚迪",
+          "中国平安"
+        ],
+        "en-US": [
+          "Apple",
+          "Microsoft",
+          "NVIDIA",
+          "Tesla",
+          "Amazon"
+        ]
+      },
+      "whenEmpty": {
+        "zh-CN": "那一行画浅色空槽;一行都没有时第一行显示 empty",
+        "en-US": "That row becomes a light empty slot; with no rows the first shows empty"
+      }
+    },
+    {
+      "key": "values",
+      "kind": "data",
+      "type": "number[]",
+      "required": false,
+      "meaning": {
+        "zh-CN": "每行右侧的值(数组,与 names 对齐;按 format 格式化,非数字原样显示)",
+        "en-US": "Value on the right of each row (array aligned with names; formatted by format, non-numbers as-is)"
+      },
+      "maxLen": {
+        "42": 9,
+        "44": 9
+      },
+      "example": [
+        1520,
+        248.5,
+        41.82
+      ],
+      "whenEmpty": {
+        "zh-CN": "那一格显示 --",
+        "en-US": "That cell shows --"
+      }
+    },
+    {
+      "key": "format",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示",
+        "en-US": "Number format: auto (grouping, up to 2 decimals) · int · 1dp / 2dp · compact (万/亿 in Chinese, K/M/B otherwise) · raw (as given)"
+      },
+      "values": [
+        "auto",
+        "int",
+        "1dp",
+        "2dp",
+        "compact",
+        "raw"
+      ],
+      "example": "raw",
+      "whenEmpty": {
+        "zh-CN": "按 auto",
+        "en-US": "Falls back to auto"
+      }
+    },
+    {
+      "key": "subs",
+      "kind": "data",
+      "type": "text[]",
+      "required": false,
+      "meaning": {
+        "zh-CN": "每行名字下的一行小字(数组,只在 44 档显示)",
+        "en-US": "A small line under each name (array; shown on the 44 size only)"
+      },
+      "maxLen": {
+        "44": 22
+      },
+      "example": {
+        "zh-CN": [
+          "+0.82%",
+          "−1.20%",
+          "+0.33%",
+          "+2.05%",
+          "−0.47%"
+        ],
+        "en-US": [
+          "+0.82%",
+          "−1.20%",
+          "+0.33%",
+          "+2.05%",
+          "−0.47%"
+        ]
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "empty",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "一行都没有时的状态句(状态陈述,不写操作指南)",
+        "en-US": "Status line when there are no rows (a statement, not instructions)"
+      },
+      "maxLen": {
+        "42": 16,
+        "44": 16
+      },
+      "example": {
+        "zh-CN": "还没有自选",
+        "en-US": "No symbols yet"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示「暂无内容」",
+        "en-US": "Shows \"Nothing yet\""
+      }
+    },
+    {
+      "key": "at",
+      "kind": "data",
+      "type": "time",
+      "required": false,
+      "meaning": {
+        "zh-CN": "时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空",
+        "en-US": "Freshness stamp (top right): when the data was fetched — HH:mm today, MM-dd HH:mm otherwise; leave empty for purely local widgets"
+      },
+      "maxLen": {
+        "all": 11
+      },
+      "example": "14:30",
+      "whenEmpty": {
+        "zh-CN": "不显示,组件名占满整行",
+        "en-US": "Hidden; the name takes the full row"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "teal",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}

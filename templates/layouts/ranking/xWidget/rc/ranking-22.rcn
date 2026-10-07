@@ -1,0 +1,268 @@
+{
+  "_note": "版式「排行」· 22 档(158×158)。坐标与配色是版式的一部分,不要改;要换内容改 flow/ranking.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "id": "at",
+        "type": "txt",
+        "x": "{parent.w}-{at.w}-12pt",
+        "y": "14pt",
+        "w": "-1",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "$[findNotEmpty::(${at},)]",
+        "fontSize": "9pt",
+        "textColor": "#6B7280|#8E939B",
+        "_note": "时效锚(右上):取数时刻。槽位 at 为空时宽度为 0,组件名自动占满。"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "21pt",
+        "y": "11pt",
+        "w": "{at.x}-27pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "13pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "12pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "id": "r0",
+        "type": "layer",
+        "x": "12pt",
+        "y": "36pt",
+        "w": "134pt",
+        "h": "33pt",
+        "bgColor": "$[if::(eq::(${h0},1),#E7E9EE|#20232A,#EEF0F4|#1B1D22)]",
+        "cornerRadius": {
+          "leftT": "10pt",
+          "leftB": "10pt",
+          "rightT": "10pt",
+          "rightB": "10pt"
+        }
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(${h0},1),1,0)]"
+        },
+        "react": [
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+            "id": "k0",
+            "x": "20pt",
+            "y": "36pt",
+            "w": "12pt",
+            "alignmentV": "1",
+            "text": "1",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          },
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#0E1116|#F3F4F6",
+            "id": "n0",
+            "x": "33pt",
+            "y": "36pt",
+            "w": "62pt",
+            "alignmentV": "1",
+            "text": "${n0}",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          },
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "v0",
+            "x": "96pt",
+            "y": "36pt",
+            "w": "42pt",
+            "alignmentH": "2",
+            "alignmentV": "1",
+            "text": "$[findNotEmpty::(${v0C},--)]",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          }
+        ]
+      },
+      {
+        "id": "r1",
+        "type": "layer",
+        "x": "12pt",
+        "y": "73pt",
+        "w": "134pt",
+        "h": "33pt",
+        "bgColor": "$[if::(eq::(${h1},1),#E7E9EE|#20232A,#EEF0F4|#1B1D22)]",
+        "cornerRadius": {
+          "leftT": "10pt",
+          "leftB": "10pt",
+          "rightT": "10pt",
+          "rightB": "10pt"
+        }
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(${h1},1),1,0)]"
+        },
+        "react": [
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+            "id": "k1",
+            "x": "20pt",
+            "y": "73pt",
+            "w": "12pt",
+            "alignmentV": "1",
+            "text": "2",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          },
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#0E1116|#F3F4F6",
+            "id": "n1",
+            "x": "33pt",
+            "y": "73pt",
+            "w": "62pt",
+            "alignmentV": "1",
+            "text": "${n1}",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          },
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "v1",
+            "x": "96pt",
+            "y": "73pt",
+            "w": "42pt",
+            "alignmentH": "2",
+            "alignmentV": "1",
+            "text": "$[findNotEmpty::(${v1C},--)]",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          }
+        ]
+      },
+      {
+        "id": "r2",
+        "type": "layer",
+        "x": "12pt",
+        "y": "110pt",
+        "w": "134pt",
+        "h": "33pt",
+        "bgColor": "$[if::(eq::(${h2},1),#E7E9EE|#20232A,#EEF0F4|#1B1D22)]",
+        "cornerRadius": {
+          "leftT": "10pt",
+          "leftB": "10pt",
+          "rightT": "10pt",
+          "rightB": "10pt"
+        }
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(${h2},1),1,0)]"
+        },
+        "react": [
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+            "id": "k2",
+            "x": "20pt",
+            "y": "110pt",
+            "w": "12pt",
+            "alignmentV": "1",
+            "text": "3",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          },
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#0E1116|#F3F4F6",
+            "id": "n2",
+            "x": "33pt",
+            "y": "110pt",
+            "w": "62pt",
+            "alignmentV": "1",
+            "text": "${n2}",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          },
+          {
+            "type": "txt",
+            "h": "33pt",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "v2",
+            "x": "96pt",
+            "y": "110pt",
+            "w": "42pt",
+            "alignmentH": "2",
+            "alignmentV": "1",
+            "text": "$[findNotEmpty::(${v2C},--)]",
+            "fontSize": "12pt",
+            "typeface": "System-Bold"
+          }
+        ]
+      }
+    ]
+  }
+}

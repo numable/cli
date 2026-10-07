@@ -1,0 +1,123 @@
+{
+  "_note": "版式「倒数」· 21 档(158×60)。坐标与配色是版式的一部分,不要改;要换内容改 flow/countdown.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "19pt",
+        "y": "9pt",
+        "w": "{parent.w}-29pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "11pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "10pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(${state},today),0,1)]"
+        },
+        "react": [
+          {
+            "id": "num",
+            "type": "richText",
+            "x": "10pt",
+            "y": "28.68pt",
+            "w": "138pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "$[findNotEmpty::(${pre},)]",
+                "fontSize": "10pt",
+                "textColor": "#6B7280|#8E939B"
+              },
+              {
+                "text": "${@i18n.nbsp}",
+                "fontSize": "5pt"
+              },
+              {
+                "text": "$[findNotEmpty::(${daysS},--)]",
+                "fontSize": "17pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              },
+              {
+                "text": "${@i18n.nbsp}",
+                "fontSize": "5pt"
+              },
+              {
+                "text": "$[findNotEmpty::(${unitS},)]",
+                "fontSize": "10pt",
+                "textColor": "#6B7280|#8E939B"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(${state},today),1,0)]"
+        },
+        "react": [
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+            "id": "today",
+            "x": "10pt",
+            "y": "28pt",
+            "w": "138pt",
+            "text": "${@i18n.t_today}",
+            "fontSize": "15pt",
+            "typeface": "System-Bold"
+          }
+        ]
+      }
+    ],
+    "i18n": {
+      "zh-CN": {
+        "nbsp": " ",
+        "t_today": "就是今天"
+      },
+      "en-US": {
+        "nbsp": " ",
+        "t_today": "Today"
+      }
+    }
+  }
+}

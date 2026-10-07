@@ -1,0 +1,96 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "checkin-grid",
+  "version": 1,
+  "title": {
+    "zh-CN": "打卡格子",
+    "en-US": "Check-in grid"
+  },
+  "summary": {
+    "zh-CN": "最近每天做没做:方形 7×5(35 天),宽档 7×15(105 天),右下角是今天",
+    "en-US": "Did it happen each day: 7×5 (35 days) square, 7×15 (105 days) wide; bottom-right is today"
+  },
+  "pick": {
+    "zh-CN": "习惯、运动、喝水、学习这类按天记的事",
+    "en-US": "Habits, workouts, water, study — anything logged per day"
+  },
+  "sizes": [
+    {
+      "layout": 22,
+      "grid": "2×2",
+      "widget": "checkin-grid",
+      "primary": true
+    },
+    {
+      "layout": 42,
+      "grid": "4×2",
+      "widget": "checkin-grid-42",
+      "primary": false
+    }
+  ],
+  "flow": "xWidget/flow/checkin-grid.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "22": 8,
+        "42": 20
+      },
+      "example": {
+        "zh-CN": "晨跑",
+        "en-US": "Morning run"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "days",
+      "kind": "data",
+      "type": "bits",
+      "required": true,
+      "meaning": {
+        "zh-CN": "按天的 0 / 1 串,从旧到新,最后一位 = 今天(1 = 做了)。长度不限,取最后 35 / 105 位,不够的按没做补",
+        "en-US": "A string of 0/1 per day, oldest first, last char = today (1 = done). Any length; the last 35 / 105 are used, missing days count as not done"
+      },
+      "example": "…0111101",
+      "whenEmpty": {
+        "zh-CN": "格子全灰,统计显示 --",
+        "en-US": "All cells grey, stats show --"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "green",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "进度",
+  "sub": "版式 · 2×1",
+  "i18n": {
+    "en-US": {
+      "title": "Progress",
+      "sub": "Layout · 2×1"
+    }
+  },
+  "layout": 21,
+  "params": {},
+  "ai": {
+    "shows": "完成了多少 / 目标多少:方形是进度环,迷你是进度条"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/progress-21.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/progress.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

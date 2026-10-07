@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "状态灯",
+  "sub": "版式 · 2×2",
+  "i18n": {
+    "en-US": {
+      "title": "Status light",
+      "sub": "Layout · 2×2"
+    }
+  },
+  "layout": 22,
+  "params": {},
+  "ai": {
+    "shows": "一盏灯回答「正常吗」:正常 / 留意 / 故障 / 未知四态"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/status.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/status.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

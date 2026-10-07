@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "列表",
+  "sub": "版式 · 4×2",
+  "i18n": {
+    "en-US": {
+      "title": "List",
+      "sub": "Layout · 4×2"
+    }
+  },
+  "layout": 42,
+  "params": {},
+  "ai": {
+    "shows": "3–5 行:每行一个名字 + 一个值(大档再加一行小字)"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/list.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/list.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

@@ -11,7 +11,7 @@
 ## 前置
 
 - 有 `numable` 命令时用它校验与出码;没有(例如你在聊天窗口里)也能直接写链接,规则见下文。
-- 组件目录:`numable catalog`(一行一个组件),或直接读 `https://api.numable.app/catalog/widgets`(JSON;中国大陆加请求头 `x-region: cn`)。目录只含官方工具,按地区不同。
+- 组件目录:`numable catalog`(一行一个组件),或直接读 `https://api.numable.app/catalog/widgets?format=compact`(JSON;中国大陆加请求头 `x-region: cn`)。精简形态里,同一工具多个组件共用的参数说明只在 `tools[工具].params` 写一次:**先看组件自己的 `ai.params[键]`(`null` = 这个参数没有说明),没有再看工具上的**。不带 `format` 是全量形态,每个组件各写一份。目录只含官方工具,按地区不同。
 
 ## 步骤 1 · 查目录
 

@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "倒数",
+  "sub": "版式 · 2×2",
+  "i18n": {
+    "en-US": {
+      "title": "Countdown",
+      "sub": "Layout · 2×2"
+    }
+  },
+  "layout": 22,
+  "params": {},
+  "ai": {
+    "shows": "离某一天还有 N 天;当天显示「就是今天」,过了显示已过几天"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/countdown.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/countdown.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "3600"
+      ]
+    }
+  }
+}

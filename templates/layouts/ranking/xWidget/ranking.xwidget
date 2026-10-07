@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "排行",
+  "sub": "版式 · 4×4",
+  "i18n": {
+    "en-US": {
+      "title": "Ranking",
+      "sub": "Layout · 4×4"
+    }
+  },
+  "layout": 44,
+  "params": {},
+  "ai": {
+    "shows": "前 N 名带名次:名字 + 数值,大档每行再带一根相对长度条"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/ranking.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/ranking.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "compare",
+  "version": 1,
+  "title": {
+    "zh-CN": "对比",
+    "en-US": "Compare"
+  },
+  "summary": {
+    "zh-CN": "同一个量在 2–3 个对象之间并排比,最大的那个用源色标出",
+    "en-US": "One measure side by side across 2–3 things; the largest is marked in the accent"
+  },
+  "pick": {
+    "zh-CN": "几个城市的气温、几个账户的余额、几个渠道的下载量",
+    "en-US": "Temperatures in a few cities, balances across accounts, downloads per channel"
+  },
+  "sizes": [
+    {
+      "layout": 42,
+      "grid": "4×2",
+      "widget": "compare",
+      "primary": true
+    }
+  ],
+  "flow": "xWidget/flow/compare.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "42": 20
+      },
+      "example": {
+        "zh-CN": "本周跑量",
+        "en-US": "Running this week"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "labels",
+      "kind": "copy",
+      "type": "text[]",
+      "required": true,
+      "meaning": {
+        "zh-CN": "2 或 3 个对象的名字(数组);给 3 个以上只取前 3 个",
+        "en-US": "Names of 2 or 3 things (array); only the first 3 are used"
+      },
+      "maxLen": {
+        "42": 8
+      },
+      "example": {
+        "zh-CN": [
+          "我",
+          "小林",
+          "阿杰"
+        ],
+        "en-US": [
+          "Me",
+          "Lin",
+          "Jay"
+        ]
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "values",
+      "kind": "data",
+      "type": "number[]",
+      "required": true,
+      "meaning": {
+        "zh-CN": "对应的数字(数组,与 labels 对齐)。三项时数字放得下 5 个字符左右,大数用 compact",
+        "en-US": "Matching numbers (array aligned with labels). With three items about 5 characters fit; use compact for big numbers"
+      },
+      "example": [
+        42.3,
+        35.8,
+        18.6
+      ],
+      "whenEmpty": {
+        "zh-CN": "显示 --,比例条空着",
+        "en-US": "Shows --, bars empty"
+      }
+    },
+    {
+      "key": "format",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示",
+        "en-US": "Number format: auto (grouping, up to 2 decimals) · int · 1dp / 2dp · compact (万/亿 in Chinese, K/M/B otherwise) · raw (as given)"
+      },
+      "values": [
+        "auto",
+        "int",
+        "1dp",
+        "2dp",
+        "compact",
+        "raw"
+      ],
+      "example": "1dp",
+      "whenEmpty": {
+        "zh-CN": "按 auto",
+        "en-US": "Falls back to auto"
+      }
+    },
+    {
+      "key": "unit",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "单位(几项共用)",
+        "en-US": "Unit (shared)"
+      },
+      "maxLen": {
+        "42": 3
+      },
+      "example": {
+        "zh-CN": "km",
+        "en-US": "km"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "notes",
+      "kind": "data",
+      "type": "text[]",
+      "required": false,
+      "meaning": {
+        "zh-CN": "每项数字下的一句(数组,可选):环比、排名",
+        "en-US": "A line under each number (array, optional): change, rank"
+      },
+      "maxLen": {
+        "42": 10
+      },
+      "example": {
+        "zh-CN": [
+          "比上周 +8%",
+          "比上周 −3%",
+          "比上周 +21%"
+        ],
+        "en-US": [
+          "+8% WoW",
+          "−3% WoW",
+          "+21% WoW"
+        ]
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "at",
+      "kind": "data",
+      "type": "time",
+      "required": false,
+      "meaning": {
+        "zh-CN": "时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空",
+        "en-US": "Freshness stamp (top right): when the data was fetched — HH:mm today, MM-dd HH:mm otherwise; leave empty for purely local widgets"
+      },
+      "maxLen": {
+        "all": 11
+      },
+      "example": "14:30",
+      "whenEmpty": {
+        "zh-CN": "不显示,组件名占满整行",
+        "en-US": "Hidden; the name takes the full row"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "orange",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}

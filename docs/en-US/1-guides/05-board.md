@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/1-guides/05-board.md sha256:d9ef41c205bb -->
+<!-- translated-from: zh-CN/1-guides/05-board.md sha256:d12e54123e03 -->
 
 # board — build a dashboard from existing widgets
 
@@ -13,7 +13,7 @@ Only when the catalog really has nothing for what the user wants should you buil
 ## Before you start
 
 - With the `numable` command, use it to validate and make the link; without it (for example in a chat window) you can still write the link by hand, following the rules below.
-- The widget catalog: `numable catalog` (one widget per line), or read `https://api.numable.app/catalog/widgets` directly (JSON; add the header `x-region: cn` for mainland China). It lists official tools only and differs by region.
+- The widget catalog: `numable catalog` (one widget per line), or read `https://api.numable.app/catalog/widgets?format=compact` directly (JSON; add the header `x-region: cn` for mainland China). In the compact form, parameter notes shared by several widgets of one tool are written once under `tools[tool].params`: **check the widget's own `ai.params[key]` first (`null` = no note for that parameter), then the tool's**. Without `format` you get the full form, with every widget carrying its own copy. It lists official tools only and differs by region.
 
 ## Step 1 · Look up the catalog
 

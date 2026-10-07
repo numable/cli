@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "_note": "版式「倒数」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "春节",
+      "note": "放假 8 天",
+      "t_until": "还有",
+      "t_since": "已经过去",
+      "t_day": "天",
+      "t_days": "天"
+    },
+    "en-US": {
+      "title": "Summer trip",
+      "note": "Flight at 9:40",
+      "t_until": "Coming up in",
+      "t_since": "It has been",
+      "t_day": "day",
+      "t_days": "days"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "target",
+        "value": "2027-02-06"
+      },
+      "_note": "槽位 target(date,必填):目标日期,写成 yyyy-MM-dd"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "note",
+        "value": "${@i18n.note}"
+      },
+      "_note": "槽位 note(text):日期上方一句补充(可选)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "rose"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_t",
+        "value": "$[parseDate::(findNotEmpty::(${target},),yyyy-MM-dd)]"
+      },
+      "_note": "目标日 0 点"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_t0",
+        "value": "$[parseDate::(formatDate::(${@time.nowMs},yyyy-MM-dd),yyyy-MM-dd)]"
+      },
+      "_note": "今天 0 点"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "days",
+        "value": "$[if::(eq::(findNotEmpty::(${_t},__none__),__none__),,round::(calc::((${_t}-${_t0})/86400000)))]"
+      },
+      "_note": "相差天数:正 = 还没到,0 = 今天,负 = 已过"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "state",
+        "value": "$[if::(eq::(findNotEmpty::(${days},__none__),__none__),,if::(gt::(${days},0),future,if::(lt::(${days},0),past,today)))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "daysS",
+        "value": "$[if::(eq::(findNotEmpty::(${days},__none__),__none__),--,parseNumber::(if::(lt::(${days},0),calc::(0-${days}),${days}),#\\,##0))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "pre",
+        "value": "$[if::(eq::(${state},past),${@i18n.t_since},${@i18n.t_until})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "unitS",
+        "value": "$[if::(eq::(${days},1),${@i18n.t_day},if::(eq::(${days},-1),${@i18n.t_day},${@i18n.t_days}))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_dateSM",
+        "value": "$[parseNumber::(formatDate::(${_t},MM),0)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_dateSD",
+        "value": "$[parseNumber::(formatDate::(${_t},dd),0)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_dateSY",
+        "value": "$[formatDate::(${_t},yyyy)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_dateSN",
+        "value": "$[index::(split::(Jan~Feb~Mar~Apr~May~Jun~Jul~Aug~Sep~Oct~Nov~Dec,~),calc::(${_dateSM}-1))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "dateS",
+        "value": "$[if::(eq::(findNotEmpty::(${_t},__none__),__none__),,if::(startsWith::(${@app.language},zh),${_dateSY}年${_dateSM}月${_dateSD}日,${_dateSN} ${_dateSD}\\, ${_dateSY}))]"
+      }
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "note",
+          "accent",
+          "state",
+          "daysS",
+          "pre",
+          "unitS",
+          "dateS"
+        ]
+      }
+    }
+  ]
+}

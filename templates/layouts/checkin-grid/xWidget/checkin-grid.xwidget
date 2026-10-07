@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "打卡格子",
+  "sub": "版式 · 2×2",
+  "i18n": {
+    "en-US": {
+      "title": "Check-in grid",
+      "sub": "Layout · 2×2"
+    }
+  },
+  "layout": 22,
+  "params": {},
+  "ai": {
+    "shows": "最近每天做没做:方形 7×5(35 天),宽档 7×15(105 天),右下角是今天"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/checkin-grid.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/checkin-grid.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "3600"
+      ]
+    }
+  }
+}

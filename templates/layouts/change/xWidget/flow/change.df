@@ -1,0 +1,226 @@
+{
+  "version": 1,
+  "_note": "版式「涨跌」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "Apple",
+      "note": "昨收 224.41 · 纳斯达克"
+    },
+    "en-US": {
+      "title": "Apple",
+      "note": "Prev 224.41 · NASDAQ"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "price",
+        "value": "227.48"
+      },
+      "_note": "槽位 price(number,必填):现价(原始数字)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "format",
+        "value": "2dp"
+      },
+      "_note": "槽位 format(enum):数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "change",
+        "value": "1.37"
+      },
+      "_note": "槽位 change(percent,必填):涨跌幅,单位是 %:-1.23 表示跌 1.23%(带不带 % 都行)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "delta",
+        "value": "+3.07"
+      },
+      "_note": "槽位 delta(text):涨跌额,跟在胶囊右边(自己带正负号,如 +3.07)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "note",
+        "value": "${@i18n.note}"
+      },
+      "_note": "槽位 note(text):底部一句:昨收、市场、单位"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "槽位 at(time):时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "graphite"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "redUp",
+        "value": "$[if::(eq::(${@app.upColor},red),1,if::(eq::(${@app.upColor},green),0,if::(startsWith::(${@app.language},zh),1,0)))]"
+      },
+      "_note": "涨用红色 = 1:App「涨跌颜色」设置优先,取不到按语言(中文红涨、其余绿涨)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_priceSO",
+        "value": "$[findNotEmpty::(${price},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_priceSV",
+        "value": "$[replaceAll::(${_priceSO},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_priceSA",
+        "value": "$[if::(lt::(${_priceSV},0),calc::(0-${_priceSV}),${_priceSV})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_priceSK",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_priceSA},100000000),parseNumber::(calc::(${_priceSV}/100000000),0.##),if::(ge::(${_priceSA},10000),parseNumber::(calc::(${_priceSV}/10000),0.#),parseNumber::(${_priceSV},0.#))),if::(ge::(${_priceSA},1000000000),parseNumber::(calc::(${_priceSV}/1000000000),0.##),if::(ge::(${_priceSA},1000000),parseNumber::(calc::(${_priceSV}/1000000),0.##),if::(ge::(${_priceSA},1000),parseNumber::(calc::(${_priceSV}/1000),0.#),parseNumber::(${_priceSV},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_priceSU",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_priceSA},100000000),亿,if::(ge::(${_priceSA},10000),万,)),if::(ge::(${_priceSA},1000000000),B,if::(ge::(${_priceSA},1000000),M,if::(ge::(${_priceSA},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "priceSC",
+        "value": "$[if::(eq::(findNotEmpty::(${_priceSV},__none__),__none__),--,if::(matches::(${_priceSV},^-?\\[0-9.\\]+$),${_priceSK}${_priceSU},${_priceSO}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "priceS",
+        "value": "$[if::(eq::(findNotEmpty::(${_priceSV},__none__),__none__),--,if::(eq::(${format},raw),${_priceSO},if::(matches::(${_priceSV},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_priceSV}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_priceSV},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_priceSV},#\\,##0.00),if::(eq::(${format},compact),${priceSC},parseNumber::(${_priceSV},#\\,##0.##))))),${_priceSO})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "priceL",
+        "value": "$[length::(findNotEmpty::(${priceS},--))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_chgSV",
+        "value": "$[replaceAll::(findNotEmpty::(${change},),%,)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_chgSP",
+        "value": "$[if::(lt::(${_chgSV},0),parseNumber::(calc::(0-${_chgSV}),0.00),parseNumber::(${_chgSV},0.00))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "chgDir",
+        "value": "$[if::(eq::(findNotEmpty::(${_chgSV},__none__),__none__),,if::(gt::(${_chgSV},0),1,if::(lt::(${_chgSV},0),-1,0)))]"
+      },
+      "_note": "方向:1 涨 / -1 跌 / 0 持平 / 空 = 取不到"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "chgS",
+        "value": "$[if::(eq::(findNotEmpty::(${_chgSV},__none__),__none__),--,if::(gt::(${_chgSV},0),+${_chgSP}%,if::(lt::(${_chgSV},0),−${_chgSP}%,${_chgSP}%)))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "chgTone",
+        "value": "$[if::(eq::(${chgDir},1),if::(eq::(${redUp},1),1,2),if::(eq::(${chgDir},-1),if::(eq::(${redUp},1),2,1),0))]"
+      },
+      "_note": "颜色角色:1 红 / 2 绿 / 0 灰(持平或取不到)"
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "delta",
+          "note",
+          "at",
+          "accent",
+          "priceS",
+          "priceL",
+          "chgS",
+          "chgDir",
+          "chgTone"
+        ]
+      }
+    }
+  ]
+}

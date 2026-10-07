@@ -1,0 +1,133 @@
+{
+  "_note": "版式「日程」· 22 档(158×158)。坐标与配色是版式的一部分,不要改;要换内容改 flow/agenda.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "id": "at",
+        "type": "txt",
+        "x": "{parent.w}-{at.w}-12pt",
+        "y": "14pt",
+        "w": "-1",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "$[findNotEmpty::(${at},)]",
+        "fontSize": "9pt",
+        "textColor": "#6B7280|#8E939B",
+        "_note": "时效锚(右上):取数时刻。槽位 at 为空时宽度为 0,组件名自动占满。"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "21pt",
+        "y": "11pt",
+        "w": "{at.x}-27pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "13pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "12pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "id": "rel",
+        "x": "12pt",
+        "y": "36pt",
+        "w": "-1",
+        "hide": "$[if::(eq::(findNotEmpty::(${relS},__none__),__none__),1,0)]",
+        "text": "$[findNotEmpty::(${relS},--)]",
+        "fontSize": "11pt",
+        "typeface": "System-Bold",
+        "bgColor": "#E7E9EE|#20232A",
+        "paddingLeft": "8pt",
+        "paddingRight": "8pt",
+        "paddingTop": "4pt",
+        "paddingBottom": "4pt",
+        "cornerRadius": {
+          "leftT": "10pt",
+          "leftB": "10pt",
+          "rightT": "10pt",
+          "rightB": "10pt"
+        }
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "2",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "ev",
+        "x": "12pt",
+        "y": "66pt",
+        "w": "134pt",
+        "lineSpacing": "2pt",
+        "text": "$[findNotEmpty::(${event},${@i18n.t_none})]",
+        "fontSize": "16pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "wh",
+        "x": "12pt",
+        "y": "{ev.b}+8pt",
+        "w": "134pt",
+        "text": "$[findNotEmpty::(${whenS},)]",
+        "fontSize": "12pt"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#6B7280|#8E939B",
+        "id": "loc",
+        "x": "12pt",
+        "y": "{wh.b}+5pt",
+        "w": "134pt",
+        "text": "$[findNotEmpty::(${where},)]",
+        "fontSize": "11pt"
+      }
+    ],
+    "i18n": {
+      "zh-CN": {
+        "t_none": "暂无日程"
+      },
+      "en-US": {
+        "t_none": "Nothing scheduled"
+      }
+    }
+  }
+}

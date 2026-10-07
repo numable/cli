@@ -1,0 +1,117 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "countdown",
+  "version": 1,
+  "title": {
+    "zh-CN": "倒数",
+    "en-US": "Countdown"
+  },
+  "summary": {
+    "zh-CN": "离某一天还有 N 天;当天显示「就是今天」,过了显示已过几天",
+    "en-US": "N days until a date; \"Today\" on the day, days since afterwards"
+  },
+  "pick": {
+    "zh-CN": "纪念日、假期、截止日、发布日",
+    "en-US": "Anniversaries, holidays, deadlines, launch days"
+  },
+  "sizes": [
+    {
+      "layout": 22,
+      "grid": "2×2",
+      "widget": "countdown",
+      "primary": true
+    },
+    {
+      "layout": 21,
+      "grid": "2×1",
+      "widget": "countdown-21",
+      "primary": false
+    }
+  ],
+  "flow": "xWidget/flow/countdown.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "21": 8,
+        "22": 8
+      },
+      "example": {
+        "zh-CN": "春节",
+        "en-US": "Summer trip"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "target",
+      "kind": "data",
+      "type": "date",
+      "required": true,
+      "meaning": {
+        "zh-CN": "目标日期,写成 yyyy-MM-dd",
+        "en-US": "Target date as yyyy-MM-dd"
+      },
+      "example": "2027-02-06",
+      "whenEmpty": {
+        "zh-CN": "数字显示 --",
+        "en-US": "Number shows --"
+      }
+    },
+    {
+      "key": "note",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "日期上方一句补充(可选)",
+        "en-US": "One extra line above the date (optional)"
+      },
+      "maxLen": {
+        "22": 14
+      },
+      "example": {
+        "zh-CN": "放假 8 天",
+        "en-US": "Flight at 9:40"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "rose",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}

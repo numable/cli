@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "_note": "版式「大数字」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "今日步数",
+      "unit": "步",
+      "note": "比昨天多 1,204 步"
+    },
+    "en-US": {
+      "title": "Steps today",
+      "unit": "steps",
+      "note": "1,204 more than yesterday"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "value",
+        "value": "8432"
+      },
+      "_note": "槽位 value(number,必填):主数字(原始数字即可,格式由 format 决定;非数字原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "format",
+        "value": "auto"
+      },
+      "_note": "槽位 format(enum):数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "unit",
+        "value": "${@i18n.unit}"
+      },
+      "_note": "槽位 unit(text):单位,紧跟数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "note",
+        "value": "${@i18n.note}"
+      },
+      "_note": "槽位 note(text):副标:一句补充(和昨天比、目标、来源说明)。可以是文案也可以拼数据"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "槽位 at(time):时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "indigo"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSO",
+        "value": "$[findNotEmpty::(${value},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSV",
+        "value": "$[replaceAll::(${_valueSO},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSA",
+        "value": "$[if::(lt::(${_valueSV},0),calc::(0-${_valueSV}),${_valueSV})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSK",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_valueSA},100000000),parseNumber::(calc::(${_valueSV}/100000000),0.##),if::(ge::(${_valueSA},10000),parseNumber::(calc::(${_valueSV}/10000),0.#),parseNumber::(${_valueSV},0.#))),if::(ge::(${_valueSA},1000000000),parseNumber::(calc::(${_valueSV}/1000000000),0.##),if::(ge::(${_valueSA},1000000),parseNumber::(calc::(${_valueSV}/1000000),0.##),if::(ge::(${_valueSA},1000),parseNumber::(calc::(${_valueSV}/1000),0.#),parseNumber::(${_valueSV},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSU",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_valueSA},100000000),亿,if::(ge::(${_valueSA},10000),万,)),if::(ge::(${_valueSA},1000000000),B,if::(ge::(${_valueSA},1000000),M,if::(ge::(${_valueSA},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "valueSC",
+        "value": "$[if::(eq::(findNotEmpty::(${_valueSV},__none__),__none__),--,if::(matches::(${_valueSV},^-?\\[0-9.\\]+$),${_valueSK}${_valueSU},${_valueSO}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "valueS",
+        "value": "$[if::(eq::(findNotEmpty::(${_valueSV},__none__),__none__),--,if::(eq::(${format},raw),${_valueSO},if::(matches::(${_valueSV},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_valueSV}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_valueSV},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_valueSV},#\\,##0.00),if::(eq::(${format},compact),${valueSC},parseNumber::(${_valueSV},#\\,##0.##))))),${_valueSO})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "valueL",
+        "value": "$[calc::(length::(findNotEmpty::(${valueS},--))+length::(findNotEmpty::(${unit},))*0.5)]"
+      },
+      "_note": "挑字号用:数字串长度 + 单位长度 × 0.5"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "valueCL",
+        "value": "$[length::(findNotEmpty::(${valueSC},--))]"
+      }
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "unit",
+          "note",
+          "at",
+          "accent",
+          "valueS",
+          "valueSC",
+          "valueL",
+          "valueCL"
+        ]
+      }
+    }
+  ]
+}

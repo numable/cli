@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "双指标",
+  "sub": "版式 · 2×2",
+  "i18n": {
+    "en-US": {
+      "title": "Two metrics",
+      "sub": "Layout · 2×2"
+    }
+  },
+  "layout": 22,
+  "params": {},
+  "ai": {
+    "shows": "两个不同的量各占一块:标签在上、数字在下"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/dual-metric-22.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/dual-metric.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "_note": "版式「打卡格子」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "晨跑"
+    },
+    "en-US": {
+      "title": "Morning run"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "days",
+        "value": "011011101110111101111011011110111001111011101111011101110111101110111011110111011110111001110111101011111"
+      },
+      "_note": "槽位 days(bits,必填):按天的 0 / 1 串,从旧到新,最后一位 = 今天(1 = 做了)。长度不限,取最后 35 / 105 位,不够的按没做补"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "green"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accP",
+        "value": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]"
+      },
+      "_note": "源色色值(格子用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_d",
+        "value": "$[findNotEmpty::(${days},)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_p",
+        "value": "$[connect::(000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,${_d})]"
+      },
+      "_note": "左边补 0,保证够 105 位"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_L",
+        "value": "$[length::(${_p})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "g35",
+        "value": "$[subString::(${_p},calc::(${_L}-35),${_L})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "g105",
+        "value": "$[subString::(${_p},calc::(${_L}-105),${_L})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "hasD",
+        "value": "$[if::(eq::(findNotEmpty::(${_d},__none__),__none__),0,1)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "done35",
+        "value": "$[if::(eq::(${hasD},1),length::(replaceAll::(${g35},0,)),--)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "done105",
+        "value": "$[if::(eq::(${hasD},1),length::(replaceAll::(${g105},0,)),--)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_sp",
+        "value": "$[split::(${_d},0)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "streak",
+        "value": "$[if::(eq::(${hasD},1),if::(endsWith::(${_d},1),length::(index::(${_sp},calc::(length::(${_sp})-1))),0),--)]"
+      },
+      "_note": "末尾连续的 1(今天没做 = 0)"
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "accent",
+          "accP",
+          "g35",
+          "g105",
+          "done35",
+          "done105",
+          "streak",
+          "hasD"
+        ]
+      }
+    }
+  ]
+}

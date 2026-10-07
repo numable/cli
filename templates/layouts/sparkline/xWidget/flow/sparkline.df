@@ -1,0 +1,490 @@
+{
+  "version": 1,
+  "_note": "版式「迷你走势」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "网站访问",
+      "unit": "次",
+      "note": "近 16 天"
+    },
+    "en-US": {
+      "title": "Site visits",
+      "unit": "visits",
+      "note": "Last 16 days"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "value",
+        "value": "1284"
+      },
+      "_note": "槽位 value(number,必填):当前值"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "format",
+        "value": "auto"
+      },
+      "_note": "槽位 format(enum):数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "unit",
+        "value": "${@i18n.unit}"
+      },
+      "_note": "槽位 unit(text):单位"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "series",
+        "value": [
+          920,
+          980,
+          1010,
+          990,
+          1060,
+          1120,
+          1080,
+          1150,
+          1190,
+          1170,
+          1230,
+          1210,
+          1260,
+          1240,
+          1300,
+          1284
+        ]
+      },
+      "_note": "槽位 series(series,必填):走势:数字数组,按时间从旧到新,最后一个 = 现在。取最后 16 个点;不足 16 个时左边补平"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "change",
+        "value": "4.2"
+      },
+      "_note": "槽位 change(percent):涨跌幅 %(可选)。给了:数字下方显示并按涨跌上色走势线;不给:走势线用源色"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "note",
+        "value": "${@i18n.note}"
+      },
+      "_note": "槽位 note(text):数字下方一句:时间范围或比较对象"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "槽位 at(time):时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "blue"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "redUp",
+        "value": "$[if::(eq::(${@app.upColor},red),1,if::(eq::(${@app.upColor},green),0,if::(startsWith::(${@app.language},zh),1,0)))]"
+      },
+      "_note": "涨用红色 = 1:App「涨跌颜色」设置优先,取不到按语言(中文红涨、其余绿涨)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSO",
+        "value": "$[findNotEmpty::(${value},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSV",
+        "value": "$[replaceAll::(${_valueSO},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSA",
+        "value": "$[if::(lt::(${_valueSV},0),calc::(0-${_valueSV}),${_valueSV})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSK",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_valueSA},100000000),parseNumber::(calc::(${_valueSV}/100000000),0.##),if::(ge::(${_valueSA},10000),parseNumber::(calc::(${_valueSV}/10000),0.#),parseNumber::(${_valueSV},0.#))),if::(ge::(${_valueSA},1000000000),parseNumber::(calc::(${_valueSV}/1000000000),0.##),if::(ge::(${_valueSA},1000000),parseNumber::(calc::(${_valueSV}/1000000),0.##),if::(ge::(${_valueSA},1000),parseNumber::(calc::(${_valueSV}/1000),0.#),parseNumber::(${_valueSV},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_valueSU",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_valueSA},100000000),亿,if::(ge::(${_valueSA},10000),万,)),if::(ge::(${_valueSA},1000000000),B,if::(ge::(${_valueSA},1000000),M,if::(ge::(${_valueSA},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "valueSC",
+        "value": "$[if::(eq::(findNotEmpty::(${_valueSV},__none__),__none__),--,if::(matches::(${_valueSV},^-?\\[0-9.\\]+$),${_valueSK}${_valueSU},${_valueSO}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "valueS",
+        "value": "$[if::(eq::(findNotEmpty::(${_valueSV},__none__),__none__),--,if::(eq::(${format},raw),${_valueSO},if::(matches::(${_valueSV},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_valueSV}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_valueSV},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_valueSV},#\\,##0.00),if::(eq::(${format},compact),${valueSC},parseNumber::(${_valueSV},#\\,##0.##))))),${_valueSO})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "valueL",
+        "value": "$[calc::(length::(findNotEmpty::(${valueS},--))+length::(findNotEmpty::(${unit},))*0.5)]"
+      },
+      "_note": "挑字号用:数字串长度 + 单位长度 × 0.5"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_chgSV",
+        "value": "$[replaceAll::(findNotEmpty::(${change},),%,)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_chgSP",
+        "value": "$[if::(lt::(${_chgSV},0),parseNumber::(calc::(0-${_chgSV}),0.00),parseNumber::(${_chgSV},0.00))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "chgDir",
+        "value": "$[if::(eq::(findNotEmpty::(${_chgSV},__none__),__none__),,if::(gt::(${_chgSV},0),1,if::(lt::(${_chgSV},0),-1,0)))]"
+      },
+      "_note": "方向:1 涨 / -1 跌 / 0 持平 / 空 = 取不到"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "chgS",
+        "value": "$[if::(eq::(findNotEmpty::(${_chgSV},__none__),__none__),--,if::(gt::(${_chgSV},0),+${_chgSP}%,if::(lt::(${_chgSV},0),−${_chgSP}%,${_chgSP}%)))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "chgTone",
+        "value": "$[if::(eq::(${chgDir},1),if::(eq::(${redUp},1),1,2),if::(eq::(${chgDir},-1),if::(eq::(${redUp},1),2,1),0))]"
+      },
+      "_note": "颜色角色:1 红 / 2 绿 / 0 灰(持平或取不到)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "hasChg",
+        "value": "$[if::(eq::(findNotEmpty::(${chgDir},__none__),__none__),0,1)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "lineTone",
+        "value": "$[if::(eq::(${hasChg},1),${chgTone},3)]"
+      },
+      "_note": "线色角色:给了涨跌幅按涨跌,没给用源色(3)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_spN",
+        "value": "$[length::(findNotEmpty::(${series},))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_spS",
+        "value": [
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-16)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-15)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-14)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-13)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-12)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-11)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-10)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-9)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-8)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-7)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-6)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-5)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-4)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-3)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-2)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_spN}-1)),index::(${series},0))]"
+        ]
+      },
+      "_note": "末尾锚定取 16 个点(不足时前面按第一个值补平)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_spLo",
+        "value": "$[min::(${_spS})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_spHi",
+        "value": "$[max::(${_spS})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_spR",
+        "value": "$[if::(gt::(${_spHi},${_spLo}),calc::(${_spHi}-${_spLo}),1)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_spA",
+        "value": [
+          "0",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},0)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "8.5",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},1)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "17.1",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},2)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "25.6",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},3)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "34.1",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},4)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "42.7",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},5)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "51.2",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},6)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "59.7",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},7)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "68.3",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},8)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "76.8",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},9)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "85.3",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},10)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "93.9",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},11)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "102.4",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},12)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "110.9",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},13)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "119.5",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},14)-${_spLo})/${_spR}))*36+4),0.0),22)]",
+          "128",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},15)-${_spLo})/${_spR}))*36+4),0.0),22)]"
+        ]
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "sp",
+        "value": "$[if::(eq::(findNotEmpty::(${_spHi},__none__),__none__),,join::(${_spA},\\,))]"
+      },
+      "_note": "points 串;series 取不到 = 空(组件上画骨架)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "spLY",
+        "value": "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_spS},15)-${_spLo})/${_spR}))*36+4),0.0),22)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_smN",
+        "value": "$[length::(findNotEmpty::(${series},))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_smS",
+        "value": [
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-16)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-15)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-14)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-13)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-12)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-11)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-10)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-9)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-8)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-7)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-6)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-5)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-4)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-3)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-2)),index::(${series},0))]",
+          "$[findNotEmpty::(index::(${series},calc::(${_smN}-1)),index::(${series},0))]"
+        ]
+      },
+      "_note": "末尾锚定取 16 个点(不足时前面按第一个值补平)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_smLo",
+        "value": "$[min::(${_smS})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_smHi",
+        "value": "$[max::(${_smS})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_smR",
+        "value": "$[if::(gt::(${_smHi},${_smLo}),calc::(${_smHi}-${_smLo}),1)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_smA",
+        "value": [
+          "0",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},0)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "3.4",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},1)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "6.8",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},2)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "10.2",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},3)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "13.6",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},4)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "17",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},5)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "20.4",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},6)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "23.8",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},7)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "27.2",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},8)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "30.6",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},9)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "34",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},10)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "37.4",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},11)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "40.8",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},12)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "44.2",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},13)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "47.6",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},14)-${_smLo})/${_smR}))*18+3),0.0),12)]",
+          "51",
+          "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},15)-${_smLo})/${_smR}))*18+3),0.0),12)]"
+        ]
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "sm",
+        "value": "$[if::(eq::(findNotEmpty::(${_smHi},__none__),__none__),,join::(${_smA},\\,))]"
+      },
+      "_note": "points 串;series 取不到 = 空(组件上画骨架)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "smLY",
+        "value": "$[findNotEmpty::(parseNumber::(calc::((1-((index::(${_smS},15)-${_smLo})/${_smR}))*18+3),0.0),12)]"
+      }
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "unit",
+          "note",
+          "at",
+          "accent",
+          "valueS",
+          "valueL",
+          "chgS",
+          "chgTone",
+          "hasChg",
+          "lineTone",
+          "sp",
+          "spLY",
+          "sm",
+          "smLY"
+        ]
+      }
+    }
+  ]
+}

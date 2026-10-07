@@ -1,0 +1,297 @@
+{
+  "_note": "版式「大数字」· 22 档(158×158)。坐标与配色是版式的一部分,不要改;要换内容改 flow/big-number.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "id": "at",
+        "type": "txt",
+        "x": "{parent.w}-{at.w}-12pt",
+        "y": "14pt",
+        "w": "-1",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "$[findNotEmpty::(${at},)]",
+        "fontSize": "9pt",
+        "textColor": "#6B7280|#8E939B",
+        "_note": "时效锚(右上):取数时刻。槽位 at 为空时宽度为 0,组件名自动占满。"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "21pt",
+        "y": "11pt",
+        "w": "{at.x}-27pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "13pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "12pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),0,if::(eq::(${valueS},--),0,if::(le::(findNotEmpty::(${valueL},0),4.5),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val0",
+            "type": "richText",
+            "x": "12pt",
+            "y": "54.1pt",
+            "w": "134pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueS}",
+                "fontSize": "44pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              },
+              {
+                "text": "${@i18n.nbsp}",
+                "fontSize": "11pt"
+              },
+              {
+                "text": "$[findNotEmpty::(${unit},)]",
+                "fontSize": "13pt",
+                "textColor": "#6B7280|#8E939B"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),0,if::(eq::(${valueS},--),0,if::(and::(gt::(findNotEmpty::(${valueL},0),4.5),le::(findNotEmpty::(${valueL},0),6.5)),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val1",
+            "type": "richText",
+            "x": "12pt",
+            "y": "59.9pt",
+            "w": "134pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueS}",
+                "fontSize": "36pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              },
+              {
+                "text": "${@i18n.nbsp}",
+                "fontSize": "9pt"
+              },
+              {
+                "text": "$[findNotEmpty::(${unit},)]",
+                "fontSize": "13pt",
+                "textColor": "#6B7280|#8E939B"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),0,if::(eq::(${valueS},--),0,if::(and::(gt::(findNotEmpty::(${valueL},0),6.5),le::(findNotEmpty::(${valueL},0),8.5)),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val2",
+            "type": "richText",
+            "x": "12pt",
+            "y": "65.7pt",
+            "w": "134pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueS}",
+                "fontSize": "28pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              },
+              {
+                "text": "${@i18n.nbsp}",
+                "fontSize": "7pt"
+              },
+              {
+                "text": "$[findNotEmpty::(${unit},)]",
+                "fontSize": "13pt",
+                "textColor": "#6B7280|#8E939B"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),0,if::(eq::(${valueS},--),0,if::(and::(gt::(findNotEmpty::(${valueL},0),8.5),le::(findNotEmpty::(${valueL},0),10.5)),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val3",
+            "type": "richText",
+            "x": "12pt",
+            "y": "69.33pt",
+            "w": "134pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueS}",
+                "fontSize": "23pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              },
+              {
+                "text": "${@i18n.nbsp}",
+                "fontSize": "6pt"
+              },
+              {
+                "text": "$[findNotEmpty::(${unit},)]",
+                "fontSize": "13pt",
+                "textColor": "#6B7280|#8E939B"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),0,if::(eq::(${valueS},--),0,if::(gt::(findNotEmpty::(${valueL},0),10.5),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val4",
+            "type": "richText",
+            "x": "12pt",
+            "y": "72.22pt",
+            "w": "134pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueS}",
+                "fontSize": "19pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              },
+              {
+                "text": "${@i18n.nbsp}",
+                "fontSize": "5pt"
+              },
+              {
+                "text": "$[findNotEmpty::(${unit},)]",
+                "fontSize": "13pt",
+                "textColor": "#6B7280|#8E939B"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),1,if::(eq::(${valueS},--),1,0))]"
+        },
+        "react": [
+          {
+            "id": "valE",
+            "type": "richText",
+            "x": "12pt",
+            "y": "67.3pt",
+            "w": "134pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "--",
+                "fontSize": "44pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              },
+              {
+                "text": "${@i18n.nbsp}",
+                "fontSize": "11pt"
+              },
+              {
+                "text": "$[findNotEmpty::(${unit},)]",
+                "fontSize": "13pt",
+                "textColor": "#6B7280|#8E939B"
+              }
+            ]
+          }
+        ],
+        "_note": "取不到值:单独画「--」,压到数字墨迹中线"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "2",
+        "lineBreak": "0",
+        "textColor": "#6B7280|#8E939B",
+        "id": "note",
+        "x": "12pt",
+        "y": "100pt",
+        "w": "134pt",
+        "lineSpacing": "2pt",
+        "text": "$[findNotEmpty::(${note},)]",
+        "fontSize": "12pt"
+      }
+    ],
+    "i18n": {
+      "zh-CN": {
+        "nbsp": " "
+      },
+      "en-US": {
+        "nbsp": " "
+      }
+    }
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "version": 1,
+  "_note": "版式「双指标」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "本月骑行",
+      "aLabel": "距离",
+      "aUnit": "km",
+      "aNote": "比上月 +12%",
+      "bLabel": "累计爬升",
+      "bUnit": "m",
+      "bNote": "最高一次 820 m"
+    },
+    "en-US": {
+      "title": "Rides this month",
+      "aLabel": "Distance",
+      "aUnit": "km",
+      "aNote": "+12% vs last month",
+      "bLabel": "Elevation",
+      "bUnit": "m",
+      "bNote": "Best ride 820 m"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "aLabel",
+        "value": "${@i18n.aLabel}"
+      },
+      "_note": "槽位 aLabel(text,必填):第一块的标签"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "aValue",
+        "value": "312.4"
+      },
+      "_note": "槽位 aValue(number,必填):第一块的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "aUnit",
+        "value": "${@i18n.aUnit}"
+      },
+      "_note": "槽位 aUnit(text):第一块的单位"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "aNote",
+        "value": "${@i18n.aNote}"
+      },
+      "_note": "槽位 aNote(text):第一块底部一句(只在 42 档显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "bLabel",
+        "value": "${@i18n.bLabel}"
+      },
+      "_note": "槽位 bLabel(text,必填):第二块的标签"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "bValue",
+        "value": "4280"
+      },
+      "_note": "槽位 bValue(number,必填):第二块的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "bUnit",
+        "value": "${@i18n.bUnit}"
+      },
+      "_note": "槽位 bUnit(text):第二块的单位"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "bNote",
+        "value": "${@i18n.bNote}"
+      },
+      "_note": "槽位 bNote(text):第二块底部一句(只在 42 档显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "format",
+        "value": "auto"
+      },
+      "_note": "槽位 format(enum):数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "槽位 at(time):时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "purple"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_aSO",
+        "value": "$[findNotEmpty::(${aValue},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_aSV",
+        "value": "$[replaceAll::(${_aSO},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_aSA",
+        "value": "$[if::(lt::(${_aSV},0),calc::(0-${_aSV}),${_aSV})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_aSK",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_aSA},100000000),parseNumber::(calc::(${_aSV}/100000000),0.##),if::(ge::(${_aSA},10000),parseNumber::(calc::(${_aSV}/10000),0.#),parseNumber::(${_aSV},0.#))),if::(ge::(${_aSA},1000000000),parseNumber::(calc::(${_aSV}/1000000000),0.##),if::(ge::(${_aSA},1000000),parseNumber::(calc::(${_aSV}/1000000),0.##),if::(ge::(${_aSA},1000),parseNumber::(calc::(${_aSV}/1000),0.#),parseNumber::(${_aSV},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_aSU",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_aSA},100000000),亿,if::(ge::(${_aSA},10000),万,)),if::(ge::(${_aSA},1000000000),B,if::(ge::(${_aSA},1000000),M,if::(ge::(${_aSA},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "aSC",
+        "value": "$[if::(eq::(findNotEmpty::(${_aSV},__none__),__none__),--,if::(matches::(${_aSV},^-?\\[0-9.\\]+$),${_aSK}${_aSU},${_aSO}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "aS",
+        "value": "$[if::(eq::(findNotEmpty::(${_aSV},__none__),__none__),--,if::(eq::(${format},raw),${_aSO},if::(matches::(${_aSV},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_aSV}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_aSV},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_aSV},#\\,##0.00),if::(eq::(${format},compact),${aSC},parseNumber::(${_aSV},#\\,##0.##))))),${_aSO})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "aL",
+        "value": "$[calc::(length::(findNotEmpty::(${aS},--))+length::(findNotEmpty::(${aUnit},))*0.5)]"
+      },
+      "_note": "挑字号用:数字串长度 + 单位长度 × 0.5"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_bSO",
+        "value": "$[findNotEmpty::(${bValue},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_bSV",
+        "value": "$[replaceAll::(${_bSO},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_bSA",
+        "value": "$[if::(lt::(${_bSV},0),calc::(0-${_bSV}),${_bSV})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_bSK",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_bSA},100000000),parseNumber::(calc::(${_bSV}/100000000),0.##),if::(ge::(${_bSA},10000),parseNumber::(calc::(${_bSV}/10000),0.#),parseNumber::(${_bSV},0.#))),if::(ge::(${_bSA},1000000000),parseNumber::(calc::(${_bSV}/1000000000),0.##),if::(ge::(${_bSA},1000000),parseNumber::(calc::(${_bSV}/1000000),0.##),if::(ge::(${_bSA},1000),parseNumber::(calc::(${_bSV}/1000),0.#),parseNumber::(${_bSV},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_bSU",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_bSA},100000000),亿,if::(ge::(${_bSA},10000),万,)),if::(ge::(${_bSA},1000000000),B,if::(ge::(${_bSA},1000000),M,if::(ge::(${_bSA},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "bSC",
+        "value": "$[if::(eq::(findNotEmpty::(${_bSV},__none__),__none__),--,if::(matches::(${_bSV},^-?\\[0-9.\\]+$),${_bSK}${_bSU},${_bSO}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "bS",
+        "value": "$[if::(eq::(findNotEmpty::(${_bSV},__none__),__none__),--,if::(eq::(${format},raw),${_bSO},if::(matches::(${_bSV},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_bSV}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_bSV},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_bSV},#\\,##0.00),if::(eq::(${format},compact),${bSC},parseNumber::(${_bSV},#\\,##0.##))))),${_bSO})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "bL",
+        "value": "$[calc::(length::(findNotEmpty::(${bS},--))+length::(findNotEmpty::(${bUnit},))*0.5)]"
+      },
+      "_note": "挑字号用:数字串长度 + 单位长度 × 0.5"
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "aLabel",
+          "aUnit",
+          "aNote",
+          "bLabel",
+          "bUnit",
+          "bNote",
+          "at",
+          "accent",
+          "aS",
+          "aL",
+          "bS",
+          "bL"
+        ]
+      }
+    }
+  ]
+}

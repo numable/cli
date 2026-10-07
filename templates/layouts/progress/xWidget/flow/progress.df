@@ -1,0 +1,255 @@
+{
+  "version": 1,
+  "_note": "版式「进度」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "今日步数",
+      "unit": "步"
+    },
+    "en-US": {
+      "title": "Steps today",
+      "unit": "steps"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "done",
+        "value": "6432"
+      },
+      "_note": "槽位 done(number,必填):已完成的量"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "total",
+        "value": "10000"
+      },
+      "_note": "槽位 total(number,必填):目标 / 总量(大于 0)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "format",
+        "value": "auto"
+      },
+      "_note": "槽位 format(enum):数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "unit",
+        "value": "${@i18n.unit}"
+      },
+      "_note": "槽位 unit(text):单位,跟在「已完成 / 目标」后面(迷你档放不下,不显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "槽位 at(time):时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "green"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_doneSO",
+        "value": "$[findNotEmpty::(${done},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_doneSV",
+        "value": "$[replaceAll::(${_doneSO},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_doneSA",
+        "value": "$[if::(lt::(${_doneSV},0),calc::(0-${_doneSV}),${_doneSV})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_doneSK",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_doneSA},100000000),parseNumber::(calc::(${_doneSV}/100000000),0.##),if::(ge::(${_doneSA},10000),parseNumber::(calc::(${_doneSV}/10000),0.#),parseNumber::(${_doneSV},0.#))),if::(ge::(${_doneSA},1000000000),parseNumber::(calc::(${_doneSV}/1000000000),0.##),if::(ge::(${_doneSA},1000000),parseNumber::(calc::(${_doneSV}/1000000),0.##),if::(ge::(${_doneSA},1000),parseNumber::(calc::(${_doneSV}/1000),0.#),parseNumber::(${_doneSV},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_doneSU",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_doneSA},100000000),亿,if::(ge::(${_doneSA},10000),万,)),if::(ge::(${_doneSA},1000000000),B,if::(ge::(${_doneSA},1000000),M,if::(ge::(${_doneSA},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "doneSC",
+        "value": "$[if::(eq::(findNotEmpty::(${_doneSV},__none__),__none__),--,if::(matches::(${_doneSV},^-?\\[0-9.\\]+$),${_doneSK}${_doneSU},${_doneSO}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "doneS",
+        "value": "$[if::(eq::(findNotEmpty::(${_doneSV},__none__),__none__),--,if::(eq::(${format},raw),${_doneSO},if::(matches::(${_doneSV},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_doneSV}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_doneSV},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_doneSV},#\\,##0.00),if::(eq::(${format},compact),${doneSC},parseNumber::(${_doneSV},#\\,##0.##))))),${_doneSO})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_totalSO",
+        "value": "$[findNotEmpty::(${total},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_totalSV",
+        "value": "$[replaceAll::(${_totalSO},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_totalSA",
+        "value": "$[if::(lt::(${_totalSV},0),calc::(0-${_totalSV}),${_totalSV})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_totalSK",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_totalSA},100000000),parseNumber::(calc::(${_totalSV}/100000000),0.##),if::(ge::(${_totalSA},10000),parseNumber::(calc::(${_totalSV}/10000),0.#),parseNumber::(${_totalSV},0.#))),if::(ge::(${_totalSA},1000000000),parseNumber::(calc::(${_totalSV}/1000000000),0.##),if::(ge::(${_totalSA},1000000),parseNumber::(calc::(${_totalSV}/1000000),0.##),if::(ge::(${_totalSA},1000),parseNumber::(calc::(${_totalSV}/1000),0.#),parseNumber::(${_totalSV},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_totalSU",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_totalSA},100000000),亿,if::(ge::(${_totalSA},10000),万,)),if::(ge::(${_totalSA},1000000000),B,if::(ge::(${_totalSA},1000000),M,if::(ge::(${_totalSA},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "totalSC",
+        "value": "$[if::(eq::(findNotEmpty::(${_totalSV},__none__),__none__),--,if::(matches::(${_totalSV},^-?\\[0-9.\\]+$),${_totalSK}${_totalSU},${_totalSO}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "totalS",
+        "value": "$[if::(eq::(findNotEmpty::(${_totalSV},__none__),__none__),--,if::(eq::(${format},raw),${_totalSO},if::(matches::(${_totalSV},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_totalSV}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_totalSV},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_totalSV},#\\,##0.00),if::(eq::(${format},compact),${totalSC},parseNumber::(${_totalSV},#\\,##0.##))))),${_totalSO})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_r",
+        "value": "$[if::(eq::(findNotEmpty::(${_doneSV},__none__),__none__),,if::(gt::(findNotEmpty::(${_totalSV},0),0),calc::(${_doneSV}/${_totalSV}),))]"
+      },
+      "_note": "完成比例(可以超过 1)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "pctS",
+        "value": "$[if::(eq::(findNotEmpty::(${_r},__none__),__none__),--,connect::(parseNumber::(calc::(min::(${_r},9.99)*100),0),%))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "sweep",
+        "value": "$[if::(eq::(findNotEmpty::(${_r},__none__),__none__),0,parseNumber::(calc::(min::(1,max::(0,${_r}))*360),0.0))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "hasR",
+        "value": "$[if::(eq::(findNotEmpty::(${_r},__none__),__none__),0,if::(gt::(${_r},0),1,0))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "bx",
+        "value": "$[findNotEmpty::(parseNumber::(calc::(2.5+(133)*min::(1,max::(0,${_r}))),0.0),)]"
+      }
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "unit",
+          "at",
+          "accent",
+          "doneS",
+          "totalS",
+          "pctS",
+          "sweep",
+          "hasR",
+          "bx"
+        ]
+      }
+    }
+  ]
+}

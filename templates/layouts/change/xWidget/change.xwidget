@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "涨跌",
+  "sub": "版式 · 2×2",
+  "i18n": {
+    "en-US": {
+      "title": "Price change",
+      "sub": "Layout · 2×2"
+    }
+  },
+  "layout": 22,
+  "params": {},
+  "ai": {
+    "shows": "价格 + 涨跌幅胶囊,涨跌色跟用户习惯(红涨 / 绿涨)"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/change.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/change.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

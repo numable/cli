@@ -1,0 +1,495 @@
+{
+  "version": 1,
+  "_note": "版式「对比」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "本周跑量",
+      "labels0": "我",
+      "labels1": "小林",
+      "labels2": "阿杰",
+      "unit": "km",
+      "notes0": "比上周 +8%",
+      "notes1": "比上周 −3%",
+      "notes2": "比上周 +21%"
+    },
+    "en-US": {
+      "title": "Running this week",
+      "labels0": "Me",
+      "labels1": "Lin",
+      "labels2": "Jay",
+      "unit": "km",
+      "notes0": "+8% WoW",
+      "notes1": "−3% WoW",
+      "notes2": "+21% WoW"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "labels",
+        "value": [
+          "${@i18n.labels0}",
+          "${@i18n.labels1}",
+          "${@i18n.labels2}"
+        ]
+      },
+      "_note": "槽位 labels(text[],必填):2 或 3 个对象的名字(数组);给 3 个以上只取前 3 个"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "values",
+        "value": [
+          "42.3",
+          "35.8",
+          "18.6"
+        ]
+      },
+      "_note": "槽位 values(number[],必填):对应的数字(数组,与 labels 对齐)。三项时数字放得下 5 个字符左右,大数用 compact"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "format",
+        "value": "1dp"
+      },
+      "_note": "槽位 format(enum):数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "unit",
+        "value": "${@i18n.unit}"
+      },
+      "_note": "槽位 unit(text):单位(几项共用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "notes",
+        "value": [
+          "${@i18n.notes0}",
+          "${@i18n.notes1}",
+          "${@i18n.notes2}"
+        ]
+      },
+      "_note": "槽位 notes(text[]):每项数字下的一句(数组,可选):环比、排名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "槽位 at(time):时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "orange"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "count",
+        "value": "$[length::(findNotEmpty::(${labels},))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "n2",
+        "value": "$[if::(eq::(${count},2),1,0)]"
+      },
+      "_note": "恰好两项 = 1(两格版式),其余按三格画"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "l0",
+        "value": "$[findNotEmpty::(index::(${labels},0),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "o0",
+        "value": "$[findNotEmpty::(index::(${notes},0),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_x0",
+        "value": "$[findNotEmpty::(replaceAll::(findNotEmpty::(index::(${values},0),),\\,,),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v0O",
+        "value": "$[findNotEmpty::(${_x0},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v0V",
+        "value": "$[replaceAll::(${_v0O},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v0A",
+        "value": "$[if::(lt::(${_v0V},0),calc::(0-${_v0V}),${_v0V})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v0K",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_v0A},100000000),parseNumber::(calc::(${_v0V}/100000000),0.##),if::(ge::(${_v0A},10000),parseNumber::(calc::(${_v0V}/10000),0.#),parseNumber::(${_v0V},0.#))),if::(ge::(${_v0A},1000000000),parseNumber::(calc::(${_v0V}/1000000000),0.##),if::(ge::(${_v0A},1000000),parseNumber::(calc::(${_v0V}/1000000),0.##),if::(ge::(${_v0A},1000),parseNumber::(calc::(${_v0V}/1000),0.#),parseNumber::(${_v0V},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v0U",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_v0A},100000000),亿,if::(ge::(${_v0A},10000),万,)),if::(ge::(${_v0A},1000000000),B,if::(ge::(${_v0A},1000000),M,if::(ge::(${_v0A},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v0C",
+        "value": "$[if::(eq::(findNotEmpty::(${_v0V},__none__),__none__),--,if::(matches::(${_v0V},^-?\\[0-9.\\]+$),${_v0K}${_v0U},${_v0O}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v0",
+        "value": "$[if::(eq::(findNotEmpty::(${_v0V},__none__),__none__),--,if::(eq::(${format},raw),${_v0O},if::(matches::(${_v0V},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_v0V}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_v0V},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_v0V},#\\,##0.00),if::(eq::(${format},compact),${v0C},parseNumber::(${_v0V},#\\,##0.##))))),${_v0O})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v0L",
+        "value": "$[calc::(length::(findNotEmpty::(${v0},--))+length::(findNotEmpty::(${unit},))*0.5)]"
+      },
+      "_note": "挑字号用:数字串长度 + 单位长度 × 0.5"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "l1",
+        "value": "$[findNotEmpty::(index::(${labels},1),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "o1",
+        "value": "$[findNotEmpty::(index::(${notes},1),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_x1",
+        "value": "$[findNotEmpty::(replaceAll::(findNotEmpty::(index::(${values},1),),\\,,),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v1O",
+        "value": "$[findNotEmpty::(${_x1},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v1V",
+        "value": "$[replaceAll::(${_v1O},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v1A",
+        "value": "$[if::(lt::(${_v1V},0),calc::(0-${_v1V}),${_v1V})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v1K",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_v1A},100000000),parseNumber::(calc::(${_v1V}/100000000),0.##),if::(ge::(${_v1A},10000),parseNumber::(calc::(${_v1V}/10000),0.#),parseNumber::(${_v1V},0.#))),if::(ge::(${_v1A},1000000000),parseNumber::(calc::(${_v1V}/1000000000),0.##),if::(ge::(${_v1A},1000000),parseNumber::(calc::(${_v1V}/1000000),0.##),if::(ge::(${_v1A},1000),parseNumber::(calc::(${_v1V}/1000),0.#),parseNumber::(${_v1V},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v1U",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_v1A},100000000),亿,if::(ge::(${_v1A},10000),万,)),if::(ge::(${_v1A},1000000000),B,if::(ge::(${_v1A},1000000),M,if::(ge::(${_v1A},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v1C",
+        "value": "$[if::(eq::(findNotEmpty::(${_v1V},__none__),__none__),--,if::(matches::(${_v1V},^-?\\[0-9.\\]+$),${_v1K}${_v1U},${_v1O}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v1",
+        "value": "$[if::(eq::(findNotEmpty::(${_v1V},__none__),__none__),--,if::(eq::(${format},raw),${_v1O},if::(matches::(${_v1V},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_v1V}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_v1V},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_v1V},#\\,##0.00),if::(eq::(${format},compact),${v1C},parseNumber::(${_v1V},#\\,##0.##))))),${_v1O})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v1L",
+        "value": "$[calc::(length::(findNotEmpty::(${v1},--))+length::(findNotEmpty::(${unit},))*0.5)]"
+      },
+      "_note": "挑字号用:数字串长度 + 单位长度 × 0.5"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "l2",
+        "value": "$[findNotEmpty::(index::(${labels},2),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "o2",
+        "value": "$[findNotEmpty::(index::(${notes},2),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_x2",
+        "value": "$[findNotEmpty::(replaceAll::(findNotEmpty::(index::(${values},2),),\\,,),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v2O",
+        "value": "$[findNotEmpty::(${_x2},)]"
+      },
+      "_note": "原值(raw / 非数字时原样显示)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v2V",
+        "value": "$[replaceAll::(${_v2O},\\,,)]"
+      },
+      "_note": "去掉千分位逗号后的数字"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v2A",
+        "value": "$[if::(lt::(${_v2V},0),calc::(0-${_v2V}),${_v2V})]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v2K",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_v2A},100000000),parseNumber::(calc::(${_v2V}/100000000),0.##),if::(ge::(${_v2A},10000),parseNumber::(calc::(${_v2V}/10000),0.#),parseNumber::(${_v2V},0.#))),if::(ge::(${_v2A},1000000000),parseNumber::(calc::(${_v2V}/1000000000),0.##),if::(ge::(${_v2A},1000000),parseNumber::(calc::(${_v2V}/1000000),0.##),if::(ge::(${_v2A},1000),parseNumber::(calc::(${_v2V}/1000),0.#),parseNumber::(${_v2V},0.#)))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_v2U",
+        "value": "$[if::(startsWith::(${@app.language},zh),if::(ge::(${_v2A},100000000),亿,if::(ge::(${_v2A},10000),万,)),if::(ge::(${_v2A},1000000000),B,if::(ge::(${_v2A},1000000),M,if::(ge::(${_v2A},1000),K,))))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v2C",
+        "value": "$[if::(eq::(findNotEmpty::(${_v2V},__none__),__none__),--,if::(matches::(${_v2V},^-?\\[0-9.\\]+$),${_v2K}${_v2U},${_v2O}))]"
+      },
+      "_note": "紧凑写法(小档用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v2",
+        "value": "$[if::(eq::(findNotEmpty::(${_v2V},__none__),__none__),--,if::(eq::(${format},raw),${_v2O},if::(matches::(${_v2V},^-?\\[0-9.\\]+$),if::(eq::(${format},int),parseNumber::(round::(${_v2V}),#\\,##0),if::(eq::(${format},1dp),parseNumber::(${_v2V},#\\,##0.0),if::(eq::(${format},2dp),parseNumber::(${_v2V},#\\,##0.00),if::(eq::(${format},compact),${v2C},parseNumber::(${_v2V},#\\,##0.##))))),${_v2O})))]"
+      },
+      "_note": "显示串:按 format 格式化;不是数字时原样显示;取不到 = --"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "v2L",
+        "value": "$[calc::(length::(findNotEmpty::(${v2},--))+length::(findNotEmpty::(${unit},))*0.5)]"
+      },
+      "_note": "挑字号用:数字串长度 + 单位长度 × 0.5"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_mx",
+        "value": "$[max::(findNotEmpty::(${_x0},0),findNotEmpty::(${_x1},0),if::(eq::(${n2},1),0,findNotEmpty::(${_x2},0)))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "top0",
+        "value": "$[if::(eq::(findNotEmpty::(${_x0},__none__),__none__),0,if::(and::(gt::(${_mx},0),ge::(${_x0},${_mx})),1,0))]"
+      },
+      "_note": "第 1 项是不是最大"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "b20",
+        "value": "$[findNotEmpty::(parseNumber::(calc::(2+(127)*min::(1,max::(0,if::(eq::(findNotEmpty::(${_x0},__none__),__none__),0,if::(gt::(${_mx},0),calc::(${_x0}/${_mx}),0))))),0.0),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "b30",
+        "value": "$[findNotEmpty::(parseNumber::(calc::(2+(74)*min::(1,max::(0,if::(eq::(findNotEmpty::(${_x0},__none__),__none__),0,if::(gt::(${_mx},0),calc::(${_x0}/${_mx}),0))))),0.0),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "top1",
+        "value": "$[if::(eq::(findNotEmpty::(${_x1},__none__),__none__),0,if::(and::(gt::(${_mx},0),ge::(${_x1},${_mx})),1,0))]"
+      },
+      "_note": "第 2 项是不是最大"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "b21",
+        "value": "$[findNotEmpty::(parseNumber::(calc::(2+(127)*min::(1,max::(0,if::(eq::(findNotEmpty::(${_x1},__none__),__none__),0,if::(gt::(${_mx},0),calc::(${_x1}/${_mx}),0))))),0.0),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "b31",
+        "value": "$[findNotEmpty::(parseNumber::(calc::(2+(74)*min::(1,max::(0,if::(eq::(findNotEmpty::(${_x1},__none__),__none__),0,if::(gt::(${_mx},0),calc::(${_x1}/${_mx}),0))))),0.0),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "top2",
+        "value": "$[if::(eq::(findNotEmpty::(${_x2},__none__),__none__),0,if::(and::(gt::(${_mx},0),ge::(${_x2},${_mx})),1,0))]"
+      },
+      "_note": "第 3 项是不是最大"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "b22",
+        "value": "$[findNotEmpty::(parseNumber::(calc::(2+(127)*min::(1,max::(0,if::(eq::(findNotEmpty::(${_x2},__none__),__none__),0,if::(gt::(${_mx},0),calc::(${_x2}/${_mx}),0))))),0.0),)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "b32",
+        "value": "$[findNotEmpty::(parseNumber::(calc::(2+(74)*min::(1,max::(0,if::(eq::(findNotEmpty::(${_x2},__none__),__none__),0,if::(gt::(${_mx},0),calc::(${_x2}/${_mx}),0))))),0.0),)]"
+      }
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "unit",
+          "at",
+          "accent",
+          "n2",
+          "l0",
+          "o0",
+          "v0",
+          "v0L",
+          "top0",
+          "b20",
+          "b30",
+          "l1",
+          "o1",
+          "v1",
+          "v1L",
+          "top1",
+          "b21",
+          "b31",
+          "l2",
+          "o2",
+          "v2",
+          "v2L",
+          "top2",
+          "b22",
+          "b32"
+        ]
+      }
+    }
+  ]
+}

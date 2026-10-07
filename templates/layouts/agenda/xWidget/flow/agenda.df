@@ -1,0 +1,260 @@
+{
+  "version": 1,
+  "_note": "版式「日程」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "下一个日程",
+      "event": "产品周会",
+      "where": "3 楼 · 大会议室",
+      "t_today": "今天",
+      "t_tomorrow": "明天",
+      "t_now": "进行中",
+      "t_started": "已开始",
+      "t_minA": "",
+      "t_minB": " 分钟后",
+      "t_hA": "",
+      "t_hB": " 小时后",
+      "t_dA": "",
+      "t_dB": " 天后"
+    },
+    "en-US": {
+      "title": "Up next",
+      "event": "Product weekly",
+      "where": "Room 3A",
+      "t_today": "Today",
+      "t_tomorrow": "Tomorrow",
+      "t_now": "Now",
+      "t_started": "Started",
+      "t_minA": "in ",
+      "t_minB": " min",
+      "t_hA": "in ",
+      "t_hB": " h",
+      "t_dA": "in ",
+      "t_dB": " days"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "event",
+        "value": "${@i18n.event}"
+      },
+      "_note": "槽位 event(text,必填):事件名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "start",
+        "value": "$[formatDate::(calc::(${@time.nowMs}+8100000),yyyy-MM-dd HH:mm)]"
+      },
+      "_note": "槽位 start(datetime,必填):开始时间,写成 yyyy-MM-dd HH:mm"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "end",
+        "value": "$[formatDate::(calc::(${@time.nowMs}+11700000),yyyy-MM-dd HH:mm)]"
+      },
+      "_note": "槽位 end(datetime):结束时间(可选,同格式);给了才会显示「进行中」"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "where",
+        "value": "${@i18n.where}"
+      },
+      "_note": "槽位 where(text):地点 / 会议室 / 链接说明"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "槽位 at(time):时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "blue"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_s",
+        "value": "$[parseDate::(findNotEmpty::(${start},),yyyy-MM-dd HH:mm)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_e",
+        "value": "$[parseDate::(findNotEmpty::(${end},),yyyy-MM-dd HH:mm)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_now",
+        "value": "${@time.nowMs}"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_t0",
+        "value": "$[parseDate::(formatDate::(${_now},yyyy-MM-dd),yyyy-MM-dd)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_sd",
+        "value": "$[if::(eq::(findNotEmpty::(${_s},__none__),__none__),,parseDate::(formatDate::(${_s},yyyy-MM-dd),yyyy-MM-dd))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_dd",
+        "value": "$[if::(eq::(findNotEmpty::(${_sd},__none__),__none__),,round::(calc::((${_sd}-${_t0})/86400000)))]"
+      },
+      "_note": "开始日 - 今天(天)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_mins",
+        "value": "$[if::(eq::(findNotEmpty::(${_s},__none__),__none__),,floor::(calc::((${_s}-${_now})/60000)))]"
+      },
+      "_note": "距开始还有几分钟(负 = 已开始)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_hm",
+        "value": "$[if::(eq::(findNotEmpty::(${_s},__none__),__none__),,formatDate::(${_s},HH:mm))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "__dsM",
+        "value": "$[parseNumber::(formatDate::(${_s},MM),0)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "__dsD",
+        "value": "$[parseNumber::(formatDate::(${_s},dd),0)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "__dsY",
+        "value": "$[formatDate::(${_s},yyyy)]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "__dsN",
+        "value": "$[index::(split::(Jan~Feb~Mar~Apr~May~Jun~Jul~Aug~Sep~Oct~Nov~Dec,~),calc::(${__dsM}-1))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_ds",
+        "value": "$[if::(eq::(findNotEmpty::(${_s},__none__),__none__),,if::(startsWith::(${@app.language},zh),${__dsY}年${__dsM}月${__dsD}日,${__dsN} ${__dsD}\\, ${__dsY}))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "whenS",
+        "value": "$[if::(eq::(findNotEmpty::(${_s},__none__),__none__),,if::(eq::(${_dd},0),${@i18n.t_today} ${_hm},if::(eq::(${_dd},1),${@i18n.t_tomorrow} ${_hm},${_ds} ${_hm})))]"
+      },
+      "_note": "今天 14:30 / 明天 09:00 / 2026年10月12日 14:30"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_live",
+        "value": "$[if::(eq::(findNotEmpty::(${_e},__none__),__none__),0,if::(and::(ge::(${_now},${_s}),lt::(${_now},${_e})),1,0))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_h",
+        "value": "$[floor::(calc::(${_mins}/60))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "relS",
+        "value": "$[if::(eq::(findNotEmpty::(${_s},__none__),__none__),,if::(eq::(${_live},1),${@i18n.t_now},if::(lt::(${_mins},0),${@i18n.t_started},if::(lt::(${_mins},60),${@i18n.t_minA}${_mins}${@i18n.t_minB},if::(lt::(${_mins},1440),${@i18n.t_hA}${_h}${@i18n.t_hB},${@i18n.t_dA}${_dd}${@i18n.t_dB})))))]"
+      },
+      "_note": "还有多久:进行中 / 已开始 / N 分钟后 / N 小时后 / N 天后"
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "event",
+          "where",
+          "at",
+          "accent",
+          "whenS",
+          "relS"
+        ]
+      }
+    }
+  ],
+  "i18nEmptyOk": [
+    "t_minA",
+    "t_hA",
+    "t_dA"
+  ]
+}

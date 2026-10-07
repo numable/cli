@@ -1,0 +1,600 @@
+{
+  "_note": "版式「打卡格子」· 22 档(158×158)。坐标与配色是版式的一部分,不要改;要换内容改 flow/checkin-grid.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "21pt",
+        "y": "11pt",
+        "w": "{parent.w}-33pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "13pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "12pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "id": "stk",
+        "type": "richText",
+        "x": "12pt",
+        "y": "33pt",
+        "w": "80pt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "spans": [
+          {
+            "text": "${@i18n.t_streak}",
+            "fontSize": "11pt",
+            "textColor": "#6B7280|#8E939B"
+          },
+          {
+            "text": "${@i18n.nbsp}",
+            "fontSize": "5pt"
+          },
+          {
+            "text": "$[findNotEmpty::(${streak},--)]",
+            "fontSize": "11pt",
+            "typeface": "System-Bold",
+            "textColor": "#0E1116|#F3F4F6"
+          },
+          {
+            "text": "${@i18n.nbsp}",
+            "fontSize": "5pt"
+          },
+          {
+            "text": "${@i18n.t_days}",
+            "fontSize": "11pt",
+            "textColor": "#6B7280|#8E939B"
+          }
+        ]
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#6B7280|#8E939B",
+        "id": "cnt",
+        "x": "{parent.w}-{cnt.w}-12pt",
+        "y": "33pt",
+        "w": "-1",
+        "text": "$[findNotEmpty::(${done35},--)]/35",
+        "fontSize": "11pt"
+      },
+      {
+        "type": "layer",
+        "x": "14pt",
+        "y": "52pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},0),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "33pt",
+        "y": "52pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},1),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "52pt",
+        "y": "52pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},2),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "71pt",
+        "y": "52pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},3),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "90pt",
+        "y": "52pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},4),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "109pt",
+        "y": "52pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},5),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "128pt",
+        "y": "52pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},6),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "14pt",
+        "y": "71pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},7),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "33pt",
+        "y": "71pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},8),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "52pt",
+        "y": "71pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},9),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "71pt",
+        "y": "71pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},10),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "90pt",
+        "y": "71pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},11),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "109pt",
+        "y": "71pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},12),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "128pt",
+        "y": "71pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},13),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "14pt",
+        "y": "90pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},14),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "33pt",
+        "y": "90pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},15),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "52pt",
+        "y": "90pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},16),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "71pt",
+        "y": "90pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},17),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "90pt",
+        "y": "90pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},18),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "109pt",
+        "y": "90pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},19),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "128pt",
+        "y": "90pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},20),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "14pt",
+        "y": "109pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},21),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "33pt",
+        "y": "109pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},22),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "52pt",
+        "y": "109pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},23),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "71pt",
+        "y": "109pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},24),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "90pt",
+        "y": "109pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},25),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "109pt",
+        "y": "109pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},26),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "128pt",
+        "y": "109pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},27),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "14pt",
+        "y": "128pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},28),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "33pt",
+        "y": "128pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},29),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "52pt",
+        "y": "128pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},30),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "71pt",
+        "y": "128pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},31),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "90pt",
+        "y": "128pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},32),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "109pt",
+        "y": "128pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},33),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        }
+      },
+      {
+        "type": "layer",
+        "x": "128pt",
+        "y": "128pt",
+        "w": "16pt",
+        "h": "16pt",
+        "bgColor": "$[if::(eq::(index::(${g35},34),1),${accP},#E7E9EE|#20232A)]",
+        "cornerRadius": {
+          "leftT": "4pt",
+          "leftB": "4pt",
+          "rightT": "4pt",
+          "rightB": "4pt"
+        },
+        "id": "today",
+        "borderColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "borderWidth": "1.5pt",
+        "_note": "最后一格 = 今天,描一圈源色"
+      }
+    ],
+    "i18n": {
+      "zh-CN": {
+        "nbsp": " ",
+        "t_streak": "连续",
+        "t_days": "天"
+      },
+      "en-US": {
+        "nbsp": " ",
+        "t_streak": "Streak",
+        "t_days": "days"
+      }
+    }
+  }
+}

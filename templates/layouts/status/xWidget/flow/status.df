@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "_note": "版式「状态灯」的取数流。① 槽位:每个槽一条 op:set,把示例值换成你的取数表达式或文案(说明见 slots.json);要联网就在 ① 之前加 request 与屏障,并把 host 写进 manifest.network。② 派生:固定,不要改 —— 组件上的坐标、配色、格式化都靠它。i18n 里 t_ 开头的是版式自带文案。",
+  "i18n": {
+    "zh-CN": {
+      "title": "我的网站",
+      "headline": "全部正常",
+      "detail": "3 个检查全部通过 · 响应 182 ms",
+      "t_ok": "正常",
+      "t_warn": "留意",
+      "t_down": "故障",
+      "t_unknown": "未知",
+      "t_okL": "一切正常",
+      "t_warnL": "需要留意",
+      "t_downL": "出了故障",
+      "t_unknownL": "状态未知"
+    },
+    "en-US": {
+      "title": "My website",
+      "headline": "All systems normal",
+      "detail": "3 checks passing · 182 ms",
+      "t_ok": "OK",
+      "t_warn": "Warn",
+      "t_down": "Down",
+      "t_unknown": "Unknown",
+      "t_okL": "All good",
+      "t_warnL": "Needs attention",
+      "t_downL": "Down",
+      "t_unknownL": "Unknown"
+    }
+  },
+  "actions": [
+    {
+      "op": "set",
+      "props": {
+        "key": "_slots",
+        "value": "1"
+      },
+      "_note": "────── ① 槽位(只改这一段) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "title",
+        "value": "${@i18n.title}"
+      },
+      "_note": "槽位 title(text,必填):组件名(第一行):有对象写对象名,没有就写功能名"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "state",
+        "value": "ok"
+      },
+      "_note": "槽位 state(enum,必填):状态:ok 正常 · warn 需要留意 · down 故障 · unknown 不知道;别的值一律按 unknown"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "headline",
+        "value": "${@i18n.headline}"
+      },
+      "_note": "槽位 headline(text):大字结论(可选);不给就按状态显示默认句"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "detail",
+        "value": "${@i18n.detail}"
+      },
+      "_note": "槽位 detail(text):细节一两句:几个检查项、上次异常、响应时间"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "at",
+        "value": "$[formatDate::(${@time.nowMs},HH:mm)]"
+      },
+      "_note": "槽位 at(time):时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "purple"
+      },
+      "_note": "槽位 accent(enum):源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "_derived",
+        "value": "1"
+      },
+      "_note": "────── ② 派生(固定,不要改) ──────"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "accent",
+        "value": "$[findNotEmpty::(${accent},indigo)]"
+      },
+      "_note": "源色名兜底"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "stateN",
+        "value": "$[if::(eq::(${state},ok),ok,if::(eq::(${state},warn),warn,if::(eq::(${state},down),down,unknown)))]"
+      },
+      "_note": "认不出的状态一律 unknown"
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "word",
+        "value": "$[if::(eq::(${stateN},ok),${@i18n.t_ok},if::(eq::(${stateN},warn),${@i18n.t_warn},if::(eq::(${stateN},down),${@i18n.t_down},${@i18n.t_unknown})))]"
+      }
+    },
+    {
+      "op": "set",
+      "props": {
+        "key": "headS",
+        "value": "$[findNotEmpty::(${headline},if::(eq::(${stateN},ok),${@i18n.t_okL},if::(eq::(${stateN},warn),${@i18n.t_warnL},if::(eq::(${stateN},down),${@i18n.t_downL},${@i18n.t_unknownL}))))]"
+      }
+    },
+    {
+      "action": "resultFilter",
+      "params": {
+        "keys": [
+          "title",
+          "detail",
+          "at",
+          "accent",
+          "stateN",
+          "word",
+          "headS"
+        ]
+      }
+    }
+  ]
+}

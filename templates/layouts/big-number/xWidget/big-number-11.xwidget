@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "大数字",
+  "sub": "版式 · 1×1",
+  "i18n": {
+    "en-US": {
+      "title": "Big number",
+      "sub": "Layout · 1×1"
+    }
+  },
+  "layout": 11,
+  "params": {},
+  "ai": {
+    "shows": "一个数字占满视觉重心:数字 + 单位 + 一句副标"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/big-number-11.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/big-number.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

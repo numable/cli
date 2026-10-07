@@ -1,0 +1,172 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "agenda",
+  "version": 1,
+  "title": {
+    "zh-CN": "日程",
+    "en-US": "Next event"
+  },
+  "summary": {
+    "zh-CN": "下一件事:什么事、几点、还有多久、在哪",
+    "en-US": "What's next: the event, when, how long until, where"
+  },
+  "pick": {
+    "zh-CN": "下一个会议、下一节课、下一班车、下一次服药",
+    "en-US": "The next meeting, class, train or dose"
+  },
+  "sizes": [
+    {
+      "layout": 22,
+      "grid": "2×2",
+      "widget": "agenda",
+      "primary": true
+    },
+    {
+      "layout": 21,
+      "grid": "2×1",
+      "widget": "agenda-21",
+      "primary": false
+    }
+  ],
+  "flow": "xWidget/flow/agenda.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "21": 8,
+        "22": 8
+      },
+      "example": {
+        "zh-CN": "下一个日程",
+        "en-US": "Up next"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "event",
+      "kind": "data",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "事件名",
+        "en-US": "Event name"
+      },
+      "maxLen": {
+        "21": 9,
+        "22": 20
+      },
+      "example": {
+        "zh-CN": "产品周会",
+        "en-US": "Product weekly"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示「暂无日程」",
+        "en-US": "Shows \"Nothing scheduled\""
+      }
+    },
+    {
+      "key": "start",
+      "kind": "data",
+      "type": "datetime",
+      "required": true,
+      "meaning": {
+        "zh-CN": "开始时间,写成 yyyy-MM-dd HH:mm",
+        "en-US": "Start time as yyyy-MM-dd HH:mm"
+      },
+      "example": "2026-10-08 14:30",
+      "whenEmpty": {
+        "zh-CN": "时间行不显示",
+        "en-US": "Time line hidden"
+      }
+    },
+    {
+      "key": "end",
+      "kind": "data",
+      "type": "datetime",
+      "required": false,
+      "meaning": {
+        "zh-CN": "结束时间(可选,同格式);给了才会显示「进行中」",
+        "en-US": "End time (optional, same format); needed for \"Now\""
+      },
+      "example": "2026-10-08 15:30",
+      "whenEmpty": {
+        "zh-CN": "开始之后显示「已开始」",
+        "en-US": "Shows \"Started\" once it begins"
+      }
+    },
+    {
+      "key": "where",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "地点 / 会议室 / 链接说明",
+        "en-US": "Place, room or call link label"
+      },
+      "maxLen": {
+        "22": 18
+      },
+      "example": {
+        "zh-CN": "3 楼 · 大会议室",
+        "en-US": "Room 3A"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "at",
+      "kind": "data",
+      "type": "time",
+      "required": false,
+      "meaning": {
+        "zh-CN": "时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空",
+        "en-US": "Freshness stamp (top right): when the data was fetched — HH:mm today, MM-dd HH:mm otherwise; leave empty for purely local widgets"
+      },
+      "maxLen": {
+        "all": 11
+      },
+      "example": "14:30",
+      "whenEmpty": {
+        "zh-CN": "不显示,组件名占满整行",
+        "en-US": "Hidden; the name takes the full row"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "blue",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}

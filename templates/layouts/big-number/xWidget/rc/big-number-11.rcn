@@ -1,0 +1,167 @@
+{
+  "_note": "版式「大数字」· 11 档(68×60)。坐标与配色是版式的一部分,不要改;要换内容改 flow/big-number.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "17pt",
+        "y": "7pt",
+        "w": "43pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "10pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "8pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueSC},__none__),__none__),0,if::(eq::(${valueSC},--),0,if::(le::(findNotEmpty::(${valueCL},0),4),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val0",
+            "type": "richText",
+            "x": "8pt",
+            "y": "22pt",
+            "w": "54pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueSC}",
+                "fontSize": "20pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueSC},__none__),__none__),0,if::(eq::(${valueSC},--),0,if::(and::(gt::(findNotEmpty::(${valueCL},0),4),le::(findNotEmpty::(${valueCL},0),5)),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val1",
+            "type": "richText",
+            "x": "8pt",
+            "y": "24.9pt",
+            "w": "54pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueSC}",
+                "fontSize": "16pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueSC},__none__),__none__),0,if::(eq::(${valueSC},--),0,if::(gt::(findNotEmpty::(${valueCL},0),5),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val2",
+            "type": "richText",
+            "x": "8pt",
+            "y": "27.08pt",
+            "w": "54pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueSC}",
+                "fontSize": "13pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueSC},__none__),__none__),1,if::(eq::(${valueSC},--),1,0))]"
+        },
+        "react": [
+          {
+            "id": "valE",
+            "type": "richText",
+            "x": "8pt",
+            "y": "28pt",
+            "w": "54pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "--",
+                "fontSize": "20pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              }
+            ]
+          }
+        ],
+        "_note": "取不到值:单独画「--」,压到数字墨迹中线"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#6B7280|#8E939B",
+        "id": "foot",
+        "x": "8pt",
+        "y": "46pt",
+        "w": "54pt",
+        "text": "$[findNotEmpty::(${unit},${note})]",
+        "fontSize": "9pt"
+      }
+    ]
+  }
+}

@@ -1,0 +1,290 @@
+{
+  "_note": "官方版式库清单(由版式生成器产出)。每个版式一个目录,slots.json 是槽位说明。",
+  "version": 1,
+  "layouts": [
+    {
+      "name": "big-number",
+      "title": {
+        "zh-CN": "大数字",
+        "en-US": "Big number"
+      },
+      "summary": {
+        "zh-CN": "一个数字占满视觉重心:数字 + 单位 + 一句副标",
+        "en-US": "One number owns the card: value + unit + one supporting line"
+      },
+      "pick": {
+        "zh-CN": "回答「现在是多少」的单个量:步数、余额、粉丝数、温度、待办数",
+        "en-US": "A single \"how much right now\": steps, balance, followers, temperature, open tasks"
+      },
+      "sizes": [
+        22,
+        11
+      ],
+      "required": [
+        "title",
+        "value"
+      ]
+    },
+    {
+      "name": "change",
+      "title": {
+        "zh-CN": "涨跌",
+        "en-US": "Price change"
+      },
+      "summary": {
+        "zh-CN": "价格 + 涨跌幅胶囊,涨跌色跟用户习惯(红涨 / 绿涨)",
+        "en-US": "Price + change pill, coloured by the user's up/down convention"
+      },
+      "pick": {
+        "zh-CN": "价格、汇率、指数、任何「比上一次涨了还是跌了」的量",
+        "en-US": "Prices, rates, indices — anything that went up or down since last time"
+      },
+      "sizes": [
+        22,
+        21
+      ],
+      "required": [
+        "title",
+        "price",
+        "change"
+      ]
+    },
+    {
+      "name": "sparkline",
+      "title": {
+        "zh-CN": "迷你走势",
+        "en-US": "Sparkline"
+      },
+      "summary": {
+        "zh-CN": "数字 + 一条近期走势线;给了涨跌幅就按涨跌上色,否则用源色",
+        "en-US": "A number + its recent shape; coloured by change when given, accent otherwise"
+      },
+      "pick": {
+        "zh-CN": "要看「最近是往上还是往下」的量:行情、体重、访问量、温度",
+        "en-US": "Anything where the recent direction matters: prices, weight, traffic, temperature"
+      },
+      "sizes": [
+        22,
+        21
+      ],
+      "required": [
+        "title",
+        "value",
+        "series"
+      ]
+    },
+    {
+      "name": "list",
+      "title": {
+        "zh-CN": "列表",
+        "en-US": "List"
+      },
+      "summary": {
+        "zh-CN": "3–5 行:每行一个名字 + 一个值(大档再加一行小字)",
+        "en-US": "3–5 rows: a name and a value per row (plus a small line on the large size)"
+      },
+      "pick": {
+        "zh-CN": "几条并列的东西:待办、最近的提交、几只自选、几个服务",
+        "en-US": "A few parallel items: tasks, recent commits, a watchlist, services"
+      },
+      "sizes": [
+        42,
+        44
+      ],
+      "required": [
+        "title",
+        "names"
+      ]
+    },
+    {
+      "name": "progress",
+      "title": {
+        "zh-CN": "进度",
+        "en-US": "Progress"
+      },
+      "summary": {
+        "zh-CN": "完成了多少 / 目标多少:方形是进度环,迷你是进度条",
+        "en-US": "Done vs. goal: a ring on the square size, a bar on the mini size"
+      },
+      "pick": {
+        "zh-CN": "有明确目标的量:今日步数 / 目标、预算用了多少、读书进度、配额",
+        "en-US": "Anything with a target: steps vs. goal, budget used, reading progress, quota"
+      },
+      "sizes": [
+        22,
+        21
+      ],
+      "required": [
+        "title",
+        "done",
+        "total"
+      ]
+    },
+    {
+      "name": "countdown",
+      "title": {
+        "zh-CN": "倒数",
+        "en-US": "Countdown"
+      },
+      "summary": {
+        "zh-CN": "离某一天还有 N 天;当天显示「就是今天」,过了显示已过几天",
+        "en-US": "N days until a date; \"Today\" on the day, days since afterwards"
+      },
+      "pick": {
+        "zh-CN": "纪念日、假期、截止日、发布日",
+        "en-US": "Anniversaries, holidays, deadlines, launch days"
+      },
+      "sizes": [
+        22,
+        21
+      ],
+      "required": [
+        "title",
+        "target"
+      ]
+    },
+    {
+      "name": "checkin-grid",
+      "title": {
+        "zh-CN": "打卡格子",
+        "en-US": "Check-in grid"
+      },
+      "summary": {
+        "zh-CN": "最近每天做没做:方形 7×5(35 天),宽档 7×15(105 天),右下角是今天",
+        "en-US": "Did it happen each day: 7×5 (35 days) square, 7×15 (105 days) wide; bottom-right is today"
+      },
+      "pick": {
+        "zh-CN": "习惯、运动、喝水、学习这类按天记的事",
+        "en-US": "Habits, workouts, water, study — anything logged per day"
+      },
+      "sizes": [
+        22,
+        42
+      ],
+      "required": [
+        "title",
+        "days"
+      ]
+    },
+    {
+      "name": "compare",
+      "title": {
+        "zh-CN": "对比",
+        "en-US": "Compare"
+      },
+      "summary": {
+        "zh-CN": "同一个量在 2–3 个对象之间并排比,最大的那个用源色标出",
+        "en-US": "One measure side by side across 2–3 things; the largest is marked in the accent"
+      },
+      "pick": {
+        "zh-CN": "几个城市的气温、几个账户的余额、几个渠道的下载量",
+        "en-US": "Temperatures in a few cities, balances across accounts, downloads per channel"
+      },
+      "sizes": [
+        42
+      ],
+      "required": [
+        "title",
+        "labels",
+        "values"
+      ]
+    },
+    {
+      "name": "status",
+      "title": {
+        "zh-CN": "状态灯",
+        "en-US": "Status light"
+      },
+      "summary": {
+        "zh-CN": "一盏灯回答「正常吗」:正常 / 留意 / 故障 / 未知四态",
+        "en-US": "One light answers \"is it OK\": ok / warn / down / unknown"
+      },
+      "pick": {
+        "zh-CN": "服务、网站、设备、任务是否正常",
+        "en-US": "Is a service, site, device or job OK"
+      },
+      "sizes": [
+        22,
+        11
+      ],
+      "required": [
+        "title",
+        "state"
+      ]
+    },
+    {
+      "name": "ranking",
+      "title": {
+        "zh-CN": "排行",
+        "en-US": "Ranking"
+      },
+      "summary": {
+        "zh-CN": "前 N 名带名次:名字 + 数值,大档每行再带一根相对长度条",
+        "en-US": "Top N with rank numbers: name + value; the large size adds a relative bar per row"
+      },
+      "pick": {
+        "zh-CN": "榜单、按量排序的东西:最热文章、花钱最多的分类、最常用的 App",
+        "en-US": "Leaderboards and sorted things: top posts, biggest spending categories, most-used apps"
+      },
+      "sizes": [
+        44,
+        22
+      ],
+      "required": [
+        "title",
+        "names",
+        "values"
+      ]
+    },
+    {
+      "name": "agenda",
+      "title": {
+        "zh-CN": "日程",
+        "en-US": "Next event"
+      },
+      "summary": {
+        "zh-CN": "下一件事:什么事、几点、还有多久、在哪",
+        "en-US": "What's next: the event, when, how long until, where"
+      },
+      "pick": {
+        "zh-CN": "下一个会议、下一节课、下一班车、下一次服药",
+        "en-US": "The next meeting, class, train or dose"
+      },
+      "sizes": [
+        22,
+        21
+      ],
+      "required": [
+        "title",
+        "event",
+        "start"
+      ]
+    },
+    {
+      "name": "dual-metric",
+      "title": {
+        "zh-CN": "双指标",
+        "en-US": "Two metrics"
+      },
+      "summary": {
+        "zh-CN": "两个不同的量各占一块:标签在上、数字在下",
+        "en-US": "Two different measures, one block each: label above, number below"
+      },
+      "pick": {
+        "zh-CN": "成对出现的两个量:收入与订单、今日与本月、上传与下载",
+        "en-US": "Two numbers that belong together: revenue and orders, today and this month, up and down"
+      },
+      "sizes": [
+        42,
+        22
+      ],
+      "required": [
+        "title",
+        "aLabel",
+        "aValue",
+        "bLabel",
+        "bValue"
+      ]
+    }
+  ]
+}

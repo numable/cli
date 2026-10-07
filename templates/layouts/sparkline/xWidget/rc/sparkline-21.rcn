@@ -1,0 +1,214 @@
+{
+  "_note": "版式「迷你走势」· 21 档(158×60)。坐标与配色是版式的一部分,不要改;要换内容改 flow/sparkline.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "id": "at",
+        "type": "txt",
+        "x": "{parent.w}-{at.w}-10pt",
+        "y": "10.5pt",
+        "w": "-1",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "$[findNotEmpty::(${at},)]",
+        "fontSize": "9pt",
+        "textColor": "#6B7280|#8E939B",
+        "_note": "时效锚(右上):取数时刻。槽位 at 为空时宽度为 0,组件名自动占满。"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "19pt",
+        "y": "9pt",
+        "w": "{at.x}-25pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "11pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "10pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),0,if::(eq::(${valueS},--),0,if::(le::(findNotEmpty::(${valueL},0),7),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val0",
+            "type": "richText",
+            "x": "10pt",
+            "y": "28.68pt",
+            "w": "78pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueS}",
+                "fontSize": "17pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),0,if::(eq::(${valueS},--),0,if::(gt::(findNotEmpty::(${valueL},0),7),1,0)))]"
+        },
+        "react": [
+          {
+            "id": "val1",
+            "type": "richText",
+            "x": "10pt",
+            "y": "31.58pt",
+            "w": "78pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "${valueS}",
+                "fontSize": "13pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${valueS},__none__),__none__),1,if::(eq::(${valueS},--),1,0))]"
+        },
+        "react": [
+          {
+            "id": "valE",
+            "type": "richText",
+            "x": "10pt",
+            "y": "33.78pt",
+            "w": "78pt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "spans": [
+              {
+                "text": "--",
+                "fontSize": "17pt",
+                "typeface": "System-Bold",
+                "textColor": "#0E1116|#F3F4F6"
+              }
+            ]
+          }
+        ],
+        "_note": "取不到值:单独画「--」,压到数字墨迹中线"
+      },
+      {
+        "id": "smSk",
+        "type": "layer",
+        "x": "92pt",
+        "y": "26pt",
+        "w": "56pt",
+        "h": "24pt",
+        "bgColor": "#E7E9EE|#20232A",
+        "cornerRadius": {
+          "leftT": "8pt",
+          "leftB": "8pt",
+          "rightT": "8pt",
+          "rightB": "8pt"
+        },
+        "hide": "$[if::(eq::(findNotEmpty::(${sm},__none__),__none__),0,1)]",
+        "_note": "series 取不到:画一块骨架占住图位"
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(findNotEmpty::(${sm},__none__),__none__),0,1)]"
+        },
+        "react": [
+          {
+            "id": "sm",
+            "type": "line",
+            "x": "92pt",
+            "y": "26pt",
+            "w": "56pt",
+            "h": "24pt",
+            "points": "[${sm}]",
+            "lineWidth": "1.5pt",
+            "lineCap": "round",
+            "lineJoin": "round",
+            "strokeColor": "$[if::(eq::(${lineTone},1),#FF5C4D|#FF5C4D,if::(eq::(${lineTone},2),#1FC77D|#1FC77D,if::(eq::(${lineTone},3),if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF))))))),#9AA0A6|#8E939B)))]",
+            "coverageColor": "$[if::(eq::(${lineTone},1),linear(#40FF5C4D\\,#00FF5C4D)@90|linear(#40FF5C4D\\,#00FF5C4D)@90,if::(eq::(${lineTone},2),linear(#401FC77D\\,#001FC77D)@90|linear(#401FC77D\\,#001FC77D)@90,if::(eq::(${lineTone},3),if::(eq::(${accent},green),linear(#332E9E6B\\,#002E9E6B)@90|linear(#4045C793\\,#0045C793)@90,if::(eq::(${accent},blue),linear(#332F6FE4\\,#002F6FE4)@90|linear(#405C9BFF\\,#005C9BFF)@90,if::(eq::(${accent},purple),linear(#337A5AF8\\,#007A5AF8)@90|linear(#40A78BFA\\,#00A78BFA)@90,if::(eq::(${accent},orange),linear(#33E07B39\\,#00E07B39)@90|linear(#40F0A05F\\,#00F0A05F)@90,if::(eq::(${accent},rose),linear(#33D2536D\\,#00D2536D)@90|linear(#40E87A93\\,#00E87A93)@90,if::(eq::(${accent},teal),linear(#330E9AA7\\,#000E9AA7)@90|linear(#4035C2CE\\,#0035C2CE)@90,if::(eq::(${accent},graphite),linear(#338A9099\\,#008A9099)@90|linear(#406E747D\\,#006E747D)@90,linear(#335B5BD6\\,#005B5BD6)@90|linear(#40A5A3FF\\,#00A5A3FF)@90))))))),linear(#269AA0A6\\,#009AA0A6)@90|linear(#268E939B\\,#008E939B)@90)))]"
+          },
+          {
+            "id": "smH",
+            "type": "line",
+            "x": "92pt",
+            "y": "26pt",
+            "w": "62pt",
+            "h": "24pt",
+            "points": "[50.99,$[findNotEmpty::(${smLY},-99)],51,$[findNotEmpty::(${smLY},-99)]]",
+            "lineWidth": "11pt",
+            "strokeColor": "$[if::(eq::(${lineTone},1),#2EFF5C4D|#2EFF5C4D,if::(eq::(${lineTone},2),#2E1FC77D|#2E1FC77D,if::(eq::(${lineTone},3),if::(eq::(${accent},green),#2E2E9E6B|#2E45C793,if::(eq::(${accent},blue),#2E2F6FE4|#2E5C9BFF,if::(eq::(${accent},purple),#2E7A5AF8|#2EA78BFA,if::(eq::(${accent},orange),#2EE07B39|#2EF0A05F,if::(eq::(${accent},rose),#2ED2536D|#2EE87A93,if::(eq::(${accent},teal),#2E0E9AA7|#2E35C2CE,if::(eq::(${accent},graphite),#2E8A9099|#2E6E747D,#2E5B5BD6|#2EA5A3FF))))))),#2E9AA0A6|#2E8E939B)))]"
+          },
+          {
+            "id": "smR",
+            "type": "line",
+            "x": "92pt",
+            "y": "26pt",
+            "w": "62pt",
+            "h": "24pt",
+            "points": "[50.99,$[findNotEmpty::(${smLY},-99)],51,$[findNotEmpty::(${smLY},-99)]]",
+            "lineWidth": "7pt",
+            "strokeColor": "#FFFFFF|#15171A"
+          },
+          {
+            "id": "smD",
+            "type": "line",
+            "x": "92pt",
+            "y": "26pt",
+            "w": "62pt",
+            "h": "24pt",
+            "points": "[50.99,$[findNotEmpty::(${smLY},-99)],51,$[findNotEmpty::(${smLY},-99)]]",
+            "lineWidth": "4.6pt",
+            "strokeColor": "$[if::(eq::(${lineTone},1),#FF5C4D|#FF5C4D,if::(eq::(${lineTone},2),#1FC77D|#1FC77D,if::(eq::(${lineTone},3),if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF))))))),#9AA0A6|#8E939B)))]"
+          }
+        ],
+        "_note": "末端点三层画在比折线宽 6pt 的框里,圆点不被裁掉"
+      }
+    ]
+  }
+}

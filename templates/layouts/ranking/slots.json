@@ -1,0 +1,208 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "ranking",
+  "version": 1,
+  "title": {
+    "zh-CN": "排行",
+    "en-US": "Ranking"
+  },
+  "summary": {
+    "zh-CN": "前 N 名带名次:名字 + 数值,大档每行再带一根相对长度条",
+    "en-US": "Top N with rank numbers: name + value; the large size adds a relative bar per row"
+  },
+  "pick": {
+    "zh-CN": "榜单、按量排序的东西:最热文章、花钱最多的分类、最常用的 App",
+    "en-US": "Leaderboards and sorted things: top posts, biggest spending categories, most-used apps"
+  },
+  "sizes": [
+    {
+      "layout": 44,
+      "grid": "4×4",
+      "widget": "ranking",
+      "primary": true
+    },
+    {
+      "layout": 22,
+      "grid": "2×2",
+      "widget": "ranking-22",
+      "primary": false
+    }
+  ],
+  "flow": "xWidget/flow/ranking.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "22": 8,
+        "44": 20
+      },
+      "example": {
+        "zh-CN": "本月支出",
+        "en-US": "Spending this month"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "names",
+      "kind": "data",
+      "type": "text[]",
+      "required": true,
+      "meaning": {
+        "zh-CN": "按名次排好的名字(数组,第一个 = 第 1 名)",
+        "en-US": "Names in rank order (array, first = #1)"
+      },
+      "maxLen": {
+        "22": 7,
+        "44": 16
+      },
+      "example": {
+        "zh-CN": [
+          "餐饮",
+          "房租",
+          "交通",
+          "购物",
+          "娱乐"
+        ],
+        "en-US": [
+          "Dining",
+          "Rent",
+          "Transport",
+          "Shopping",
+          "Fun"
+        ]
+      },
+      "whenEmpty": {
+        "zh-CN": "那一行画浅色空槽",
+        "en-US": "That row becomes a light empty slot"
+      }
+    },
+    {
+      "key": "values",
+      "kind": "data",
+      "type": "number[]",
+      "required": true,
+      "meaning": {
+        "zh-CN": "对应的数(数组);长度条按它和第一名的比例画",
+        "en-US": "Matching numbers (array); bars are drawn relative to the largest"
+      },
+      "example": [
+        3260,
+        2800,
+        940
+      ],
+      "whenEmpty": {
+        "zh-CN": "显示 --,条空着",
+        "en-US": "Shows --, bar empty"
+      }
+    },
+    {
+      "key": "format",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示",
+        "en-US": "Number format: auto (grouping, up to 2 decimals) · int · 1dp / 2dp · compact (万/亿 in Chinese, K/M/B otherwise) · raw (as given)"
+      },
+      "values": [
+        "auto",
+        "int",
+        "1dp",
+        "2dp",
+        "compact",
+        "raw"
+      ],
+      "example": "auto",
+      "whenEmpty": {
+        "zh-CN": "按 auto",
+        "en-US": "Falls back to auto"
+      }
+    },
+    {
+      "key": "subs",
+      "kind": "data",
+      "type": "text[]",
+      "required": false,
+      "meaning": {
+        "zh-CN": "每行右下一句(数组,只在 44 档显示):占比、变化",
+        "en-US": "A small line under each value (array; 44 size only): share, change"
+      },
+      "maxLen": {
+        "44": 8
+      },
+      "example": {
+        "zh-CN": [
+          "40%",
+          "34%",
+          "11%",
+          "9%",
+          "5%"
+        ],
+        "en-US": [
+          "40%",
+          "34%",
+          "11%",
+          "9%",
+          "5%"
+        ]
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "at",
+      "kind": "data",
+      "type": "time",
+      "required": false,
+      "meaning": {
+        "zh-CN": "时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空",
+        "en-US": "Freshness stamp (top right): when the data was fetched — HH:mm today, MM-dd HH:mm otherwise; leave empty for purely local widgets"
+      },
+      "maxLen": {
+        "all": 11
+      },
+      "example": "14:30",
+      "whenEmpty": {
+        "zh-CN": "不显示,组件名占满整行",
+        "en-US": "Hidden; the name takes the full row"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "orange",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}

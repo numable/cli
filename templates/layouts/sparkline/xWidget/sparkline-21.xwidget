@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "迷你走势",
+  "sub": "版式 · 2×1",
+  "i18n": {
+    "en-US": {
+      "title": "Sparkline",
+      "sub": "Layout · 2×1"
+    }
+  },
+  "layout": 21,
+  "params": {},
+  "ai": {
+    "shows": "数字 + 一条近期走势线;给了涨跌幅就按涨跌上色,否则用源色"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/sparkline-21.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/sparkline.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

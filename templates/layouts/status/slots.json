@@ -1,0 +1,164 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "status",
+  "version": 1,
+  "title": {
+    "zh-CN": "状态灯",
+    "en-US": "Status light"
+  },
+  "summary": {
+    "zh-CN": "一盏灯回答「正常吗」:正常 / 留意 / 故障 / 未知四态",
+    "en-US": "One light answers \"is it OK\": ok / warn / down / unknown"
+  },
+  "pick": {
+    "zh-CN": "服务、网站、设备、任务是否正常",
+    "en-US": "Is a service, site, device or job OK"
+  },
+  "sizes": [
+    {
+      "layout": 22,
+      "grid": "2×2",
+      "widget": "status",
+      "primary": true
+    },
+    {
+      "layout": 11,
+      "grid": "1×1",
+      "widget": "status-11",
+      "primary": false
+    }
+  ],
+  "flow": "xWidget/flow/status.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "11": 4,
+        "22": 8
+      },
+      "example": {
+        "zh-CN": "我的网站",
+        "en-US": "My website"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "state",
+      "kind": "data",
+      "type": "enum",
+      "required": true,
+      "meaning": {
+        "zh-CN": "状态:ok 正常 · warn 需要留意 · down 故障 · unknown 不知道;别的值一律按 unknown",
+        "en-US": "State: ok · warn · down · unknown; anything else counts as unknown"
+      },
+      "values": [
+        "ok",
+        "warn",
+        "down",
+        "unknown"
+      ],
+      "example": "ok",
+      "whenEmpty": {
+        "zh-CN": "按 unknown(灰灯)",
+        "en-US": "Treated as unknown (grey)"
+      }
+    },
+    {
+      "key": "headline",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "大字结论(可选);不给就按状态显示默认句",
+        "en-US": "Headline (optional); defaults to a sentence for the state"
+      },
+      "maxLen": {
+        "11": 4,
+        "22": 16
+      },
+      "example": {
+        "zh-CN": "全部正常",
+        "en-US": "All systems normal"
+      },
+      "whenEmpty": {
+        "zh-CN": "按状态显示:一切正常 / 需要留意 / 出了故障 / 状态未知",
+        "en-US": "Per state: All good / Needs attention / Down / Unknown"
+      }
+    },
+    {
+      "key": "detail",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "细节一两句:几个检查项、上次异常、响应时间",
+        "en-US": "One or two lines of detail: checks, last incident, latency"
+      },
+      "maxLen": {
+        "11": 7,
+        "22": 30
+      },
+      "example": {
+        "zh-CN": "3 个检查全部通过 · 响应 182 ms",
+        "en-US": "3 checks passing · 182 ms"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "at",
+      "kind": "data",
+      "type": "time",
+      "required": false,
+      "meaning": {
+        "zh-CN": "时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空",
+        "en-US": "Freshness stamp (top right): when the data was fetched — HH:mm today, MM-dd HH:mm otherwise; leave empty for purely local widgets"
+      },
+      "maxLen": {
+        "all": 11
+      },
+      "example": "14:30",
+      "whenEmpty": {
+        "zh-CN": "不显示,组件名占满整行",
+        "en-US": "Hidden; the name takes the full row"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "purple",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "dual-metric",
+  "version": 1,
+  "title": {
+    "zh-CN": "双指标",
+    "en-US": "Two metrics"
+  },
+  "summary": {
+    "zh-CN": "两个不同的量各占一块:标签在上、数字在下",
+    "en-US": "Two different measures, one block each: label above, number below"
+  },
+  "pick": {
+    "zh-CN": "成对出现的两个量:收入与订单、今日与本月、上传与下载",
+    "en-US": "Two numbers that belong together: revenue and orders, today and this month, up and down"
+  },
+  "sizes": [
+    {
+      "layout": 42,
+      "grid": "4×2",
+      "widget": "dual-metric",
+      "primary": true
+    },
+    {
+      "layout": 22,
+      "grid": "2×2",
+      "widget": "dual-metric-22",
+      "primary": false
+    }
+  ],
+  "flow": "xWidget/flow/dual-metric.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "22": 8,
+        "42": 20
+      },
+      "example": {
+        "zh-CN": "本月骑行",
+        "en-US": "Rides this month"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "aLabel",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "第一块的标签",
+        "en-US": "First block label"
+      },
+      "maxLen": {
+        "22": 10,
+        "42": 12
+      },
+      "example": {
+        "zh-CN": "距离",
+        "en-US": "Distance"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "aValue",
+      "kind": "data",
+      "type": "number",
+      "required": true,
+      "meaning": {
+        "zh-CN": "第一块的数字",
+        "en-US": "First block number"
+      },
+      "example": 312.4,
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "aUnit",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "第一块的单位",
+        "en-US": "First block unit"
+      },
+      "maxLen": {
+        "22": 3,
+        "42": 3
+      },
+      "example": {
+        "zh-CN": "km",
+        "en-US": "km"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "aNote",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "第一块底部一句(只在 42 档显示)",
+        "en-US": "First block bottom line (42 size only)"
+      },
+      "maxLen": {
+        "42": 14
+      },
+      "example": {
+        "zh-CN": "比上月 +12%",
+        "en-US": "+12% vs last month"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "bLabel",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "第二块的标签",
+        "en-US": "Second block label"
+      },
+      "maxLen": {
+        "22": 10,
+        "42": 12
+      },
+      "example": {
+        "zh-CN": "累计爬升",
+        "en-US": "Elevation"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "bValue",
+      "kind": "data",
+      "type": "number",
+      "required": true,
+      "meaning": {
+        "zh-CN": "第二块的数字",
+        "en-US": "Second block number"
+      },
+      "example": 4280,
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "bUnit",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "第二块的单位",
+        "en-US": "Second block unit"
+      },
+      "maxLen": {
+        "22": 3,
+        "42": 3
+      },
+      "example": {
+        "zh-CN": "m",
+        "en-US": "m"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "bNote",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "第二块底部一句(只在 42 档显示)",
+        "en-US": "Second block bottom line (42 size only)"
+      },
+      "maxLen": {
+        "42": 14
+      },
+      "example": {
+        "zh-CN": "最高一次 820 m",
+        "en-US": "Best ride 820 m"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "format",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示",
+        "en-US": "Number format: auto (grouping, up to 2 decimals) · int · 1dp / 2dp · compact (万/亿 in Chinese, K/M/B otherwise) · raw (as given)"
+      },
+      "values": [
+        "auto",
+        "int",
+        "1dp",
+        "2dp",
+        "compact",
+        "raw"
+      ],
+      "example": "auto",
+      "whenEmpty": {
+        "zh-CN": "按 auto",
+        "en-US": "Falls back to auto"
+      }
+    },
+    {
+      "key": "at",
+      "kind": "data",
+      "type": "time",
+      "required": false,
+      "meaning": {
+        "zh-CN": "时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空",
+        "en-US": "Freshness stamp (top right): when the data was fetched — HH:mm today, MM-dd HH:mm otherwise; leave empty for purely local widgets"
+      },
+      "maxLen": {
+        "all": 11
+      },
+      "example": "14:30",
+      "whenEmpty": {
+        "zh-CN": "不显示,组件名占满整行",
+        "en-US": "Hidden; the name takes the full row"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "purple",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "title": "日程",
+  "sub": "版式 · 2×1",
+  "i18n": {
+    "en-US": {
+      "title": "Next event",
+      "sub": "Layout · 2×1"
+    }
+  },
+  "layout": 21,
+  "params": {},
+  "ai": {
+    "shows": "下一件事:什么事、几点、还有多久、在哪"
+  },
+  "events": {
+    "onClick": "numable://self"
+  },
+  "canvas": {
+    "source": "@[file://rc/agenda-21.rcn]",
+    "depends": [
+      {
+        "flow": "@[file://flow/agenda.df]",
+        "params": {}
+      }
+    ],
+    "refresh": {
+      "interval": [
+        "300"
+      ]
+    }
+  }
+}

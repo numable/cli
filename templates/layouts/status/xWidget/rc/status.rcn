@@ -1,0 +1,132 @@
+{
+  "_note": "版式「状态灯」· 22 档(158×158)。坐标与配色是版式的一部分,不要改;要换内容改 flow/status.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "id": "at",
+        "type": "txt",
+        "x": "{parent.w}-{at.w}-12pt",
+        "y": "14pt",
+        "w": "-1",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "$[findNotEmpty::(${at},)]",
+        "fontSize": "9pt",
+        "textColor": "#6B7280|#8E939B",
+        "_note": "时效锚(右上):取数时刻。槽位 at 为空时宽度为 0,组件名自动占满。"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "21pt",
+        "y": "11pt",
+        "w": "{at.x}-27pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "13pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "12pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "id": "halo",
+        "type": "layer",
+        "x": "12pt",
+        "y": "35pt",
+        "w": "18pt",
+        "h": "18pt",
+        "bgColor": "$[if::(eq::(${stateN},ok),#331E9E62|#333DD68C,if::(eq::(${stateN},warn),#33A86E00|#33E8B339,if::(eq::(${stateN},down),#33D93A34|#33FF6B61,#339AA0A6|#336E747D)))]",
+        "cornerRadius": {
+          "leftT": "9pt",
+          "leftB": "9pt",
+          "rightT": "9pt",
+          "rightB": "9pt"
+        }
+      },
+      {
+        "id": "lamp",
+        "type": "layer",
+        "x": "16pt",
+        "y": "39pt",
+        "w": "10pt",
+        "h": "10pt",
+        "bgColor": "$[if::(eq::(${stateN},ok),#1E9E62|#3DD68C,if::(eq::(${stateN},warn),#A86E00|#E8B339,if::(eq::(${stateN},down),#D93A34|#FF6B61,#9AA0A6|#6E747D)))]",
+        "cornerRadius": {
+          "leftT": "5pt",
+          "leftB": "5pt",
+          "rightT": "5pt",
+          "rightB": "5pt"
+        }
+      },
+      {
+        "type": "txt",
+        "h": "18pt",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "$[if::(eq::(${stateN},ok),#1E9E62|#3DD68C,if::(eq::(${stateN},warn),#A86E00|#E8B339,if::(eq::(${stateN},down),#D93A34|#FF6B61,#9AA0A6|#6E747D)))]",
+        "id": "word",
+        "x": "36pt",
+        "y": "35pt",
+        "w": "110pt",
+        "alignmentV": "1",
+        "text": "$[findNotEmpty::(${word},--)]",
+        "fontSize": "12pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "2",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "head",
+        "x": "12pt",
+        "y": "60pt",
+        "w": "134pt",
+        "lineSpacing": "2pt",
+        "text": "$[findNotEmpty::(${headS},--)]",
+        "fontSize": "16pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "2",
+        "lineBreak": "0",
+        "textColor": "#6B7280|#8E939B",
+        "id": "detail",
+        "x": "12pt",
+        "y": "{head.b}+8pt",
+        "w": "134pt",
+        "lineSpacing": "2pt",
+        "text": "$[findNotEmpty::(${detail},)]",
+        "fontSize": "11pt"
+      }
+    ]
+  }
+}

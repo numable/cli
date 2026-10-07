@@ -1,0 +1,1131 @@
+{
+  "_note": "版式「对比」· 42 档(338×158)。坐标与配色是版式的一部分,不要改;要换内容改 flow/compare.df 的「① 槽位」。由版式生成器产出。",
+  "rc": {
+    "cells": [
+      {
+        "id": "bg",
+        "type": "layer",
+        "x": "0pt",
+        "y": "0pt",
+        "w": "{parent.w}",
+        "h": "{parent.h}",
+        "bgColor": "#FFFFFF|#15171A"
+      },
+      {
+        "id": "at",
+        "type": "txt",
+        "x": "{parent.w}-{at.w}-14pt",
+        "y": "15pt",
+        "w": "-1",
+        "h": "-1",
+        "maxLines": "1",
+        "text": "$[findNotEmpty::(${at},)]",
+        "fontSize": "9pt",
+        "textColor": "#6B7280|#8E939B",
+        "_note": "时效锚(右上):取数时刻。槽位 at 为空时宽度为 0,组件名自动占满。"
+      },
+      {
+        "type": "txt",
+        "h": "-1",
+        "maxLines": "1",
+        "lineBreak": "0",
+        "textColor": "#0E1116|#F3F4F6",
+        "id": "nm",
+        "x": "23pt",
+        "y": "12pt",
+        "w": "{at.x}-29pt",
+        "text": "$[findNotEmpty::(${title},--)]",
+        "fontSize": "13pt",
+        "typeface": "System-Bold"
+      },
+      {
+        "id": "dot",
+        "type": "layer",
+        "x": "14pt",
+        "y": "{nm.y}+({nm.h}-5pt)/2",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "$[if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF)))))))]",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(${n2},1),1,0)]"
+        },
+        "react": [
+          {
+            "id": "t20",
+            "type": "layer",
+            "x": "14pt",
+            "y": "38pt",
+            "w": "151pt",
+            "h": "106pt",
+            "bgColor": "#E7E9EE|#20232A",
+            "cornerRadius": {
+              "leftT": "12pt",
+              "leftB": "12pt",
+              "rightT": "12pt",
+              "rightB": "12pt"
+            }
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "l20",
+            "x": "24pt",
+            "y": "48pt",
+            "w": "131pt",
+            "text": "$[findNotEmpty::(${l0},--)]",
+            "fontSize": "11pt"
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v0},__none__),__none__),0,if::(eq::(${v0},--),0,if::(le::(findNotEmpty::(${v0L},0),7.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v200",
+                "type": "richText",
+                "x": "24pt",
+                "y": "71.15pt",
+                "w": "131pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v0}",
+                    "fontSize": "26pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "7pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v0},__none__),__none__),0,if::(eq::(${v0},--),0,if::(and::(gt::(findNotEmpty::(${v0L},0),7.5),le::(findNotEmpty::(${v0L},0),9.5)),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v201",
+                "type": "richText",
+                "x": "24pt",
+                "y": "74.78pt",
+                "w": "131pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v0}",
+                    "fontSize": "21pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v0},__none__),__none__),0,if::(eq::(${v0},--),0,if::(gt::(findNotEmpty::(${v0L},0),9.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v202",
+                "type": "richText",
+                "x": "24pt",
+                "y": "77.68pt",
+                "w": "131pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v0}",
+                    "fontSize": "17pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v0},__none__),__none__),1,if::(eq::(${v0},--),1,0))]"
+            },
+            "react": [
+              {
+                "id": "v20E",
+                "type": "richText",
+                "x": "24pt",
+                "y": "78.95pt",
+                "w": "131pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "--",
+                    "fontSize": "26pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "7pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ],
+            "_note": "取不到值:单独画「--」,压到数字墨迹中线"
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "o20",
+            "x": "24pt",
+            "y": "100pt",
+            "w": "131pt",
+            "text": "$[findNotEmpty::(${o0},)]",
+            "fontSize": "10.5pt"
+          },
+          {
+            "id": "b20T",
+            "type": "line",
+            "x": "24pt",
+            "y": "126pt",
+            "w": "131pt",
+            "h": "4pt",
+            "points": "[2,2,129,2]",
+            "lineWidth": "4pt",
+            "strokeColor": "#D6DAE1|#2C313A"
+          },
+          {
+            "id": "b20",
+            "type": "line",
+            "x": "24pt",
+            "y": "126pt",
+            "w": "131pt",
+            "h": "4pt",
+            "points": "[2,2,$[findNotEmpty::(${b20},2)],2]",
+            "lineWidth": "4pt",
+            "strokeColor": "$[if::(eq::(${top0},1),if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF))))))),#9AA0A6|#8E939B)]",
+            "hide": "$[if::(eq::(findNotEmpty::(${b20},__none__),__none__),1,0)]"
+          },
+          {
+            "id": "t21",
+            "type": "layer",
+            "x": "173pt",
+            "y": "38pt",
+            "w": "151pt",
+            "h": "106pt",
+            "bgColor": "#E7E9EE|#20232A",
+            "cornerRadius": {
+              "leftT": "12pt",
+              "leftB": "12pt",
+              "rightT": "12pt",
+              "rightB": "12pt"
+            }
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "l21",
+            "x": "183pt",
+            "y": "48pt",
+            "w": "131pt",
+            "text": "$[findNotEmpty::(${l1},--)]",
+            "fontSize": "11pt"
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v1},__none__),__none__),0,if::(eq::(${v1},--),0,if::(le::(findNotEmpty::(${v1L},0),7.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v210",
+                "type": "richText",
+                "x": "183pt",
+                "y": "71.15pt",
+                "w": "131pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v1}",
+                    "fontSize": "26pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "7pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v1},__none__),__none__),0,if::(eq::(${v1},--),0,if::(and::(gt::(findNotEmpty::(${v1L},0),7.5),le::(findNotEmpty::(${v1L},0),9.5)),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v211",
+                "type": "richText",
+                "x": "183pt",
+                "y": "74.78pt",
+                "w": "131pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v1}",
+                    "fontSize": "21pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v1},__none__),__none__),0,if::(eq::(${v1},--),0,if::(gt::(findNotEmpty::(${v1L},0),9.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v212",
+                "type": "richText",
+                "x": "183pt",
+                "y": "77.68pt",
+                "w": "131pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v1}",
+                    "fontSize": "17pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v1},__none__),__none__),1,if::(eq::(${v1},--),1,0))]"
+            },
+            "react": [
+              {
+                "id": "v21E",
+                "type": "richText",
+                "x": "183pt",
+                "y": "78.95pt",
+                "w": "131pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "--",
+                    "fontSize": "26pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "7pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ],
+            "_note": "取不到值:单独画「--」,压到数字墨迹中线"
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "o21",
+            "x": "183pt",
+            "y": "100pt",
+            "w": "131pt",
+            "text": "$[findNotEmpty::(${o1},)]",
+            "fontSize": "10.5pt"
+          },
+          {
+            "id": "b21T",
+            "type": "line",
+            "x": "183pt",
+            "y": "126pt",
+            "w": "131pt",
+            "h": "4pt",
+            "points": "[2,2,129,2]",
+            "lineWidth": "4pt",
+            "strokeColor": "#D6DAE1|#2C313A"
+          },
+          {
+            "id": "b21",
+            "type": "line",
+            "x": "183pt",
+            "y": "126pt",
+            "w": "131pt",
+            "h": "4pt",
+            "points": "[2,2,$[findNotEmpty::(${b21},2)],2]",
+            "lineWidth": "4pt",
+            "strokeColor": "$[if::(eq::(${top1},1),if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF))))))),#9AA0A6|#8E939B)]",
+            "hide": "$[if::(eq::(findNotEmpty::(${b21},__none__),__none__),1,0)]"
+          }
+        ],
+        "_note": "两项:两格"
+      },
+      {
+        "type": "op",
+        "action": "if",
+        "props": {
+          "val": "$[if::(eq::(${n2},1),0,1)]"
+        },
+        "react": [
+          {
+            "id": "t30",
+            "type": "layer",
+            "x": "14pt",
+            "y": "38pt",
+            "w": "98pt",
+            "h": "106pt",
+            "bgColor": "#E7E9EE|#20232A",
+            "cornerRadius": {
+              "leftT": "12pt",
+              "leftB": "12pt",
+              "rightT": "12pt",
+              "rightB": "12pt"
+            }
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "l30",
+            "x": "24pt",
+            "y": "48pt",
+            "w": "78pt",
+            "text": "$[findNotEmpty::(${l0},--)]",
+            "fontSize": "11pt"
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v0},__none__),__none__),0,if::(eq::(${v0},--),0,if::(le::(findNotEmpty::(${v0L},0),5.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v300",
+                "type": "richText",
+                "x": "24pt",
+                "y": "74.05pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v0}",
+                    "fontSize": "22pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "6pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v0},__none__),__none__),0,if::(eq::(${v0},--),0,if::(and::(gt::(findNotEmpty::(${v0L},0),5.5),le::(findNotEmpty::(${v0L},0),7.5)),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v301",
+                "type": "richText",
+                "x": "24pt",
+                "y": "76.95pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v0}",
+                    "fontSize": "18pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v0},__none__),__none__),0,if::(eq::(${v0},--),0,if::(gt::(findNotEmpty::(${v0L},0),7.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v302",
+                "type": "richText",
+                "x": "24pt",
+                "y": "79.85pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v0}",
+                    "fontSize": "14pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v0},__none__),__none__),1,if::(eq::(${v0},--),1,0))]"
+            },
+            "react": [
+              {
+                "id": "v30E",
+                "type": "richText",
+                "x": "24pt",
+                "y": "80.65pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "--",
+                    "fontSize": "22pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "6pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ],
+            "_note": "取不到值:单独画「--」,压到数字墨迹中线"
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "o30",
+            "x": "24pt",
+            "y": "100pt",
+            "w": "78pt",
+            "text": "$[findNotEmpty::(${o0},)]",
+            "fontSize": "10.5pt"
+          },
+          {
+            "id": "b30T",
+            "type": "line",
+            "x": "24pt",
+            "y": "126pt",
+            "w": "78pt",
+            "h": "4pt",
+            "points": "[2,2,76,2]",
+            "lineWidth": "4pt",
+            "strokeColor": "#D6DAE1|#2C313A"
+          },
+          {
+            "id": "b30",
+            "type": "line",
+            "x": "24pt",
+            "y": "126pt",
+            "w": "78pt",
+            "h": "4pt",
+            "points": "[2,2,$[findNotEmpty::(${b30},2)],2]",
+            "lineWidth": "4pt",
+            "strokeColor": "$[if::(eq::(${top0},1),if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF))))))),#9AA0A6|#8E939B)]",
+            "hide": "$[if::(eq::(findNotEmpty::(${b30},__none__),__none__),1,0)]"
+          },
+          {
+            "id": "t31",
+            "type": "layer",
+            "x": "120pt",
+            "y": "38pt",
+            "w": "98pt",
+            "h": "106pt",
+            "bgColor": "#E7E9EE|#20232A",
+            "cornerRadius": {
+              "leftT": "12pt",
+              "leftB": "12pt",
+              "rightT": "12pt",
+              "rightB": "12pt"
+            }
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "l31",
+            "x": "130pt",
+            "y": "48pt",
+            "w": "78pt",
+            "text": "$[findNotEmpty::(${l1},--)]",
+            "fontSize": "11pt"
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v1},__none__),__none__),0,if::(eq::(${v1},--),0,if::(le::(findNotEmpty::(${v1L},0),5.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v310",
+                "type": "richText",
+                "x": "130pt",
+                "y": "74.05pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v1}",
+                    "fontSize": "22pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "6pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v1},__none__),__none__),0,if::(eq::(${v1},--),0,if::(and::(gt::(findNotEmpty::(${v1L},0),5.5),le::(findNotEmpty::(${v1L},0),7.5)),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v311",
+                "type": "richText",
+                "x": "130pt",
+                "y": "76.95pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v1}",
+                    "fontSize": "18pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v1},__none__),__none__),0,if::(eq::(${v1},--),0,if::(gt::(findNotEmpty::(${v1L},0),7.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v312",
+                "type": "richText",
+                "x": "130pt",
+                "y": "79.85pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v1}",
+                    "fontSize": "14pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v1},__none__),__none__),1,if::(eq::(${v1},--),1,0))]"
+            },
+            "react": [
+              {
+                "id": "v31E",
+                "type": "richText",
+                "x": "130pt",
+                "y": "80.65pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "--",
+                    "fontSize": "22pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "6pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ],
+            "_note": "取不到值:单独画「--」,压到数字墨迹中线"
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "o31",
+            "x": "130pt",
+            "y": "100pt",
+            "w": "78pt",
+            "text": "$[findNotEmpty::(${o1},)]",
+            "fontSize": "10.5pt"
+          },
+          {
+            "id": "b31T",
+            "type": "line",
+            "x": "130pt",
+            "y": "126pt",
+            "w": "78pt",
+            "h": "4pt",
+            "points": "[2,2,76,2]",
+            "lineWidth": "4pt",
+            "strokeColor": "#D6DAE1|#2C313A"
+          },
+          {
+            "id": "b31",
+            "type": "line",
+            "x": "130pt",
+            "y": "126pt",
+            "w": "78pt",
+            "h": "4pt",
+            "points": "[2,2,$[findNotEmpty::(${b31},2)],2]",
+            "lineWidth": "4pt",
+            "strokeColor": "$[if::(eq::(${top1},1),if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF))))))),#9AA0A6|#8E939B)]",
+            "hide": "$[if::(eq::(findNotEmpty::(${b31},__none__),__none__),1,0)]"
+          },
+          {
+            "id": "t32",
+            "type": "layer",
+            "x": "226pt",
+            "y": "38pt",
+            "w": "98pt",
+            "h": "106pt",
+            "bgColor": "#E7E9EE|#20232A",
+            "cornerRadius": {
+              "leftT": "12pt",
+              "leftB": "12pt",
+              "rightT": "12pt",
+              "rightB": "12pt"
+            }
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "l32",
+            "x": "236pt",
+            "y": "48pt",
+            "w": "78pt",
+            "text": "$[findNotEmpty::(${l2},--)]",
+            "fontSize": "11pt"
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v2},__none__),__none__),0,if::(eq::(${v2},--),0,if::(le::(findNotEmpty::(${v2L},0),5.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v320",
+                "type": "richText",
+                "x": "236pt",
+                "y": "74.05pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v2}",
+                    "fontSize": "22pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "6pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v2},__none__),__none__),0,if::(eq::(${v2},--),0,if::(and::(gt::(findNotEmpty::(${v2L},0),5.5),le::(findNotEmpty::(${v2L},0),7.5)),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v321",
+                "type": "richText",
+                "x": "236pt",
+                "y": "76.95pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v2}",
+                    "fontSize": "18pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v2},__none__),__none__),0,if::(eq::(${v2},--),0,if::(gt::(findNotEmpty::(${v2L},0),7.5),1,0)))]"
+            },
+            "react": [
+              {
+                "id": "v322",
+                "type": "richText",
+                "x": "236pt",
+                "y": "79.85pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "${v2}",
+                    "fontSize": "14pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "5pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "op",
+            "action": "if",
+            "props": {
+              "val": "$[if::(eq::(findNotEmpty::(${v2},__none__),__none__),1,if::(eq::(${v2},--),1,0))]"
+            },
+            "react": [
+              {
+                "id": "v32E",
+                "type": "richText",
+                "x": "236pt",
+                "y": "80.65pt",
+                "w": "78pt",
+                "h": "-1",
+                "maxLines": "1",
+                "lineBreak": "0",
+                "spans": [
+                  {
+                    "text": "--",
+                    "fontSize": "22pt",
+                    "typeface": "System-Bold",
+                    "textColor": "#0E1116|#F3F4F6"
+                  },
+                  {
+                    "text": "${@i18n.nbsp}",
+                    "fontSize": "6pt"
+                  },
+                  {
+                    "text": "$[findNotEmpty::(${unit},)]",
+                    "fontSize": "10pt",
+                    "textColor": "#6B7280|#8E939B"
+                  }
+                ]
+              }
+            ],
+            "_note": "取不到值:单独画「--」,压到数字墨迹中线"
+          },
+          {
+            "type": "txt",
+            "h": "-1",
+            "maxLines": "1",
+            "lineBreak": "0",
+            "textColor": "#6B7280|#8E939B",
+            "id": "o32",
+            "x": "236pt",
+            "y": "100pt",
+            "w": "78pt",
+            "text": "$[findNotEmpty::(${o2},)]",
+            "fontSize": "10.5pt"
+          },
+          {
+            "id": "b32T",
+            "type": "line",
+            "x": "236pt",
+            "y": "126pt",
+            "w": "78pt",
+            "h": "4pt",
+            "points": "[2,2,76,2]",
+            "lineWidth": "4pt",
+            "strokeColor": "#D6DAE1|#2C313A"
+          },
+          {
+            "id": "b32",
+            "type": "line",
+            "x": "236pt",
+            "y": "126pt",
+            "w": "78pt",
+            "h": "4pt",
+            "points": "[2,2,$[findNotEmpty::(${b32},2)],2]",
+            "lineWidth": "4pt",
+            "strokeColor": "$[if::(eq::(${top2},1),if::(eq::(${accent},green),#2E9E6B|#45C793,if::(eq::(${accent},blue),#2F6FE4|#5C9BFF,if::(eq::(${accent},purple),#7A5AF8|#A78BFA,if::(eq::(${accent},orange),#E07B39|#F0A05F,if::(eq::(${accent},rose),#D2536D|#E87A93,if::(eq::(${accent},teal),#0E9AA7|#35C2CE,if::(eq::(${accent},graphite),#8A9099|#6E747D,#5B5BD6|#A5A3FF))))))),#9AA0A6|#8E939B)]",
+            "hide": "$[if::(eq::(findNotEmpty::(${b32},__none__),__none__),1,0)]"
+          }
+        ],
+        "_note": "三项(或取不到时):三格"
+      }
+    ],
+    "i18n": {
+      "zh-CN": {
+        "nbsp": " "
+      },
+      "en-US": {
+        "nbsp": " "
+      }
+    }
+  }
+}

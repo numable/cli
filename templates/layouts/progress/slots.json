@@ -1,0 +1,173 @@
+{
+  "_note": "版式槽位说明:AI 只需要给每个槽一个取数表达式或一句文案,写进 .df 的「① 槽位」。坐标、配色、数字格式化、空态都由版式负责。maxLen 按档位给,单位是中文字数(英文约 1.8 倍字符),超出会以「…」截断。",
+  "layout": "progress",
+  "version": 1,
+  "title": {
+    "zh-CN": "进度",
+    "en-US": "Progress"
+  },
+  "summary": {
+    "zh-CN": "完成了多少 / 目标多少:方形是进度环,迷你是进度条",
+    "en-US": "Done vs. goal: a ring on the square size, a bar on the mini size"
+  },
+  "pick": {
+    "zh-CN": "有明确目标的量:今日步数 / 目标、预算用了多少、读书进度、配额",
+    "en-US": "Anything with a target: steps vs. goal, budget used, reading progress, quota"
+  },
+  "sizes": [
+    {
+      "layout": 22,
+      "grid": "2×2",
+      "widget": "progress",
+      "primary": true
+    },
+    {
+      "layout": 21,
+      "grid": "2×1",
+      "widget": "progress-21",
+      "primary": false
+    }
+  ],
+  "flow": "xWidget/flow/progress.df",
+  "slots": [
+    {
+      "key": "title",
+      "kind": "copy",
+      "type": "text",
+      "required": true,
+      "meaning": {
+        "zh-CN": "组件名(第一行):有对象写对象名,没有就写功能名",
+        "en-US": "Widget name (first line): the object's name, or what it shows"
+      },
+      "maxLen": {
+        "21": 8,
+        "22": 8
+      },
+      "example": {
+        "zh-CN": "今日步数",
+        "en-US": "Steps today"
+      },
+      "whenEmpty": {
+        "zh-CN": "显示 --",
+        "en-US": "Shows --"
+      }
+    },
+    {
+      "key": "done",
+      "kind": "data",
+      "type": "number",
+      "required": true,
+      "meaning": {
+        "zh-CN": "已完成的量",
+        "en-US": "Amount done"
+      },
+      "example": 6432,
+      "whenEmpty": {
+        "zh-CN": "环空着,中间 --",
+        "en-US": "Empty ring, -- in the middle"
+      }
+    },
+    {
+      "key": "total",
+      "kind": "data",
+      "type": "number",
+      "required": true,
+      "meaning": {
+        "zh-CN": "目标 / 总量(大于 0)",
+        "en-US": "Goal / total (greater than 0)"
+      },
+      "example": 10000,
+      "whenEmpty": {
+        "zh-CN": "百分比显示 --",
+        "en-US": "Percent shows --"
+      }
+    },
+    {
+      "key": "format",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "数字格式:auto 千分位 + 最多两位小数 · int 取整 · 1dp / 2dp 固定小数 · compact 中文万 / 亿、英文 K / M / B · raw 原样显示",
+        "en-US": "Number format: auto (grouping, up to 2 decimals) · int · 1dp / 2dp · compact (万/亿 in Chinese, K/M/B otherwise) · raw (as given)"
+      },
+      "values": [
+        "auto",
+        "int",
+        "1dp",
+        "2dp",
+        "compact",
+        "raw"
+      ],
+      "example": "auto",
+      "whenEmpty": {
+        "zh-CN": "按 auto",
+        "en-US": "Falls back to auto"
+      }
+    },
+    {
+      "key": "unit",
+      "kind": "copy",
+      "type": "text",
+      "required": false,
+      "meaning": {
+        "zh-CN": "单位,跟在「已完成 / 目标」后面(迷你档放不下,不显示)",
+        "en-US": "Unit after \"done / goal\" (not shown on the mini size)"
+      },
+      "maxLen": {
+        "22": 6
+      },
+      "example": {
+        "zh-CN": "步",
+        "en-US": "steps"
+      },
+      "whenEmpty": {
+        "zh-CN": "不显示",
+        "en-US": "Hidden"
+      }
+    },
+    {
+      "key": "at",
+      "kind": "data",
+      "type": "time",
+      "required": false,
+      "meaning": {
+        "zh-CN": "时效锚(右上角):数据是什么时候取到的,当天 HH:mm、跨天 MM-dd HH:mm;纯本地计算的组件留空",
+        "en-US": "Freshness stamp (top right): when the data was fetched — HH:mm today, MM-dd HH:mm otherwise; leave empty for purely local widgets"
+      },
+      "maxLen": {
+        "all": 11
+      },
+      "example": "14:30",
+      "whenEmpty": {
+        "zh-CN": "不显示,组件名占满整行",
+        "en-US": "Hidden; the name takes the full row"
+      }
+    },
+    {
+      "key": "accent",
+      "kind": "style",
+      "type": "enum",
+      "required": false,
+      "meaning": {
+        "zh-CN": "源色:身份点与强调色。只选名字;财经涨跌类用 graphite(红绿已被涨跌占用)",
+        "en-US": "Accent: the identity dot and highlight colour. Pick a name; use graphite for up/down finance widgets (red/green already mean up/down)"
+      },
+      "values": [
+        "indigo",
+        "green",
+        "blue",
+        "purple",
+        "orange",
+        "rose",
+        "teal",
+        "graphite"
+      ],
+      "example": "green",
+      "whenEmpty": {
+        "zh-CN": "按 indigo",
+        "en-US": "Falls back to indigo"
+      }
+    }
+  ]
+}
