@@ -113,7 +113,7 @@ numable check my-source
 | `numable render [包…] [--widget a,b] [--states light,dark,empty] [--locales zh-CN,en-US]` | 渲染层出图 |
 | `numable render [包…] --page [/路由,…] [--locales zh-CN,en-US]` | 页面出图(html / xpage,浅色 + 暗色整页截图) |
 | `numable docs [主题] [--toc] [--section 关键字] [--search 关键字]` | 读这套文档。长章先 `--toc` 看目录,`--section` 只读一节,`--search` 跨章检索 |
-| `numable doctor [包…]` | 环境 / 引擎版本 / 工作区体检 |
+| `numable doctor [包…]` | 环境 / 引擎版本 / 工作区体检;也查 npm 上有没有更新的 CLI(文档随 CLI 一起更新,落后时 `numable docs` 末尾也会提示一行;`NUMABLE_NO_UPDATE_CHECK=1` 关掉) |
 
 三个通用开关与三个环境变量:
 

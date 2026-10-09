@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/0-start/10-workflow.md sha256:83d13416983f -->
+<!-- translated-from: zh-CN/0-start/10-workflow.md sha256:e14580c90d4b -->
 
 # workflow — the authoring sequence and the rules you cannot break
 
@@ -115,7 +115,7 @@ These are the commands the seven steps use, plus a few switches you will not rea
 | `numable render [package…] [--widget a,b] [--states light,dark,empty] [--locales zh-CN,en-US]` | renders images |
 | `numable render [package…] --page [/route,…] [--locales zh-CN,en-US]` | renders pages (html / xpage, light + dark full-page screenshots) |
 | `numable docs [topic] [--toc] [--section word] [--search word]` | reads this documentation. For a long chapter, `--toc` shows the outline, `--section` reads one part, `--search` searches every chapter |
-| `numable doctor [package…]` | checks the environment, engine version and workspace |
+| `numable doctor [package…]` | checks the environment, engine version and workspace; also checks npm for a newer CLI (the docs update with the CLI; when you are behind, `numable docs` prints one line at the end too; `NUMABLE_NO_UPDATE_CHECK=1` turns it off) |
 
 Three global switches and three environment variables:
 

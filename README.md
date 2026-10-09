@@ -2,11 +2,12 @@
 > (English and Chinese), the templates, and the issue tracker. The CLI itself ships on npm
 > (`npx numable`); its source currently lives in Numable's main repository and will be published
 > here once its internal dependencies are untangled. Everything below is mirrored from
-> **numable@0.1.13**. Bugs, questions and ideas: [open an issue](https://github.com/numable/cli/issues).
+> **numable@0.1.14**; docs for any earlier version are under its tag (e.g. `v0.1.12`).
+> Bugs, questions and ideas: [open an issue](https://github.com/numable/cli/issues).
 >
 > **关于这个仓库** —— `numable` 创作命令行的公开主页:中英创作文档、模板和问题反馈。命令行本身在 npm 上
 > (`npx numable`);源码目前在 Numable 主仓里,理清内部依赖后会放到这里。下面的内容同步自
-> **numable@0.1.13**。报 bug、提问题、提想法:[开一个 issue](https://github.com/numable/cli/issues)。
+> **numable@0.1.14**;更早版本的文档在对应的 tag 下(如 `v0.1.12`)。报 bug、提问题、提想法:[开一个 issue](https://github.com/numable/cli/issues)。
 
 # numable
 
@@ -41,7 +42,7 @@ npm i -g numable
 | `numable run [bundles…]` | Data layer for real: every `.df` through the real engine and the real network |
 | `numable render [bundles…]` | Render layer: the real drawing core to PNG, per theme and locale |
 | `numable docs [topic]` | Read the spec, one chapter at a time |
-| `numable doctor` | Check the environment, engine version and workspace |
+| `numable doctor` | Check the environment, engine version and workspace, and whether a newer CLI is out |
 
 Common flags: `--json` for machine-readable output, `--lang zh|en` for the interface language.
 Env vars: `NUMABLE_PROFILE`, `NUMABLE_LANG`, `NUMABLE_CHROME`.
@@ -108,7 +109,7 @@ npm i -g numable --registry=https://registry.npmmirror.com
 | `numable run [包…]` | 数据层真跑:每条 `.df` 走真引擎、真网络 |
 | `numable render [包…]` | 渲染层:用真的绘制内核出 PNG,分明暗与语言 |
 | `numable docs [主题]` | 一次读一章规范 |
-| `numable doctor` | 体检环境、引擎版本与工作区 |
+| `numable doctor` | 体检环境、引擎版本与工作区,并查有没有更新的 CLI |
 
 通用参数:`--json` 机器可读输出、`--lang zh|en` 界面语言。
 环境变量:`NUMABLE_PROFILE`、`NUMABLE_LANG`、`NUMABLE_CHROME`。
