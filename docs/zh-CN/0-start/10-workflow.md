@@ -106,7 +106,7 @@ numable check my-source
 | 命令 | 干什么 |
 |---|---|
 | `numable workspace init [目录]` | 把一个目录变成创作工作区:写一份给 AI 看的指引,之后在这个目录里直接对 AI 说需求即可 |
-| `numable init <目录> [--from <包目录>\|installed:<id>]` | 新建包(重新生成身份 ULID)。`--from` 可以是本地任意包目录,也可以是桌面 App 里已装的包(`installed:<id>`,Mac / Windows 版) |
+| `numable init <目录> [--from <包目录>\|installed:<id>\|github:<名字>]` | 新建包(重新生成身份 ULID)。`--from` 可以是本地任意包目录、桌面 App 里已装的包(`installed:<id>`,Mac / Windows 版),或开源仓 [numable/tools](https://github.com/numable/tools) 里的官方工具(`github:<文件夹名或 id>`,如 `github:weather`;只写 `github:` 列出全部) |
 | `numable init --job <id> --kind static\|once\|cross\|level\|changed\|task` | 在当前包目录里加一条提醒 / 后台任务,并按需抬高 `manifest.minEngine`,见 `numable docs alerts` |
 | `numable check [包…] [--profile personal\|publish]` | 静态闸 |
 | `numable run [包…] [--flow a,b] [--file x.df] [--full] [--fixtures <目录>]` | 数据层真跑。`--file` 跑任意一条 `.df`(包括没被任何组件绑定的探针流) |

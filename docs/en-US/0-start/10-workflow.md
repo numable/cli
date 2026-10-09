@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/0-start/10-workflow.md sha256:feea75ddc2d9 -->
+<!-- translated-from: zh-CN/0-start/10-workflow.md sha256:83d13416983f -->
 
 # workflow — the authoring sequence and the rules you cannot break
 
@@ -108,7 +108,7 @@ These are the commands the seven steps use, plus a few switches you will not rea
 | Command | What it does |
 |---|---|
 | `numable workspace init [dir]` | turns a folder into an authoring workspace: writes a guide for the AI to read, after which you can simply state what you want to the AI from inside that folder |
-| `numable init <dir> [--from <package dir>\|installed:<id>]` | creates a new package (regenerating the identity ULID). `--from` takes any local package folder, or a package installed in the desktop App (`installed:<id>`, Mac / Windows) |
+| `numable init <dir> [--from <package dir>\|installed:<id>\|github:<name>]` | creates a new package (regenerating the identity ULID). `--from` takes any local package folder, a package installed in the desktop App (`installed:<id>`, Mac / Windows), or an official tool from the open-source repo [numable/tools](https://github.com/numable/tools) (`github:<folder or id>`, e.g. `github:weather`; `github:` alone lists them) |
 | `numable init --job <id> --kind static\|once\|cross\|level\|changed\|task` | adds an alert / background job to the package in the current folder and raises `manifest.minEngine` if needed, see `numable docs alerts` |
 | `numable check [package…] [--profile personal\|publish]` | the static gate |
 | `numable run [package…] [--flow a,b] [--file x.df] [--full] [--fixtures <dir>]` | really runs the data layer. `--file` runs any single `.df`, including a probe flow no widget is bound to |

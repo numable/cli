@@ -2,11 +2,11 @@
 > (English and Chinese), the templates, and the issue tracker. The CLI itself ships on npm
 > (`npx numable`); its source currently lives in Numable's main repository and will be published
 > here once its internal dependencies are untangled. Everything below is mirrored from
-> **numable@0.1.12**. Bugs, questions and ideas: [open an issue](https://github.com/numable/cli/issues).
+> **numable@0.1.13**. Bugs, questions and ideas: [open an issue](https://github.com/numable/cli/issues).
 >
 > **关于这个仓库** —— `numable` 创作命令行的公开主页:中英创作文档、模板和问题反馈。命令行本身在 npm 上
 > (`npx numable`);源码目前在 Numable 主仓里,理清内部依赖后会放到这里。下面的内容同步自
-> **numable@0.1.12**。报 bug、提问题、提想法:[开一个 issue](https://github.com/numable/cli/issues)。
+> **numable@0.1.13**。报 bug、提问题、提想法:[开一个 issue](https://github.com/numable/cli/issues)。
 
 # numable
 
@@ -36,7 +36,7 @@ npm i -g numable
 | | |
 |---|---|
 | `numable workspace init [dir]` | Turn a directory into an authoring workspace (writes the AI guide) |
-| `numable init <dir> [--from <bundle>]` | New bundle: clone the starter template or an existing bundle, with a fresh identity |
+| `numable init <dir> [--from <bundle>]` | New bundle: clone the starter template, an existing bundle, or an official tool from [numable/tools](https://github.com/numable/tools) (`--from github:weather`), with a fresh identity |
 | `numable check [bundles…]` | Static gate. `--profile personal` (default) skips the store-only rules; `publish` runs everything |
 | `numable run [bundles…]` | Data layer for real: every `.df` through the real engine and the real network |
 | `numable render [bundles…]` | Render layer: the real drawing core to PNG, per theme and locale |
@@ -103,7 +103,7 @@ npm i -g numable --registry=https://registry.npmmirror.com
 | | |
 |---|---|
 | `numable workspace init [dir]` | 把一个目录变成创作工作区(写入给 AI 看的指引) |
-| `numable init <dir> [--from <bundle>]` | 新建包:克隆模板或已有的包,换一套全新身份 |
+| `numable init <dir> [--from <bundle>]` | 新建包:克隆模板、已有的包,或 [numable/tools](https://github.com/numable/tools) 里的官方工具(`--from github:weather`),换一套全新身份 |
 | `numable check [包…]` | 静态闸。`--profile personal`(默认)跳过只跟上架有关的条目,`publish` 全开 |
 | `numable run [包…]` | 数据层真跑:每条 `.df` 走真引擎、真网络 |
 | `numable render [包…]` | 渲染层:用真的绘制内核出 PNG,分明暗与语言 |
