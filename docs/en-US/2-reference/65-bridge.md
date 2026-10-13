@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/2-reference/65-bridge.md sha256:272cfb0d924c -->
+<!-- translated-from: zh-CN/2-reference/65-bridge.md sha256:030700500057 -->
 
 # bridge — the JS bridge contract for H5 pages
 
@@ -105,17 +105,31 @@ const mine = await xbridge.installedBundles();        // system packages only; y
 const cred = await call(xbridge.credentialState("github"));  // { state: bound|unbound|expired, fp }
 ```
 
+**Server notifications** (only when your tool has its own server and needs to notify the user the moment something happens there; for "remind me at a time / when a condition holds", use `alertAdd`)
+
+```js
+const g = await call(xbridge.pushGrant());           // opens the consent panel; waits for the user
+if (g.status === "ok") {
+  // the page cannot reach the network: hand the credential to your own service through a .af / .df
+  await call(xbridge.runDataFlow("notify", { body: JSON.stringify({ handle: g.handle }) }));
+} else if (g.status === "denied") {
+  xbridge.toast("Notifications are off. Turn them on in system settings.");
+}                                                     // cancel = the user said no; unsupported = not on this platform, fall back to alertAdd
+```
+
+For the whole flow (how your service calls the relay, rate limits, what to do when a credential is revoked) see the "Server notifications" section of `numable docs alerts`.
+
 `installedBundles()` returns nothing in your own package, so do not design an "installed / not installed" UI around it. To test whether a method exists, use `typeof xbridge.x === "function"` — whatever is on the object is exactly what the page can call, and there is no second list to reconcile it against.
 
 ## Call shapes
 
 - **call methods** (marked call in the table) return a Promise; **notify methods** are one-way notifications with no return value — do not `await` their result to decide whether they succeeded.
 - **A call-type method resolves an envelope `{ code, msg, data }` and never rejects**: `code === 0` means success and the result is in `data`; a failure is a non-zero `code` (with `msg` saying why), and a timeout on phones is `code: -2`. Using the return value directly as the data is the most common silent bug: `(await xbridge.runDataFlow(…)).count` is always `undefined`, and `if (await xbridge.confirm(…))` is worse — the envelope object is always truthy, so the code runs on even when the user tapped Cancel. Unwrap it with the `call()` from the example above.
-- On phones, a call method times out after 10 seconds by default; the ones that wait for the user (`confirm` / `alert` / `singleValue` / `alertAdd`) have no timeout.
+- On phones, a call method times out after 10 seconds by default; the ones that wait for the user (`confirm` / `alert` / `singleValue` / `alertAdd` / `pushGrant`) have no timeout.
 - To probe whether a method exists, use `typeof xbridge.confirm === "function"`; for the whole set, `Object.keys(xbridge)`.
 - A name that is not in the table simply **does not exist** — calling it throws a TypeError, and calls like that are almost always swallowed by the page's own `try/catch` (nothing crashes, nothing is reported, the feature is just quietly absent). `numable check` catches it as G42.
 
-## The full method table (26)
+## The full method table (27)
 
 Every platform gets this same table — same names, same signatures, same behaviour. A name that is not in it does not exist.
 
@@ -144,6 +158,7 @@ Every platform gets this same table — same names, same signatures, same behavi
 | `refreshWidget` | call | `(pid?)` | `{ refreshed }` | `widget.refresh` |
 | `alertAdd` | call | `({ id, params? })` | `ok` / `cancel` / `quota` | `alert.add` |
 | `alertRemove` | call | `({ id, params? })` | `{ removed }` | `alert.remove`; **needs `manifest.minEngine` 3 or higher** — older apps do not have it on the bridge |
+| `pushGrant` | call | `(opts?)` | `{ status, handle?, title? }` — `status` = `ok` / `cancel` / `denied` / `unsupported`; on `ok` it carries the credential `handle` and `title`, the tool name the relay puts in front of every notification title | — (bridge only, no AF action) |
 | `appInfo` | call | `()` | `{ platform, appVersion, theme, language, locale }` (`language` and `locale` hold the same value) | — |
 | `installBundle` | notify | `(id, version?, ref?)` | — | — |
 | `installedBundles` | call | `()` | the list of installed packages (system packages only) | — |
@@ -158,6 +173,7 @@ These are not "usage tips" — they are the places where getting it wrong raises
 - **`pickWidgets` and `removeWidget` mean opposite things**: the first only opens the panel and asks the user to pick, and the writing happens inside the panel; the second skips every panel, writes straight to disk, and removes **every** instance of that widget in one go. So adding a widget needs no confirmation of your own (the panel is the confirmation), while removing one **must** have your own `confirm` in front of it — once the user presses it, there is no undo anywhere.
 - **The subject of `alertAdd` is also the user.** It only opens the native "Add reminder" panel; `params` are merely pre-filled and the user can change them, and the reminder is created only when the user presses the panel's main button. Treat the two non-`ok` results separately: `cancel` means the user did not want it, `quota` means this package's reminders are full (the panel still opens, with the button disabled) — do not word `quota` as "maybe later". `id` can only be an alert rule in this package's `xJob/`; creating a reminder for another package is not possible. A wrong `id` (not found, or not an alert) opens no panel and fails the call (`rule_not_found`) — it never comes back as `cancel`.
 - **`alertRemove` takes effect directly, without the user** — the opposite of `alertAdd`: it deletes this package's matching reminders for that rule (along with any fires already scheduled), opens no panel, shows nothing, and returns how many copies it removed. `params` matches as a **subset** — equal values on the keys you give are enough; omitting it means every instance of the rule; no match is `{ removed: 0 }`, not a failure. It removes reminders only, never background jobs. For the pattern of giving an alert a business key when you create it, see `numable docs alerts` step 7. It is only guaranteed in packages with `manifest.minEngine` ≥ 3; to stay compatible with older apps, check `typeof xbridge.alertRemove === "function"` first.
+- **`pushGrant` is the user's decision, and every call opens the panel.** A credential is issued only after the user taps Allow (and, if needed, grants the system notification permission); granting again for the same tool revokes the old credential and issues a new one. So call it only when the user taps something like "Turn on notifications", never on page load. Handle the four results separately: `ok` — pass `handle` to your own service; `cancel` — do nothing; `denied` — the system notification permission is off, point the user to system settings; `unsupported` — this platform has no server notifications (today only iPhone / iPad / Mac and the Google Play build of Android do), fall back to `alertAdd`'s scheduled checks. With no network you get an envelope with a non-zero `code`. To learn whether it is available without opening the panel, pass `{ probe: true }` and get `available` back — only Android understands this option today; Apple platforms open the panel as usual, so probe only on non-Apple platforms (`appInfo().platform`). The credential means "this device × your tool" only; the App decides the package identity from the hosting page, so a page cannot obtain one for another package, and **the device push token is never handed to a package**.
 - **Use the bridge's `alert` / `confirm`, not `window.alert` / `window.confirm`.** The latter are the system's own dialogs, they look different on every platform, and they escape the container boundary — on a large screen they land in the middle of the window instead of inside the package's widget.
 - **The argument to `haptic` is a semantic level, not a physical parameter**: `tap` (default) / `impact` / `success` / `warning` / `error` / `selection`, with unknown values falling back to `tap`. On desktop, with no haptic hardware, or when the user has haptics switched off, it silently does nothing — **do not try to decide at the call site whether it should vibrate**.
 - **The whole config of `singleValue(config)` is the single-value config**, not `{config: …}`: it must carry `container` (`page` / `sheet` / `dialog`) and `component` (`{type, value, props}`). It returns `{ value: { value }, cancelled }` — the value is at `r.value.value`, not `r.value`. For more than one field, always use the `.xform` page kind, see `numable docs params`.

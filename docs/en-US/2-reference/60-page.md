@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/2-reference/60-page.md sha256:5b7d04558b77 -->
+<!-- translated-from: zh-CN/2-reference/60-page.md sha256:5a997632f97d -->
 
 # page — pages (router.json / html / xpage / xform)
 
@@ -342,6 +342,7 @@ Navigation inside the package uses deeplinks:
 | `numable://self` | This package's home page (**the only way to reach the home page** — `numable://self/page/home` does not work) |
 | `numable://self/page/detail?id=${id}` | This package's `/detail` route; only top-level scalars can be interpolated into the query |
 | `numable://app/mine?section=credentials` | The app's credential management screen (a package that needs credentials must offer this direct entry) |
+| `numable://<target package ULID>/page/add?code=${code}` | A page of **another tool** (`xbridge.route` in a page, `nav.open` in a flow). Target installed → that page opens directly; not installed → the install panel opens, and once the user installs it, Open goes straight to that page. The host must be the 26-character ULID from the target's manifest; anything else shows "Can't find this tool". If the target isn't distributed in the user's region the user only sees that the tool doesn't exist — hide the entry yourself based on `appInfo().region`. ⚠️ App versions before 2026-10 don't understand this: iPhone / Android say the tool isn't installed, HarmonyOS / Windows navigate to the wrong page inside the current tool |
 
 When a widget opens a page other than the home page, the container **pushes the home page as the stack root first**, then the target page — so pressing ‹ takes the user back to the package's home page rather than closing everything. You do not implement this yourself, but design pages assuming there is a home page underneath.
 

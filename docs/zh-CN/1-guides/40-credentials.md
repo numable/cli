@@ -64,6 +64,7 @@
 | `help` | | 教用户去哪申请的页面,必须是 https |
 | `headerName` | `type=header` 时必填 | 注入到哪个头 |
 | `paramName` | `type=query` 时必填 | 注入到哪个 query 参数 |
+| `value` | | 限定用户能填哪种密钥,见下方「只收某一种密钥」 |
 
 `type` 四种简单机制(注入形状由 App 决定,包管不着):
 
@@ -73,6 +74,25 @@
 | `token` | `Authorization: token <值>` | GitHub 这类 |
 | `header` | `<headerName>: <prefix?><值>` | 自定义头,如 `X-Goog-Api-Key` |
 | `query` | URL 上追加 `?<paramName>=<值>` | **只给 query-only 的 API**;能走头就走头(`check` 恒出一条 W 提醒你确认) |
+
+**只收某一种密钥(`value`)**。有的服务一个账号能发好几种密钥,权限差得很远 —— Stripe 的标准密钥 `sk_` 能退款转账,受限密钥 `rk_` 可以只读。包里拦不住用户填错(流里读不到密钥本体),所以在声明上写明:
+
+```json
+"value": {
+  "allowPrefix": ["rk_"],
+  "rejectPrefix": ["sk_"],
+  "hint": "这里要填受限密钥（rk_ 开头），不要填标准密钥（sk_ 开头）",
+  "i18n": { "en-US": { "hint": "Use a restricted key (starts with rk_), not a standard secret key (sk_)." } }
+}
+```
+
+| 字段 | 说明 |
+|---|---|
+| `allowPrefix` | 非空时,值必须以其中之一开头 |
+| `rejectPrefix` | 以其中之一开头就拒,先于 `allowPrefix` 判 |
+| `hint` | 被拒时给用户看的话,写清该填哪种、去哪拿;译文放同级 `i18n`。不写就只有一句通用提示 |
+
+App 在绑定面板上判(先去掉首尾空白,区分大小写):新建、换值、把已有的密钥绑过来,三处都拦。只收前缀,不收正则。它防的是填错,不是安全边界 —— 旧版 App 不认这个字段,照常放行。`jwt-assertion` / `oauth2` 不是手填的密钥,不能挂。
 
 `jwt-assertion` 与 `oauth2` 只能引用平台内置的 preset(`preset` 字段),自己写声明会被拦——OAuth 的授权端点如果由包作者自由声明,等于允许包把用户送进一个钓鱼页。需要新 preset 走反馈。
 
@@ -157,6 +177,15 @@ numable check <包>
 ```
 
 平铺一层:**键 = declId,值 = 密钥字符串**。多把钥匙就多写几行。
+
+preset 类凭证的值是一个对象,形状按 preset 定(`run` 在本机按 preset 同式签名 / 换 token,与真机同一份代码):
+
+| preset | 夹具值 | 说明 |
+|---|---|---|
+| `app-store-connect` | `{ "keyId": "…", "issuerId": "…", "privateKeyFile": "AuthKey_XXXX.p8" }` | 也可用 `privateKey` 直接写 PEM 全文 |
+| `google-play` | `{ "serviceAccountFile": "play-sa.json" }` | 从 Google Cloud 下载的服务账号密钥 `.json`;也可直接写路径字符串,或把 JSON 对象原样贴进来 |
+
+文件路径先按当前目录找,找不到再按夹具目录(`.numable/params/`)找 —— 把密钥文件就放在夹具目录里最省事,同样不会进包。`google-play` 只取文件里的 `private_key` / `client_email` / `private_key_id`,本机签好后向 Google 换一枚 access token 再带上(换 token 的请求不受 `network` 限制)。换 token 被拒(密钥无效、已吊销、服务账号没有权限)或网络出错时,那条请求**不会发出**,输出里有一行 `⚠ <declId>:…` 说明原因。
 
 同目录下另外几个夹具,一起知道更省事:
 

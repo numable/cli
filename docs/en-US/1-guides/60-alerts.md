@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/1-guides/60-alerts.md sha256:9387c57a4d33 -->
+<!-- translated-from: zh-CN/1-guides/60-alerts.md sha256:adb026cd73a7 -->
 
 # alerts — reminders and background jobs
 
@@ -358,6 +358,49 @@ Besides long-pressing a widget (see `jobs` at the end) and going to Me › Remin
 - `id` can only be a rule in this package's `xJob/` **that has an `alert`**; if it isn't found, or it is a background job, the whole flow fails (`rule_not_found`) and no sheet opens. A wrong id (no such file in the package) is caught by `check` with G46.
 - In an H5 page the equivalent is `xbridge.alertAdd({ id, params })`, with the same results (see `numable docs bridge`).
 - It waits for the user, so it can only go in an interaction flow (`.af`).
+
+## Another route: server notifications (`pushGrant`)
+
+Every reminder above depends on the phone checking for itself, so at best it waits for the next check. If your tool **has its own server** and the event happens on that server (a job got stuck, something is waiting for the user's approval), the server can send a notification at that moment and it arrives within seconds.
+
+It does not use `.xjob`. Four steps:
+
+1. **Ask the user**: put a "Turn on notifications" button on your page that calls `xbridge.pushGrant()`. The App shows a consent panel; once the user allows it, the page receives a credential `handle` (an opaque string starting with `ph1.`). It stands for "this device × your tool" only — the device push token is never handed to a package.
+2. **Hand the credential to your service**: the page cannot reach the network, so send it through a `.df` / `.af` `request` to your service for storage (your service's domain must be in `manifest.network`; authenticate with credential injection, never put a secret in the page).
+3. **When the event happens, your service calls the notification relay**:
+
+```http
+POST https://api.numable.app/push/send
+Authorization: Push ph1.…
+Content-Type: application/json
+
+{ "title": "Waiting for your approval", "body": "Waiting for 3 minutes", "path": "/live", "level": "normal", "collapse": "perm-42" }
+```
+
+| Field | Meaning |
+|---|---|
+| `title` | ≤ 60 characters. Shown as "<tool name> · <title>"; the relay derives the tool name from the credential, so a package cannot pose as another tool |
+| `body` | ≤ 200 characters. At least one of `title` and `body` is required |
+| `path` | Optional. The in-package route opened when the notification is tapped; starts with `/`, ≤ 200 characters |
+| `level` | `normal` (default) or `urgent`; on iPhone `urgent` is a Time Sensitive notification (it can break through Focus if the user allows it) — use it only for things the user has to act on now |
+| `collapse` | Optional, ≤ 64 characters; a newer notification with the same value replaces the older one — good for "waiting 3 min → waiting 5 min" |
+
+| Response | Meaning | What your service should do |
+|---|---|---|
+| `200 {ok:true}` | Handed to Apple's / Google's push service | — |
+| `410 revoked` / `device_gone` / `bundle_unavailable` | The user turned it off, the App was uninstalled, or the tool was taken down | **Delete this credential and never send to it again** |
+| `429 rate_limited` | Over the limit: 6 per minute and 60 per day per credential | Merge or drop; do not retry in a loop |
+| `400` / `401` | Malformed body / malformed credential | Fix your code |
+| `502` / `503` | Upstream push service error / not available on this side yet | One retry later is enough |
+
+4. **The user can turn it off at any time** in "Me › Reminders › Server notifications", per tool; after that the relay answers 410 for the old credential.
+
+Boundaries to know:
+
+- **Available only on iPhone / iPad / Mac and the Google Play build of Android.** Elsewhere `pushGrant` returns `unsupported`, so keep an `.xjob` reminder for the same event as a fallback; capability probing and the four results are in `numable docs bridge`.
+- Notification text passes through Apple's or Google's push service; the relay forwards it and keeps no copy. Keep secrets and full paths out of notifications; use a code name where you can.
+- The install panel gains no extra line for this — consent happens when the user taps your button, so put one sentence next to it saying what they will receive and when.
+- Calling `pushGrant` again revokes the old credential and issues a new one; your service should keep the latest one it received.
 
 ---
 

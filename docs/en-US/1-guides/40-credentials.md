@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/1-guides/40-credentials.md sha256:39a3a5898c15 -->
+<!-- translated-from: zh-CN/1-guides/40-credentials.md sha256:7b51d0a54818 -->
 
 # credentials — connect a data source that needs a key
 
@@ -66,6 +66,7 @@ Field by field:
 | `help` | | The page telling users where to get the key; must be https |
 | `headerName` | required when `type=header` | Which header to inject into |
 | `paramName` | required when `type=query` | Which query parameter to inject into |
+| `value` | | Limits which kind of key the user may enter; see "Accept only one kind of key" below |
 
 The four simple mechanisms of `type` (the app decides the injected shape; the package has no say):
 
@@ -75,6 +76,25 @@ The four simple mechanisms of `type` (the app decides the injected shape; the pa
 | `token` | `Authorization: token <value>` | GitHub and friends |
 | `header` | `<headerName>: <prefix?><value>` | A custom header, e.g. `X-Goog-Api-Key` |
 | `query` | Appends `?<paramName>=<value>` to the URL | **Only for query-only APIs**; use a header whenever you can (`check` always emits a W asking you to confirm) |
+
+**Accept only one kind of key (`value`).** Some services issue several kinds of key per account with very different powers — a Stripe standard key `sk_` can issue refunds and payouts, while a restricted key `rk_` can be read-only. The package can't stop a user from pasting the wrong one (flows never see the key itself), so say it in the declaration:
+
+```json
+"value": {
+  "allowPrefix": ["rk_"],
+  "rejectPrefix": ["sk_"],
+  "hint": "这里要填受限密钥（rk_ 开头），不要填标准密钥（sk_ 开头）",
+  "i18n": { "en-US": { "hint": "Use a restricted key (starts with rk_), not a standard secret key (sk_)." } }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `allowPrefix` | When non-empty, the value must start with one of these |
+| `rejectPrefix` | A value starting with any of these is rejected; checked before `allowPrefix` |
+| `hint` | What the user sees on rejection — say which kind to use and where to get it; translations go in a sibling `i18n`. Without it only a generic message shows |
+
+The app checks in the binding panel (after trimming surrounding whitespace, case-sensitive) at all three entry points: creating, replacing the value, and binding an existing key. Prefixes only, no regular expressions. It guards against mistakes, not attacks — older app versions ignore the field and accept anything. `jwt-assertion` / `oauth2` aren't hand-entered keys and can't carry it.
 
 `jwt-assertion` and `oauth2` may only reference a platform-built-in preset (the `preset` field); hand-written declarations are rejected — if package authors could freely declare an OAuth authorization endpoint, a package could walk the user into a phishing page. Ask for a new preset through feedback.
 
@@ -159,6 +179,15 @@ Three rules:
 ```
 
 One flat level: **key = declId, value = the secret string**. Add one line per key.
+
+For preset credentials the value is an object whose shape depends on the preset (`run` signs and exchanges tokens locally exactly as a device does, with the same code):
+
+| preset | Fixture value | Notes |
+|---|---|---|
+| `app-store-connect` | `{ "keyId": "…", "issuerId": "…", "privateKeyFile": "AuthKey_XXXX.p8" }` | Or put the full PEM in `privateKey` |
+| `google-play` | `{ "serviceAccountFile": "play-sa.json" }` | The service account key `.json` downloaded from Google Cloud; a bare path string or the JSON object pasted inline also works |
+
+File paths are looked up relative to the current directory first, then the fixture folder (`.numable/params/`) — keeping the key file in the fixture folder is simplest, and it never enters the package either. For `google-play` only `private_key` / `client_email` / `private_key_id` are read from the file; `run` signs locally, exchanges the result with Google for an access token and sends that (the token request is not limited by `network`). If the exchange is rejected (invalid or revoked key, or the service account lacks access) or the network fails, that request is **not sent**, and the output has a `⚠ <declId>: …` line saying why.
 
 A few other fixtures live in the same folder; it saves time to know them all:
 

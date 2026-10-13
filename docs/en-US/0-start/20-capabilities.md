@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/0-start/20-capabilities.md sha256:34a2f6f53155 -->
+<!-- translated-from: zh-CN/0-start/20-capabilities.md sha256:f1ec09f82d8b -->
 
 # capabilities — what you can build, what you cannot, and where the platforms differ
 
@@ -66,6 +66,7 @@ What this means for you:
 | The `widget.refresh` primitive | same everywhere | refresh a widget from an action flow: `self` / `widget` / `bundle`, defaulting to `bundle`; it can only refresh widgets from its own package, and a repeat call within 5 seconds returns success without doing anything |
 | Reminders whose time and wording are fixed when they are set | on iPhone / iPad · Mac · Android they are handed to the system clock and fire even with the App closed; **HarmonyOS first needs the agent-reminder entitlement** and degrades to "replayed when the App is opened" until it is granted; the Windows build needs its process resident and stays silent after a quit | whenever a reminder can be phrased as "say this sentence at this time", write it this way — it is the most reliable of the four platforms |
 | Reminders that fetch and test a condition first, and background jobs | both are **best effort**: the chances to run are opening the App, a home-screen widget refresh, and whatever background slices the system grants; on Android, once the user turns on Live monitoring (a notification that stays in the status bar) it checks right on time; HarmonyOS leans on the home-screen widget tick and the Windows build on a resident timer | write the cadence as `interval`, **floor 30 minutes for free users** (anything smaller is raised to 30), Pro users get the cadence you wrote; never promise "on time every day" or "real time" in your copy — say "at most once a day, caught up when there is a chance". See `numable docs alerts` |
+| Server notifications (your server sends a notification the moment something happens; arrives within seconds) | iPhone / iPad · Mac · the Google Play build of Android; **not on the China Android build, HarmonyOS or Windows** (`pushGrant` returns `unsupported`) | The user has to tap Allow on your page; off by default and can be turned off at any time; 6 per minute and 60 per day per credential. Where it is missing, fall back to the reminders above. See "Server notifications" in `numable docs alerts` |
 
 ## Pages
 

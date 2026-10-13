@@ -103,17 +103,31 @@ const mine = await xbridge.installedBundles();        // 只对系统包开放,�
 const cred = await call(xbridge.credentialState("github"));  // { state: bound|unbound|expired, fp }
 ```
 
+**服务器通知**(只有你的工具有自己的服务器、要在事情发生那一刻通知用户时才用;只是「到点 / 条件满足就提醒」用 `alertAdd`)
+
+```js
+const g = await call(xbridge.pushGrant());           // 弹同意面板;等用户操作
+if (g.status === "ok") {
+  // 页面不能直连网络:把凭据经 .af / .df 交给你自己的服务保存
+  await call(xbridge.runDataFlow("notify", { body: JSON.stringify({ handle: g.handle }) }));
+} else if (g.status === "denied") {
+  xbridge.toast("系统通知被关了，到系统设置里打开");
+}                                                     // cancel = 用户不想要;unsupported = 本平台没有,退回 alertAdd
+```
+
+完整流程(你的服务怎么调中继发通知、限流、凭据作废怎么处理)见 `numable docs alerts` 的「服务器通知」一节。
+
 `installedBundles()` 在自制包里调不出东西,别围着它设计「已装/未装」两态 UI。判某个方法在不在,用 `typeof xbridge.x === "function"` —— 门面上挂着什么就是页面能调到什么,没有第二份清单要核对。
 
 ## 调用形态
 
 - **call 型**(表里标 call)返回 Promise;**notify 型**是单向通知,没有返回值,不要 `await` 它的结果来判断成败。
 - **call 型 resolve 的是信封 `{ code, msg, data }`,不会 reject**:`code === 0` 为成功、结果在 `data`;失败是 `code` 非 0(`msg` 说明原因),手机上超时是 `code: -2`。把返回值直接当数据用是最常见的静默错误:`(await xbridge.runDataFlow(…)).count` 恒是 `undefined`;`if (await xbridge.confirm(…))` 更危险 —— 信封对象恒为真值,用户点了「取消」照样往下执行。用上面示例里的 `call()` 拆一层。
-- 手机上 call 型默认 10 秒超时;要等用户操作的那几个(`confirm` / `alert` / `singleValue` / `alertAdd`)不设超时。
+- 手机上 call 型默认 10 秒超时;要等用户操作的那几个(`confirm` / `alert` / `singleValue` / `alertAdd` / `pushGrant`)不设超时。
 - 探测一个方法在不在,用 `typeof xbridge.confirm === "function"`;要看全表就 `Object.keys(xbridge)`。
 - 表里没有的名字就是**没有** —— 调它会抛 TypeError,而这类调用几乎总被页面自己的 `try/catch` 吞掉(不崩、不报错、功能安静地不存在)。`numable check` 的 G42 会拦。
 
-## 方法全表(26)
+## 方法全表(27)
 
 每个平台上都是这一张表 —— 同名、同签名、同行为。表里没有的名字就是没有。
 
@@ -142,6 +156,7 @@ const cred = await call(xbridge.credentialState("github"));  // { state: bound|u
 | `refreshWidget` | call | `(pid?)` | `{ refreshed }` | `widget.refresh` |
 | `alertAdd` | call | `({ id, params? })` | `ok` / `cancel` / `quota` | `alert.add` |
 | `alertRemove` | call | `({ id, params? })` | `{ removed }` | `alert.remove`;**需要 `manifest.minEngine` 至少 3**,旧版应用的门面上没有它 |
+| `pushGrant` | call | `(opts?)` | `{ status, handle?, title? }` —— `status` = `ok` / `cancel` / `denied` / `unsupported`;`ok` 时带凭据 `handle` 和通知标题前会加的工具名 `title` | —(只有桥,没有对应的 AF action) |
 | `appInfo` | call | `()` | `{ platform, appVersion, theme, language, locale }`(`language` 与 `locale` 同值) | — |
 | `installBundle` | notify | `(id, version?, ref?)` | — | — |
 | `installedBundles` | call | `()` | 已装包清单(只对系统包开放) | — |
@@ -156,6 +171,7 @@ const cred = await call(xbridge.credentialState("github"));  // { state: bound|u
 - **`pickWidgets` 与 `removeWidget` 语义正好相反**:前者只是把面板打开、请用户挑,落盘在面板里;后者不过任何面板、直接落盘,一次删掉该组件的**全部**实例。所以加组件不必自己确认(面板就是确认),删组件**必须**自己先 `confirm` 一次 —— 用户按下去之后没有任何撤销入口。
 - **`alertAdd` 的主语同样是用户**:它只打开「添加提醒」的原生面板,`params` 只是预填、用户可改,提醒只在用户按下面板主按钮时才建。`ok` 之外的两个结果要分开对待:`cancel` 是用户不想加,`quota` 是本包提醒已满(面板照开、按钮置灰)—— 别把 `quota` 也写成「下次再说」。`id` 只能是本包 `xJob/` 里的提醒规则,替别的包建提醒做不到;写错(找不到或不是提醒)不开面板、调用失败(`rule_not_found`),不会回成 `cancel`。
 - **`alertRemove` 不经用户、直接生效**,与 `alertAdd` 正好相反:它删掉本包这条规则里匹配的提醒(连同已经排好的那几发),不弹面板、不出提示,返回删了几份。`params` 按**子集**匹配 —— 给出的键相等就删,省略 = 这条规则的全部;没有匹配是 `{ removed: 0 }`,不算失败。只删提醒,不动后台任务。写法与建提醒时带业务键的做法见 `numable docs alerts` 步骤 7。它只在 `manifest.minEngine` ≥ 3 的包里保证存在;要兼容旧版应用,先 `typeof xbridge.alertRemove === "function"` 判一下。
+- **`pushGrant` 的主语是用户,而且每次调用都会弹面板**:用户点「允许」(必要时再过一次系统通知权限)才发凭据,同一工具重新授权 = 旧凭据作废、换新的。所以只在用户点了「开启通知」一类的按钮时调,别在页面加载时调。四种结果分开处理:`ok` 把 `handle` 交给你自己的服务;`cancel` 什么都别做;`denied` 是系统通知权限被关,引导用户去系统设置;`unsupported` 是本平台没有服务器通知(目前只有 iPhone / iPad / Mac 与 Android 的 Google Play 版有),退回 `alertAdd` 的定时检查。网络没通时回的是 `code` 非 0 的信封。想先知道能不能用、不弹面板:传 `{ probe: true }`,能用回 `available` —— 目前只有 Android 认这个参数,苹果端会照常弹面板,所以只对非苹果端(`appInfo().platform`)探测。凭据只代表「这台设备 × 你的工具」,包身份由 App 按承载页认定,页面替别的包要不到;**设备推送令牌永远不会给到包**。
 - **`alert` / `confirm` 用桥的,不要用 `window.alert` / `window.confirm`**。后者是系统自带的弹窗,各平台长得不一样,而且会逃出容器边界 —— 在大屏上它会跑到窗口中央而不是包的组件里。
 - **`haptic` 的参数是语义档不是物理参数**:`tap`(默认)/ `impact` / `success` / `warning` / `error` / `selection`,未知值回落 `tap`。桌面无触觉硬件、或用户关了触觉总开关时它静默无事发生,**不要在调用点自己判断该不该震**。
 - **`singleValue(config)` 的整个 config 就是单值配置**,不是 `{config: …}`:必须含 `container`(`page` / `sheet` / `dialog`)与 `component`(`{type, value, props}`)。返回 `{ value: { value }, cancelled }` —— 值在 `r.value.value`,不是 `r.value`。多字段一律用 `.xform` 页面类型,见 `numable docs params`。

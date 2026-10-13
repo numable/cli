@@ -340,6 +340,7 @@ query 参数读 `location.search`,和普通网页一样。
 | `numable://self` | 本包首页(**跳首页只能这么写**,不能写 `numable://self/page/home`) |
 | `numable://self/page/detail?id=${id}` | 本包 `/detail` 路由;query 只能插顶层标量 |
 | `numable://app/mine?section=credentials` | App 的凭证管理页(需要凭证的包必须给这个直达入口) |
+| `numable://<目标包 ULID>/page/add?code=${code}` | **别的工具**的某一页(页面里 `xbridge.route`、交互流里 `nav.open`)。目标已装 → 直接打开它的这一页;没装 → 弹安装面板,用户装好点「打开」直达这一页。host 必须是目标包 manifest 里的 26 位 ULID,写错弹「找不到这个工具」。目标包在用户所在地区不分发时,用户只会看到「这个工具不存在」—— 入口要按 `appInfo().region` 自己藏起来。⚠️ 2026-10 之前的 App 版本不认这条:iPhone / Android 上提示未安装,HarmonyOS / Windows 上会在当前工具里跳错页 |
 
 从组件点进非首页时,容器会**先把首页作为栈根压进去**,再压目标页 —— 用户按 ‹ 退回来看到的是包首页,不是直接关掉。这条不用自己实现,但设计页面时要按「上面还有一层首页」来想返回路径。
 
