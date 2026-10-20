@@ -1,6 +1,8 @@
-<!-- translated-from: zh-CN/1-guides/15-layouts.md sha256:8a17cefa70db -->
+<!-- translated-from: zh-CN/1-guides/15-layouts.md sha256:6fe686dc75ed -->
 
 # layouts — start from an official layout: pick one, wire the data, write the copy
+
+These layouts are overridable starting points. For a requested style, edit colours, typography and composition in place; when only connecting data, prefer keeping the layout. For page styles and customisation, see `numable docs style`.
 
 > Readers: people making tools, and the AI working for them. Both read the same text.
 

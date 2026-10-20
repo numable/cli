@@ -11,17 +11,32 @@
         "bgColor": "#FFFFFF|#15171A"
       },
       {
+        "id": "identity",
+        "type": "layer",
+        "x": "12pt",
+        "y": "17pt",
+        "w": "5pt",
+        "h": "5pt",
+        "bgColor": "#128F66|#6FE8BE",
+        "cornerRadius": {
+          "leftT": "2.5pt",
+          "leftB": "2.5pt",
+          "rightT": "2.5pt",
+          "rightB": "2.5pt"
+        }
+      },
+      {
         "id": "brand",
         "type": "txt",
-        "x": "12pt",
+        "x": "26pt",
         "y": "12pt",
-        "w": "{parent.w}-24pt",
+        "w": "{parent.w}-38pt",
         "h": "-1",
         "maxLines": "1",
         "text": "${@i18n.brand}",
-        "fontSize": "9pt",
+        "fontSize": "13pt",
         "typeface": "System-Bold",
-        "textColor": "#6B7280|#8E939B"
+        "textColor": "#0E1116|#F3F4F6"
       },
       {
         "id": "time",
@@ -59,7 +74,7 @@
         "alignmentH": "2",
         "text": "${@i18n.foot}",
         "fontSize": "9pt",
-        "textColor": "#99A0AA|#80FFFFFF"
+        "textColor": "#6B7280|#8E939B"
       }
     ],
     "i18n": {
@@ -69,7 +84,7 @@
         "foot": "每分钟更新"
       },
       "en-US": {
-        "brand": "RIGHT NOW",
+        "brand": "Right now",
         "empty": "No data",
         "foot": "Updates every minute"
       }

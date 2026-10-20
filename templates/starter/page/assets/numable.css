@@ -1,0 +1,73 @@
+/* Numable 默认风格：可在本文件之后覆盖变量与样式；容器留白仍须保留。 */
+:root {
+  --nb-bg: #F5F6F8;
+  --nb-card: #FFFFFF;
+  --nb-ink: #0E1116;
+  --nb-sub: #6B7280;
+  --nb-line: #E4E7EC;
+  --nb-tile: #E7E9EE;
+  --nb-accent: #128F66;
+  --nb-accent-soft: rgba(18,143,102,.12);
+  --nb-on-accent: #FFFFFF;
+  --nb-danger: #FF3B30;
+  --nb-radius: 14px;
+  --nb-inset: 14px;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --nb-bg: #0B0C0E;
+  --nb-card: #15171A;
+  --nb-ink: #F3F4F6;
+  --nb-sub: #8E939B;
+  --nb-line: #262A31;
+  --nb-tile: #20232A;
+  --nb-accent: #6FE8BE;
+  --nb-accent-soft: rgba(111,232,190,.16);
+  --nb-on-accent: #0B0C0E;
+  --nb-danger: #FF453A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--nb-bg);
+  color: var(--nb-ink);
+  font: 15px/22px -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  /* 使用消费点兜底，不覆盖容器已注入的安全区与胶囊高度。 */
+  padding: calc(var(--xb-content-top, 0px) + 16px) var(--nb-inset)
+    calc(var(--xb-content-bottom, env(safe-area-inset-bottom, 0px)) + 16px);
+}
+h1, h2, p { margin: 0; }
+h1 { font-size: 24px; line-height: 32px; font-weight: 700; overflow-wrap: anywhere; }
+.nb-header { margin-bottom: 20px; }
+.nb-sub { color: var(--nb-sub); font-size: 13px; line-height: 20px; margin-top: 4px; }
+.nb-section { margin-top: 20px; }
+.nb-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.nb-section-head h2 { font-size: 13px; line-height: 20px; font-weight: 700; color: var(--nb-sub); }
+.nb-section-head span { font-size: 13px; line-height: 20px; color: var(--nb-sub); }
+.nb-card { background: var(--nb-card); border-radius: var(--nb-radius); padding: 16px; }
+.nb-label { font-size: 13px; line-height: 20px; font-weight: 700; }
+.nb-metric { font-size: 48px; line-height: 60px; font-weight: 700; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.nb-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0; }
+.nb-row + .nb-row { border-top: 1px solid var(--nb-line); }
+.nb-row:first-child { padding-top: 0; }
+.nb-row:last-child { padding-bottom: 0; }
+.nb-row-label { color: var(--nb-sub); font-size: 13px; line-height: 20px; flex-shrink: 0; }
+.nb-row-value { min-width: 0; text-align: right; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.nb-button {
+  display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+  min-height: 44px; padding: 10px 16px; border: 0; border-radius: 10px;
+  background: var(--nb-accent); color: var(--nb-on-accent);
+  font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.nb-button-secondary { background: var(--nb-accent-soft); color: var(--nb-accent); }
+.nb-button:disabled { opacity: .5; cursor: default; }
+.nb-button:focus-visible, .nb-input:focus-visible { outline: 2px solid var(--nb-accent); outline-offset: 3px; }
+.nb-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.nb-field { display: grid; gap: 8px; margin-bottom: 16px; }
+.nb-input { width: 100%; min-height: 44px; border: 1px solid var(--nb-line); border-radius: 10px; padding: 10px 12px; background: var(--nb-card); color: var(--nb-ink); font: inherit; }
+.nb-state { padding: 24px 16px; text-align: center; color: var(--nb-sub); font-size: 13px; line-height: 20px; }
+.nb-error { color: var(--nb-danger); }
+.nb-footnote { margin-top: 20px; color: var(--nb-sub); font-size: 11px; line-height: 16px; }
+[hidden] { display: none !important; }

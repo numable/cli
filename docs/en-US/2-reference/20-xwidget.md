@@ -1,4 +1,4 @@
-<!-- translated-from: zh-CN/2-reference/20-xwidget.md sha256:f800d131fe08 -->
+<!-- translated-from: zh-CN/2-reference/20-xwidget.md sha256:3bc043fb6faa -->
 
 # xwidget — the widget declaration (.xwidget)
 
@@ -144,6 +144,7 @@ When a user describes a dashboard in one sentence in the app, or asks their own 
 | `account` | A resource inside an account (an app, a site, a zone) | **Never fills it** | — |
 
 - `shows`: one sentence on what the widget shows, at most 60 characters; without it the catalog uses `title` + `sub`.
+- `aliases`: optional names users say that the title lacks (e.g. `["BTC", "bitcoin", "比特币"]`), at most 8, each up to 20 characters. Used to find a close existing widget when someone makes a wish.
 - `group`: when several parameters must be set together or all left unset (e.g. `city` / `lat` / `lon`), put it on one of them: `"group": ["city", "lat", "lon"]`.
 - `hint` / `format` / `examples` are written for the model and need no translation.
 - Parameters starting with `_` need no notes.

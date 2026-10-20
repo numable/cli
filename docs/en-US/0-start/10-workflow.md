@@ -1,6 +1,8 @@
-<!-- translated-from: zh-CN/0-start/10-workflow.md sha256:e14580c90d4b -->
+<!-- translated-from: zh-CN/0-start/10-workflow.md sha256:fd1aa27424f9 -->
 
 # workflow — the authoring sequence and the rules you cannot break
+
+For a new tool without a requested visual style, read `numable docs style` and reuse the default page styles and widget layouts. Follow a requested style and preserve an existing tool's style when editing it. Defaults are overridable; container boundaries, safe areas, theme support and truthful data remain required.
 
 > Audience: the person building a tool, and the AI working on their behalf. Both read this same page.
 > Read this chapter first — it defines the order in which a tool gets built and the lines you must not cross. For what is possible at all, see `numable docs capabilities`; for individual file formats, see the layout / xwidget / df / rcn chapters.
